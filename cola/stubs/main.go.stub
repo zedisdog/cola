@@ -1,0 +1,31 @@
+package main
+
+import (
+	"{{moduleName}}/internal/log"
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
+	"github.com/zedisdog/cola/task"
+	"github.com/zedisdog/cola/transport/http"
+	"os"
+	"os/signal"
+)
+
+func main() {
+	logger := log.GetInstance()
+	queue := task.NewQueue(50, logger)
+	queue.Start()
+
+	server := http.New(gin.Default(), viper.New(), logger)
+	server.Start()
+
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, os.Kill)
+	for {
+		select {
+			case <-c:
+				server.Stop()
+				queue.Stop()
+				return
+		}
+	}
+}

@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/zedisdog/cola/cola/stubs"
 	"os"
 	"os/exec"
 	"strings"
@@ -124,39 +125,7 @@ func renderMain(path string, moduleName string) error {
 		return err
 	}
 	defer f.Close()
-	mainTemp := `package main
-
-import (
-	"{{moduleName}}/internal/log"
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
-	"github.com/zedisdog/cola/task"
-	"github.com/zedisdog/cola/transport/http"
-	"os"
-	"os/signal"
-)
-
-func main() {
-	logger := log.GetInstance()
-	queue := task.NewQueue(50, logger)
-	queue.Start()
-
-	server := http.New(gin.Default(), viper.New(), logger)
-	server.Start()
-
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, os.Kill)
-	for {
-		select {
-			case <-c:
-				server.Stop()
-				queue.Stop()
-				return
-		}
-	}
-}
-`
-	_, err = f.Write([]byte(strings.ReplaceAll(mainTemp, "{{moduleName}}", moduleName)))
+	_, err = f.Write([]byte(strings.ReplaceAll(stubs.MainTemp, "{{moduleName}}", moduleName)))
 	if err != nil {
 		return err
 	}
@@ -173,27 +142,8 @@ func renderLog(path string) error {
 		return err
 	}
 	defer f.Close()
-	logTemp := `package log
 
-import (
-	"github.com/sirupsen/logrus"
-	"sync"
-)
-
-var (
-	instance *logrus.Logger
-	once     sync.Once
-)
-
-func GetInstance() *logrus.Logger {
-	once.Do(func() {
-		instance = logrus.New()
-		instance.SetFormatter(&logrus.JSONFormatter{})
-	})
-	return instance
-}
-`
-	_, err = f.Write([]byte(logTemp))
+	_, err = f.Write([]byte(stubs.LogTemp))
 	if err != nil {
 		return err
 	}

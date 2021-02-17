@@ -1,0 +1,19 @@
+package log
+
+import (
+	"github.com/sirupsen/logrus"
+	"sync"
+)
+
+var (
+	instance *logrus.Logger
+	once     sync.Once
+)
+
+func GetInstance() *logrus.Logger {
+	once.Do(func() {
+		instance = logrus.New()
+		instance.SetFormatter(&logrus.JSONFormatter{})
+	})
+	return instance
+}
