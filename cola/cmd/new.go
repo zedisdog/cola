@@ -20,6 +20,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/zedisdog/cola/cola/stubs"
+	"github.com/zedisdog/cola/pather"
 	"os"
 	"os/exec"
 	"strings"
@@ -96,45 +97,49 @@ func tidy(path string, cmd *cobra.Command) {
 	color.Green("go mod tidy successful.")
 }
 
-func renderTemp(path string, moduleName string) error {
-	err := createDirectory(path)
+func renderTemp(path string, moduleName string) (err error) {
+	p := pather.New(strings.TrimLeft(path, "/"))
+	err = createDirectory(p)
 	if err != nil {
-		return err
+		return
 	}
 
-	err = renderLog(path)
+	err = renderLog(p)
 	if err != nil {
-		return err
+		return
 	}
 
-	err = renderMain(path, moduleName)
+	err = renderMain(p, moduleName)
 	if err != nil {
-		return err
+		return
+	}
+
+	err = renderDB(p)
+	if err != nil {
+		return
 	}
 
 	return nil
 }
 
-func renderMain(path string, moduleName string) error {
-	f, err := os.OpenFile(
-		fmt.Sprintf("%s/%s", strings.TrimLeft(path, "/"), "app/main.go"),
-		os.O_TRUNC|os.O_CREATE,
-		0777,
+func renderMain(path *pather.Pather, moduleName string) error {
+	return renderFile(
+		path.Gen("app/main.go"),
+		stubs.MainTemp,
+		"{{moduleName}}", moduleName,
 	)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	_, err = f.Write([]byte(strings.ReplaceAll(stubs.MainTemp, "{{moduleName}}", moduleName)))
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func renderLog(path string) error {
+func renderLog(path *pather.Pather) error {
+	return renderFile(
+		path.Gen("internal/log/log.go"),
+		stubs.LogTemp,
+	)
+}
+
+func renderFile(path string, tmp string, oldnew ...string) error {
 	f, err := os.OpenFile(
-		fmt.Sprintf("%s/%s", strings.TrimLeft(path, "/"), "internal/log/log.go"),
+		path,
 		os.O_CREATE|os.O_TRUNC,
 		0777,
 	)
@@ -143,29 +148,37 @@ func renderLog(path string) error {
 	}
 	defer f.Close()
 
-	_, err = f.Write([]byte(stubs.LogTemp))
+	replacer := strings.NewReplacer(oldnew...)
+	_, err = f.Write([]byte(replacer.Replace(tmp)))
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func createDirectory(path string) error {
-	err := os.Mkdir(fmt.Sprintf("%s/%s", strings.TrimLeft(path, "/"), "internal"), 0777)
+func renderDB(path *pather.Pather) error {
+	return renderFile(
+		path.Gen("internal/database/db.go"),
+		stubs.DbTemp,
+	)
+}
+
+func createDirectory(path *pather.Pather) (err error) {
+	err = os.Mkdir(path.Gen("app"), 0777)
 	if err != nil {
-		return err
+		return
 	}
-	err = os.Mkdir(fmt.Sprintf("%s/%s", strings.TrimLeft(path, "/"), "app"), 0777)
+	err = os.MkdirAll(path.Gen("internal/log"), 0777)
 	if err != nil {
-		return err
+		return
 	}
-	err = os.Mkdir(fmt.Sprintf("%s/%s", strings.TrimLeft(path, "/"), "internal/log"), 0777)
+	err = os.MkdirAll(path.Gen("internal/controllers"), 0777)
 	if err != nil {
-		return err
+		return
 	}
-	err = os.Mkdir(fmt.Sprintf("%s/%s", strings.TrimLeft(path, "/"), "internal/controllers"), 0777)
+	err = os.MkdirAll(path.Gen("internal/database"), 0777)
 	if err != nil {
-		return err
+		return
 	}
 	return nil
 }

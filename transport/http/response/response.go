@@ -3,8 +3,8 @@ package response
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/zedisdog/cola/e"
+	"gorm.io/gorm"
 	"math"
 	"net/http"
 )

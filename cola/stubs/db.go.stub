@@ -1,0 +1,19 @@
+package database
+
+import (
+	"github.com/spf13/viper"
+	"github.com/zedisdog/cola/gorm/mysql"
+	"gorm.io/gorm"
+	"sync"
+)
+
+var instance *gorm.DB
+var once sync.Once
+
+func GetInstance() (*gorm.DB, error) {
+	var err error
+	once.Do(func() {
+		instance, err = mysql.New(viper.GetString("database.mysql.dsn"))
+	})
+	return instance, err
+}
