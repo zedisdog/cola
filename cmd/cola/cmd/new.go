@@ -124,12 +124,17 @@ func renderTemp(path string, moduleName string) (err error) {
 		return
 	}
 
+	err = renderConfigGo(p, moduleName)
+	if err != nil {
+		return
+	}
+
 	err = renderRoutes(p)
 	if err != nil {
 		return
 	}
 
-	err = renderTestController(p)
+	err = renderTestController(p, moduleName)
 	if err != nil {
 		return
 	}
@@ -197,10 +202,11 @@ func renderRoutes(path *pather.Pather) error {
 	)
 }
 
-func renderTestController(path *pather.Pather) error {
+func renderTestController(path *pather.Pather, moduleName string) error {
 	return renderFile(
 		path.Gen("internal/controllers/test_controller.go"),
 		stubs.TestControllerTemp,
+		"{{moduleName}}", moduleName,
 	)
 }
 
@@ -208,6 +214,14 @@ func renderDockerCompose(path *pather.Pather) error {
 	return renderFile(
 		path.Gen("docker-compose.yml"),
 		stubs.DockerComposeTemp,
+	)
+}
+
+func renderConfigGo(path *pather.Pather, moduleName string) error {
+	return renderFile(
+		path.Gen("config.go"),
+		stubs.ConfigGoTemp,
+		"{{moduleName}}", moduleName,
 	)
 }
 

@@ -24,3 +24,6 @@ var TestControllerTemp string
 
 //go:embed docker-compose.yml.stub
 var DockerComposeTemp string
+
+//go:embed config.go.stub
+var ConfigGoTemp string

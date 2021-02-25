@@ -1,8 +1,10 @@
 package main
 
 import (
+	"{{moduleName}}"
 	"{{moduleName}}/internal/controllers"
 	"{{moduleName}}/internal/log"
+	"bytes"
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/task"
 	"github.com/zedisdog/cola/transport/http"
@@ -11,6 +13,11 @@ import (
 )
 
 func main() {
+	viper.SetConfigType("yml")
+	err := viper.ReadConfig(bytes.NewBuffer({{moduleName}}.Config))
+	if err != nil {
+		panic(err)
+	}
 	logger := log.GetInstance()
 	queue := task.NewQueue(50, logger)
 	queue.Start()
