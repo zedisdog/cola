@@ -1,8 +1,4 @@
-//+build mysql
-//+build !sqlite
-//+build !postgres
-
-package mysql
+package database
 
 import (
 	"gorm.io/driver/mysql"

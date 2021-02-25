@@ -1,8 +1,8 @@
 package main
 
 import (
+	"{{moduleName}}/internal/controllers"
 	"{{moduleName}}/internal/log"
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/task"
 	"github.com/zedisdog/cola/transport/http"
@@ -15,7 +15,7 @@ func main() {
 	queue := task.NewQueue(50, logger)
 	queue.Start()
 
-	server := http.New(gin.Default(), viper.New(), logger)
+	server := http.New(controllers.NewRoutes(), viper.New(), logger)
 	server.Start()
 
 	c := make(chan os.Signal)

@@ -1,0 +1,2 @@
+dsn: mysql://root:toor@tcp(localhost)/main?collation=utf8mb4_general_ci&loc=Asia/Shanghai&parseTime=true
+migratePath: ./internal/database/migrations

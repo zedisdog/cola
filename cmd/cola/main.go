@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/zedisdog/cola/cola/cmd"
+import "github.com/zedisdog/cola/cmd/cola/cmd"
 
 func main() {
 	cmd.Execute()

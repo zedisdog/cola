@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	"github.com/zedisdog/cola/cola/stubs"
+	"github.com/zedisdog/cola/cmd/cola/stubs"
 	"github.com/zedisdog/cola/pather"
 	"os"
 	"os/exec"
@@ -119,12 +119,32 @@ func renderTemp(path string, moduleName string) (err error) {
 		return
 	}
 
+	err = renderConfig(p)
+	if err != nil {
+		return
+	}
+
+	err = renderRoutes(p)
+	if err != nil {
+		return
+	}
+
+	err = renderTestController(p)
+	if err != nil {
+		return
+	}
+
+	err = renderDockerCompose(p)
+	if err != nil {
+		return
+	}
+
 	return nil
 }
 
 func renderMain(path *pather.Pather, moduleName string) error {
 	return renderFile(
-		path.Gen("app/main.go"),
+		path.Gen("cmd/app/main.go"),
 		stubs.MainTemp,
 		"{{moduleName}}", moduleName,
 	)
@@ -163,8 +183,36 @@ func renderDB(path *pather.Pather) error {
 	)
 }
 
+func renderConfig(path *pather.Pather) error {
+	return renderFile(
+		path.Gen("config.yaml"),
+		stubs.ConfigTemp,
+	)
+}
+
+func renderRoutes(path *pather.Pather) error {
+	return renderFile(
+		path.Gen("internal/controllers/routes.go"),
+		stubs.RoutesTemp,
+	)
+}
+
+func renderTestController(path *pather.Pather) error {
+	return renderFile(
+		path.Gen("internal/controllers/test_controller.go"),
+		stubs.TestControllerTemp,
+	)
+}
+
+func renderDockerCompose(path *pather.Pather) error {
+	return renderFile(
+		path.Gen("docker-compose.yml"),
+		stubs.DockerComposeTemp,
+	)
+}
+
 func createDirectory(path *pather.Pather) (err error) {
-	err = os.Mkdir(path.Gen("app"), 0777)
+	err = os.MkdirAll(path.Gen("cmd/app"), 0777)
 	if err != nil {
 		return
 	}
@@ -176,7 +224,7 @@ func createDirectory(path *pather.Pather) (err error) {
 	if err != nil {
 		return
 	}
-	err = os.MkdirAll(path.Gen("internal/database"), 0777)
+	err = os.MkdirAll(path.Gen("internal/database/migrations"), 0777)
 	if err != nil {
 		return
 	}

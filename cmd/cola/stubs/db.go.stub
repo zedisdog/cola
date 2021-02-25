@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/spf13/viper"
-	"github.com/zedisdog/cola/gorm/mysql"
+	"github.com/zedisdog/cola/database"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -13,7 +13,7 @@ var once sync.Once
 func GetInstance() (*gorm.DB, error) {
 	var err error
 	once.Do(func() {
-		instance, err = mysql.New(viper.GetString("database.mysql.dsn"))
+		instance, err = database.New(viper.GetString("database.dsn"))
 	})
 	return instance, err
 }
