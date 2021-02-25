@@ -13,7 +13,7 @@ var once sync.Once
 func GetInstance() (*gorm.DB, error) {
 	var err error
 	once.Do(func() {
-		instance, err = database.New(viper.GetString("dsn"))
+		instance, err = database.New(database.WithDsn(viper.GetString("dsn")))
 	})
 	return instance, err
 }
