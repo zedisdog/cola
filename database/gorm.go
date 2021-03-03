@@ -2,11 +2,10 @@ package database
 
 import (
 	"errors"
-	"fmt"
+	"github.com/zedisdog/cola/tools"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"net/url"
 	"regexp"
 )
 
@@ -65,11 +64,6 @@ func WithDialector(d gorm.Dialector) func(o *options) {
 
 func WithDsn(dsn string) func(o *options) {
 	return func(o *options) {
-		u, err := url.Parse(dsn)
-		if err != nil {
-			panic(err)
-		}
-		d := fmt.Sprintf("%s://%s@%s%s?%s", u.Scheme, u.User, u.Host, u.Path, u.Query().Encode())
-		o.dsn = d
+		o.dsn = tools.EncodeQuery(dsn)
 	}
 }

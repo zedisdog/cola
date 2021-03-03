@@ -42,7 +42,7 @@ to quickly create a Cobra application.`,
 			color.Red("required a name for model")
 			os.Exit(1)
 		}
-		modelName := fmt.Sprintf("internal/models/%s.go", strcase.ToSnake(args[0]))
+		modelName := fmt.Sprintf("internal/database/models/%s.go", strcase.ToSnake(args[0]))
 		p := pather.NewProjectPath()
 		f, err := os.OpenFile(p.Gen(modelName), os.O_CREATE|os.O_TRUNC, 0777)
 		if err != nil {
@@ -53,7 +53,7 @@ to quickly create a Cobra application.`,
 		replacer := strings.NewReplacer(
 			"{{name}}", strcase.ToCamel(args[0]),
 		)
-		f.WriteString(replacer.Replace(stubs.ControllerTemp))
+		f.WriteString(replacer.Replace(stubs.ModelTemp))
 	},
 }
 

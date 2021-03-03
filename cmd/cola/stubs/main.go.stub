@@ -4,8 +4,10 @@ import (
 	"{{moduleName}}"
 	"{{moduleName}}/internal/controllers"
 	"{{moduleName}}/internal/log"
+	"{{moduleName}}/internal/database"
 	"bytes"
 	"github.com/spf13/viper"
+	"github.com/zedisdog/cola/cmd/cola/migrate"
 	"github.com/zedisdog/cola/task"
 	"github.com/zedisdog/cola/transport/http"
 	"os"
@@ -18,6 +20,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	viper.Set("migrations", database.Migrations)
+	m, err := migrate.GetInstance()
+    if err != nil {
+        panic(err)
+    }
+    err = m.Up()
+    if err != nil {
+        panic(err)
+    }
 	logger := log.GetInstance()
 	queue := task.NewQueue(50, logger)
 	queue.Start()

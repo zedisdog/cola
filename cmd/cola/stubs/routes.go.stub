@@ -5,7 +5,7 @@ import "github.com/gin-gonic/gin"
 func NewRoutes() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("test", test)
+	r.GET("test", Test.Index)
 
 	return r
 }

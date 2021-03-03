@@ -5,6 +5,7 @@ import (
 	"github.com/zedisdog/cola/database"
 	"gorm.io/gorm"
 	"sync"
+	"embed"
 )
 
 var instance *gorm.DB
@@ -17,3 +18,6 @@ func GetInstance() (*gorm.DB, error) {
 	})
 	return instance, err
 }
+
+//go:embed migrations
+var Migrations embed.FS

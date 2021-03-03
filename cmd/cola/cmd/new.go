@@ -208,6 +208,8 @@ func renderTestController(path *pather.Pather, moduleName string) error {
 		stubs.ControllerTemp,
 		"{{moduleName}}", moduleName,
 		"{{name}}", "test",
+		"{{shortName}}", "t",
+		"{{varName}}", "Test",
 	)
 }
 

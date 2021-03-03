@@ -74,7 +74,8 @@ func Error(c *gin.Context, params ...interface{}) {
 	c.AbortWithStatusJSON(code, NewErrorResponse(err))
 }
 
-// Success params[0] data params[1] status code
+// Success params[0]: data
+//         params[1]: status code
 func Success(c *gin.Context, params ...interface{}) {
 	if len(params) == 0 {
 		c.JSON(http.StatusNoContent, nil)

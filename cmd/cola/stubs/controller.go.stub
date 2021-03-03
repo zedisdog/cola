@@ -3,9 +3,26 @@ package controllers
 import (
 	"{{moduleName}}/internal/database"
 	"github.com/gin-gonic/gin"
+	"github.com/zedisdog/cola/transport/http/response"
 )
 
-func {{name}}(cxt *gin.Context) {
+var {{varName}} = &{{name}}{}
+
+type {{name}} struct {}
+
+func ({{shortName}} {{name}}) Index(cxt *gin.Context) {
 	_, _ = database.GetInstance()
+	response.Success(cxt)
+}
+
+func ({{shortName}} {{name}}) Create(cxt *gin.Context) {
+	response.Success(cxt, gin.H{"success": true})
+}
+
+func ({{shortName}} {{name}}) Update(cxt *gin.Context) {
 	cxt.JSON(200, gin.H{"success": true})
+}
+
+func ({{shortName}} {{name}}) Delete(cxt *gin.Context) {
+	response.Error(cxt, gin.H{"success": true}, 500)
 }

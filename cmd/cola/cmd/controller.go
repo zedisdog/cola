@@ -54,6 +54,8 @@ to quickly create a Cobra application.`,
 		replacer := strings.NewReplacer(
 			"{{name}}", strcase.ToLowerCamel(args[0]),
 			"{{moduleName}}", viper.GetString("moduleName"),
+			"{{shortName}}", string([]rune(strcase.ToLowerCamel(args[0]))[0]),
+			"{{varName}}", strcase.ToCamel(args[0]),
 		)
 		f.WriteString(replacer.Replace(stubs.ControllerTemp))
 	},
