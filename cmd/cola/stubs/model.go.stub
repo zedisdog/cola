@@ -1,0 +1,7 @@
+package models
+
+import "github.com/zedisdog/cola/database"
+
+type {{name}} struct {
+	database.Model
+}

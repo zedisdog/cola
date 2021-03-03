@@ -17,8 +17,12 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/zedisdog/cola/pather"
+	"golang.org/x/mod/modfile"
+	"io"
 	"os"
 )
 
@@ -73,8 +77,28 @@ func initConfig() {
 		//// Search config in home directory with name ".cli" (without extension).
 		//viper.AddConfigPath(home)
 		//viper.SetConfigName(".cli")
-		path, _ := os.Getwd()
-		viper.AddConfigPath(path + "/")
+		path := pather.NewProjectPath()
+		if path != nil {
+			viper.AddConfigPath(path.Gen(""))
+			viper.Set("root", path.Gen(""))
+
+			file, err := os.Open(path.Gen("go.mod"))
+			if err != nil {
+				color.Red("%s\n", err.Error())
+				os.Exit(1)
+			}
+			defer file.Close()
+			content, err := io.ReadAll(file)
+			if err != nil {
+				color.Red("%s\n", err.Error())
+				os.Exit(1)
+			}
+			modName := modfile.ModulePath(content)
+			if modName == "" {
+				color.Red("can get mod name")
+			}
+			viper.Set("moduleName", modName)
+		}
 		viper.SetConfigType("yaml")
 		viper.SetConfigName("config")
 	}

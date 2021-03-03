@@ -19,8 +19,11 @@ var ConfigTemp string
 //go:embed routes.go.stub
 var RoutesTemp string
 
-//go:embed test_controller.go.stub
-var TestControllerTemp string
+//go:embed controller.go.stub
+var ControllerTemp string
+
+//go:embed model.go.stub
+var ModelTemp string
 
 //go:embed docker-compose.yml.stub
 var DockerComposeTemp string

@@ -205,8 +205,9 @@ func renderRoutes(path *pather.Pather) error {
 func renderTestController(path *pather.Pather, moduleName string) error {
 	return renderFile(
 		path.Gen("internal/controllers/test_controller.go"),
-		stubs.TestControllerTemp,
+		stubs.ControllerTemp,
 		"{{moduleName}}", moduleName,
+		"{{name}}", "test",
 	)
 }
 
@@ -239,6 +240,10 @@ func createDirectory(path *pather.Pather) (err error) {
 		return
 	}
 	err = os.MkdirAll(path.Gen("internal/database/migrations"), 0777)
+	if err != nil {
+		return
+	}
+	err = os.MkdirAll(path.Gen("internal/database/models"), 0777)
 	if err != nil {
 		return
 	}
