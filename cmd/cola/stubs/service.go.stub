@@ -1,0 +1,6 @@
+package services
+
+var {{name}} = &{{serviceName}}{}
+
+type {{serviceName}} struct {}
+

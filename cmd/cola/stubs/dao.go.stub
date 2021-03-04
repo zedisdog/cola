@@ -1,0 +1,6 @@
+package dao
+
+var {{name}} = &{{daoName}}{}
+
+type {{daoName}} struct {}
+

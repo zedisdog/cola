@@ -10,12 +10,15 @@ import (
 
 var instance *gorm.DB
 var once sync.Once
+var err error
 
-func GetInstance() (*gorm.DB, error) {
-	var err error
+func GetInstance() *gorm.DB {
 	once.Do(func() {
 		instance, err = database.New(database.WithDsn(viper.GetString("dsn")))
 	})
+    if err != nil {
+        panic(err)
+    }
 	return instance, err
 }
 

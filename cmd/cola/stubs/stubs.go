@@ -30,3 +30,9 @@ var DockerComposeTemp string
 
 //go:embed config.go.stub
 var ConfigGoTemp string
+
+//go:embed dao.go.stub
+var DaoTemp string
+
+//go:embed service.go.stub
+var ServiceTemp string

@@ -245,7 +245,7 @@ func createDirectory(path *pather.Pather) (err error) {
 	if err != nil {
 		return
 	}
-	err = os.MkdirAll(path.Gen("internal/database/models"), 0777)
+	err = os.MkdirAll(path.Gen("internal/models"), 0777)
 	if err != nil {
 		return
 	}

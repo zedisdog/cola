@@ -27,9 +27,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// modelCmd represents the model command
-var modelCmd = &cobra.Command{
-	Use:   "model",
+// serviceCmd represents the service command
+var serviceCmd = &cobra.Command{
+	Use:   "service",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -39,18 +39,18 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
-			color.Red("required a name for model")
+			color.Red("required a name for service")
 			os.Exit(1)
 		}
 		path := pather.NewProjectPath()
 		// 创建目录
-		err := os.MkdirAll(path.Gen("internal/models"), 0777)
+		err := os.MkdirAll(path.Gen("internal/services"), 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
-		modelPath := fmt.Sprintf("%s/%s.go", path.Gen("internal/models"), strcase.ToSnake(args[0]))
-		f, err := os.OpenFile(modelPath, os.O_CREATE|os.O_TRUNC, 0777)
+		servicePath := fmt.Sprintf("%s/%s.go", path.Gen("internal/services"), strcase.ToSnake(args[0]))
+		f, err := os.OpenFile(servicePath, os.O_CREATE|os.O_TRUNC, 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
@@ -58,21 +58,22 @@ to quickly create a Cobra application.`,
 		defer f.Close()
 		replacer := strings.NewReplacer(
 			"{{name}}", strcase.ToCamel(args[0]),
+			"{{serviceName}}", strcase.ToLowerCamel(args[0]),
 		)
-		f.WriteString(replacer.Replace(stubs.ModelTemp))
+		f.WriteString(replacer.Replace(stubs.ServiceTemp))
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(modelCmd)
+	rootCmd.AddCommand(serviceCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// modelCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// serviceCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// modelCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// serviceCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

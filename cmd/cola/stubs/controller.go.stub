@@ -11,7 +11,7 @@ var {{varName}} = &{{name}}{}
 type {{name}} struct {}
 
 func ({{shortName}} {{name}}) Index(cxt *gin.Context) {
-	_, _ = database.GetInstance()
+	_ = database.GetInstance()
 	response.Success(cxt)
 }
 
