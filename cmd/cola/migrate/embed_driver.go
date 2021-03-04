@@ -94,8 +94,8 @@ func (e enbed) Prev(version uint) (prevVersion uint, err error) {
 	if err != nil {
 		return
 	}
-	if index+1 < len(e.sorts) {
-		return e.sorts[index+1], nil
+	if index-1 >= 0 {
+		return e.sorts[index-1], nil
 	}
 	return 0, os.ErrNotExist
 }
@@ -105,8 +105,8 @@ func (e enbed) Next(version uint) (nextVersion uint, err error) {
 	if err != nil {
 		return
 	}
-	if index-1 >= 0 {
-		return e.sorts[index-1], nil
+	if index+1 < len(e.sorts) {
+		return e.sorts[index+1], nil
 	}
 	return 0, os.ErrNotExist
 }
