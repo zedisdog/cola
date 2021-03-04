@@ -4,6 +4,7 @@ import (
 	"{{moduleName}}"
 	"{{moduleName}}/internal/controllers"
 	"{{moduleName}}/internal/log"
+	"github.com/sirupsen/logrus"
 	"{{moduleName}}/internal/database"
 	"bytes"
 	"github.com/spf13/viper"
@@ -15,35 +16,65 @@ import (
 )
 
 func main() {
+	readConfig()
+	setConfig()
+	AutoMigrate()
+	logger := log.GetInstance()
+	queue := startQueue(logger)
+	s := startServer(logger)
+	waitQuit(s, queue)
+}
+
+func readConfig() {
 	viper.SetConfigType("yml")
 	err := viper.ReadConfig(bytes.NewBuffer({{moduleName}}.Config))
 	if err != nil {
 		panic(err)
 	}
+}
+
+func setConfig() {
 	viper.Set("migrations", database.Migrations)
+}
+
+func AutoMigrate() {
 	m, err := migrate.GetInstance()
-    if err != nil {
-        panic(err)
-    }
-    err = m.Up()
-    if err != nil && err.Error() != "no change" {
-        panic(err)
-    }
-	logger := log.GetInstance()
-	queue := task.NewQueue(50, logger)
-	queue.Start()
+	if err != nil {
+		panic(err)
+	}
+	err = m.Up()
+	if err != nil && err.Error() != "no change" {
+		panic(err)
+	}
+}
 
-	server := http.New(controllers.NewRoutes(), viper.New(), logger)
-	server.Start()
+func startQueue(logger *logrus.Logger) (queue *task.Queue) {
+	enable := viper.GetBool("queue.enable")
+	if enable {
+		queue = task.NewQueue(50, logger)
+		queue.Start()
+		return
+	}
+	return
+}
 
+func startServer(logger *logrus.Logger) (s *http.Server) {
+	s = http.New(controllers.NewRoutes(), viper.New(), logger)
+	s.Start()
+	return
+}
+
+func waitQuit(s *http.Server, queue *task.Queue) {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, os.Kill)
 	for {
 		select {
-			case <-c:
-				server.Stop()
+		case <-c:
+			s.Stop()
+			if queue != nil {
 				queue.Stop()
-				return
+			}
+			return
 		}
 	}
 }

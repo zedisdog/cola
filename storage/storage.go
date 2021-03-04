@@ -1,0 +1,66 @@
+package storage
+
+import "errors"
+
+func New(driver Driver) *Storage {
+	return &Storage{
+		driver: driver,
+	}
+}
+
+type Storage struct {
+	driver Driver
+}
+
+func (s Storage) Put(path string, data []byte) error {
+	return s.driver.Put(path, data)
+}
+
+func (s Storage) Get(path string) ([]byte, error) {
+	return s.driver.Get(path)
+}
+
+func (s Storage) Remove(path string) error {
+	return s.driver.Remove(path)
+}
+
+func (s Storage) PutString(path string, data string) error {
+	return s.driver.Put(path, []byte(data))
+}
+
+func (s Storage) GetString(path string) (data string, err error) {
+	tmp, err := s.driver.Get(path)
+	if err != nil {
+		return
+	}
+	data = string(tmp)
+	return
+}
+
+func (s Storage) GetMime(path string) string {
+	if ss, ok := interface{}(s).(DriverHasMime); ok {
+		return ss.GetMime(path)
+	}
+	panic(errors.New("driver is not implement interface <DriverHasMime>"))
+}
+
+func (s Storage) GetUrl(path string) string {
+	if ss, ok := interface{}(s).(DriverHasUrl); ok {
+		return ss.GetUrl(path)
+	}
+	panic(errors.New("driver is not implement interface <DriverHasUrl>"))
+}
+
+type Driver interface {
+	Put(path string, data []byte) error
+	Get(path string) ([]byte, error)
+	Remove(path string) error
+}
+
+type DriverHasMime interface {
+	GetMime(path string) string
+}
+
+type DriverHasUrl interface {
+	GetUrl(path string) string
+}
