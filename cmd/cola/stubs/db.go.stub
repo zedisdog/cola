@@ -19,7 +19,7 @@ func GetInstance() *gorm.DB {
     if err != nil {
         panic(err)
     }
-	return instance, err
+	return instance
 }
 
 //go:embed migrations

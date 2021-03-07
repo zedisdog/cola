@@ -1,6 +1,10 @@
 package storage
 
-import "errors"
+import (
+	"errors"
+	"github.com/spf13/viper"
+	"github.com/zedisdog/cola/storage/drivers"
+)
 
 func New(driver Driver) *Storage {
 	return &Storage{
@@ -63,4 +67,19 @@ type DriverHasMime interface {
 
 type DriverHasUrl interface {
 	GetUrl(path string) string
+}
+
+// NewByViper 从viper中获取配置
+//   storage:
+//     path: ./storage
+//     driver: local
+func NewByViper(v *viper.Viper) *Storage {
+	var driver Driver
+	switch v.GetString("storage.driver") {
+	case "local":
+		driver = drivers.NewLocal(v.GetString("storage.path"))
+	}
+	return &Storage{
+		driver: driver,
+	}
 }
