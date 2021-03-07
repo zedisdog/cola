@@ -144,6 +144,11 @@ func renderTemp(path string, moduleName string) (err error) {
 		return
 	}
 
+	err = renderStorage(p)
+	if err != nil {
+		return
+	}
+
 	return nil
 }
 
@@ -228,6 +233,13 @@ func renderConfigGo(path *pather.Pather, moduleName string) error {
 	)
 }
 
+func renderStorage(path *pather.Pather) error {
+	return renderFile(
+		path.Gen("internal/storage/storage.go"),
+		stubs.StorageTemp,
+	)
+}
+
 func createDirectory(path *pather.Pather) (err error) {
 	err = os.MkdirAll(path.Gen("cmd/app"), 0777)
 	if err != nil {
@@ -246,6 +258,10 @@ func createDirectory(path *pather.Pather) (err error) {
 		return
 	}
 	err = os.MkdirAll(path.Gen("internal/models"), 0777)
+	if err != nil {
+		return
+	}
+	err = os.MkdirAll(path.Gen("internal/storage"), 0777)
 	if err != nil {
 		return
 	}

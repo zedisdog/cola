@@ -23,7 +23,7 @@ func GetInstance() (*migrate.Migrate, error) {
 		instance, err = migrate.NewWithSourceInstance(
 			"",
 			NewEnbed(f),
-			tools.EncodeQuery(viper.GetString("dsn")),
+			tools.EncodeQuery(viper.GetString("database.dsn")),
 		)
 	})
 	return instance, err

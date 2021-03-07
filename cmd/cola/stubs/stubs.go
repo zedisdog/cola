@@ -36,3 +36,6 @@ var DaoTemp string
 
 //go:embed service.go.stub
 var ServiceTemp string
+
+//go:embed storage.go.stub
+var StorageTemp string

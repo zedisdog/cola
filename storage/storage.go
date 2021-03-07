@@ -55,6 +55,13 @@ func (s Storage) GetUrl(path string) string {
 	panic(errors.New("driver is not implement interface <DriverHasUrl>"))
 }
 
+func (s Storage) Path(path string) string {
+	if ss, ok := interface{}(s).(DriverHasPath); ok {
+		return ss.Path(path)
+	}
+	panic(errors.New("driver is not implement interface <DriverHasPath>"))
+}
+
 type Driver interface {
 	Put(path string, data []byte) error
 	Get(path string) ([]byte, error)
@@ -67,6 +74,10 @@ type DriverHasMime interface {
 
 type DriverHasUrl interface {
 	GetUrl(path string) string
+}
+
+type DriverHasPath interface {
+	Path(path string) string
 }
 
 // NewByViper 从viper中获取配置
