@@ -3,6 +3,7 @@ package drivers
 import (
 	"errors"
 	"fmt"
+	"github.com/h2non/filetype"
 	"github.com/zedisdog/cola/pather"
 	"io"
 	"os"
@@ -68,4 +69,22 @@ func (l Local) Path(path string) string {
 
 func (l Local) GetUrl(path string) string {
 	return fmt.Sprintf("%s/%s", l.baseUrl, path)
+}
+
+func (l Local) GetMime(path string) string {
+	fp, err := os.Open(l.path.Gen(path))
+	if err != nil {
+		return ""
+	}
+	defer fp.Close()
+	b := make([]byte, 262)
+	if _, err := fp.Read(b); err != nil {
+		return ""
+	}
+	kind, _ := filetype.Match(b)
+	if kind == filetype.Unknown {
+		return ""
+	}
+
+	return kind.MIME.Value
 }

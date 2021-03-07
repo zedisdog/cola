@@ -4,6 +4,8 @@ import (
 	"errors"
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/storage/drivers"
+	"io"
+	"mime/multipart"
 )
 
 func New(driver Driver) *Storage {
@@ -39,6 +41,19 @@ func (s Storage) GetString(path string) (data string, err error) {
 	}
 	data = string(tmp)
 	return
+}
+
+func (s Storage) PutFile(path string, file *multipart.FileHeader) (err error) {
+	fp, err := file.Open()
+	if err != nil {
+		return
+	}
+	defer fp.Close()
+	data, err := io.ReadAll(fp)
+	if err != nil {
+		return
+	}
+	return s.Put(path, data)
 }
 
 func (s Storage) GetMime(path string) string {
