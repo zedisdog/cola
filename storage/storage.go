@@ -42,21 +42,21 @@ func (s Storage) GetString(path string) (data string, err error) {
 }
 
 func (s Storage) GetMime(path string) string {
-	if ss, ok := interface{}(s).(DriverHasMime); ok {
+	if ss, ok := interface{}(s.driver).(DriverHasMime); ok {
 		return ss.GetMime(path)
 	}
 	panic(errors.New("driver is not implement interface <DriverHasMime>"))
 }
 
 func (s Storage) GetUrl(path string) string {
-	if ss, ok := interface{}(s).(DriverHasUrl); ok {
+	if ss, ok := interface{}(s.driver).(DriverHasUrl); ok {
 		return ss.GetUrl(path)
 	}
 	panic(errors.New("driver is not implement interface <DriverHasUrl>"))
 }
 
 func (s Storage) Path(path string) string {
-	if ss, ok := interface{}(s).(DriverHasPath); ok {
+	if ss, ok := interface{}(s.driver).(DriverHasPath); ok {
 		return ss.Path(path)
 	}
 	panic(errors.New("driver is not implement interface <DriverHasPath>"))
@@ -88,7 +88,7 @@ func NewByViper(v *viper.Viper) *Storage {
 	var driver Driver
 	switch v.GetString("storage.driver") {
 	case "local":
-		driver = drivers.NewLocal(v.GetString("storage.path"))
+		driver = drivers.NewLocal(v.GetString("storage.path"), v.GetString("storage.url"))
 	}
 	return &Storage{
 		driver: driver,

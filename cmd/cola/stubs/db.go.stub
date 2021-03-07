@@ -14,7 +14,7 @@ var err error
 
 func GetInstance() *gorm.DB {
 	once.Do(func() {
-		instance, err = database.New(database.WithDsn(viper.GetString("dsn")))
+		instance, err = database.New(database.WithDsn(viper.GetString("database.dsn")))
 	})
     if err != nil {
         panic(err)

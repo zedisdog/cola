@@ -2,24 +2,27 @@ package drivers
 
 import (
 	"errors"
+	"fmt"
 	"github.com/zedisdog/cola/pather"
 	"io"
 	"os"
 )
 
-func NewLocal(path string) *Local {
+func NewLocal(path string, baseUrl string) *Local {
 	p := pather.New(path)
 	err := os.MkdirAll(p.Gen(""), 0766)
 	if err != nil {
 		panic(err)
 	}
 	return &Local{
-		path: pather.New(path),
+		path:    pather.New(path),
+		baseUrl: baseUrl,
 	}
 }
 
 type Local struct {
-	path *pather.Pather
+	path    *pather.Pather
+	baseUrl string
 }
 
 func (l Local) Put(path string, data []byte) (err error) {
@@ -57,4 +60,12 @@ func (l Local) Remove(path string) (err error) {
 
 	err = os.Remove(l.path.Gen(path))
 	return
+}
+
+func (l Local) Path(path string) string {
+	return l.path.Gen(path)
+}
+
+func (l Local) GetUrl(path string) string {
+	return fmt.Sprintf("%s/%s", l.baseUrl, path)
 }
