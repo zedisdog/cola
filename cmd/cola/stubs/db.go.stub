@@ -1,24 +1,23 @@
 package database
 
 import (
+	"embed"
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/database"
 	"gorm.io/gorm"
-	"sync"
-	"embed"
 )
 
 var instance *gorm.DB
-var once sync.Once
-var err error
 
 func GetInstance() *gorm.DB {
-	once.Do(func() {
+	var err error
+	if instance == nil {
 		instance, err = database.New(database.WithDsn(viper.GetString("database.dsn")))
-	})
-    if err != nil {
-        panic(err)
-    }
+	}
+	if err != nil {
+		instance = nil
+		panic(err)
+	}
 	return instance
 }
 

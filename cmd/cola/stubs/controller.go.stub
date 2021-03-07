@@ -23,6 +23,10 @@ func ({{shortName}} {{name}}) Update(cxt *gin.Context) {
 	cxt.JSON(200, gin.H{"success": true})
 }
 
+func ({{shortName}} {{name}}) Detail(cxt *gin.Context) {
+	response.Error(cxt, gin.H{"success": true}, 500)
+}
+
 func ({{shortName}} {{name}}) Delete(cxt *gin.Context) {
 	response.Error(cxt, gin.H{"success": true}, 500)
 }
