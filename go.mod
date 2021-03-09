@@ -50,6 +50,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.2.4 // indirect
+	github.com/uniplaces/carbon v0.1.6 // indirect
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/mod v0.4.1
 	golang.org/x/sys v0.0.0-20210305230114-8fe3ee5dd75b // indirect
