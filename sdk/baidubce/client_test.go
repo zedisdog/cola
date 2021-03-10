@@ -24,3 +24,21 @@ func TestClient_Handwriting(t *testing.T) {
 	}
 	fmt.Printf("%+v", res)
 }
+
+type A map[string]string
+
+func (a A) Set(key string, value string) {
+	a[key] = value
+}
+
+func (a A) Delete(key string) {
+	delete(a, key)
+}
+
+func TestIoReader(t *testing.T) {
+	a := make(A)
+	a.Set("test", "test")
+	fmt.Printf("%+v", a)
+	a.Delete("test")
+	fmt.Printf("%+v", a)
+}

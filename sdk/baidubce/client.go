@@ -8,13 +8,25 @@ import (
 	"fmt"
 	"github.com/zedisdog/cola/sdk/baidubce/auth"
 	"github.com/zedisdog/cola/sdk/baidubce/response"
+	"github.com/zedisdog/cola/sdk/baidubce/store"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"net/url"
 )
 
+// todo: 5,423
+
 const Host = "aip.baidubce.com"
+
+var s *store.VerifyToken
+
+func getStore() *store.VerifyToken {
+	if s == nil {
+		s = new(store.VerifyToken)
+	}
+	return s
+}
 
 func New(clientId string, clientSecret string) *Client {
 	a := auth.NewAuth(clientId, clientSecret, Host)
@@ -23,15 +35,18 @@ func New(clientId string, clientSecret string) *Client {
 	}
 }
 
+// Client 百度ai平台sdk客户端
 type Client struct {
 	auth         *auth.Auth
 	verifyPlanId int
 }
 
+// SetVerifyPlanId 设置方案id，不要忘记
 func (c *Client) SetVerifyPlanId(id int) {
 	c.verifyPlanId = id
 }
 
+// VerifyToken 获取verify_token
 func (c Client) VerifyToken() (token string, err error) {
 	if c.verifyPlanId == 0 {
 		err = errors.New("invalid plan id")
@@ -52,6 +67,21 @@ func (c Client) VerifyToken() (token string, err error) {
 	return
 }
 
+// VerifyTokenUsingStore 获取verify_token,并且存到store中
+//  key 保存的verify_token的唯一键名
+func (c Client) VerifyTokenUsingStore(key string) (token string, err error) {
+	s := getStore()
+	token = s.Pull(key)
+	if token == "" {
+		token, err = c.VerifyToken()
+		if err != nil {
+			return
+		}
+		s.Put(key, token)
+	}
+	return
+}
+
 type VerifyResponse struct {
 	Success bool `json:"success"`
 	Result  struct {
@@ -60,11 +90,11 @@ type VerifyResponse struct {
 	LogId int64 `json:"log_id"`
 }
 
-func (c Client) GenVerifyUrl(successUrl string, failedUrl string) (u string, err error) {
-	verifyToken, err := c.VerifyToken()
-	if err != nil {
-		return
-	}
+// GenVerifyUrl 生成人脸实名认证H5跳转链接
+//  successUrl 成功回调链接
+//  failedUrl 失败回调链接
+//  verifyToken verify_token
+func (c Client) GenVerifyUrl(successUrl string, failedUrl string, verifyToken string) (u string, err error) {
 	tmp := url.URL{
 		Scheme: "https",
 		Host:   "brain.baidu.com",
@@ -79,11 +109,19 @@ func (c Client) GenVerifyUrl(successUrl string, failedUrl string) (u string, err
 	return tmp.String(), nil
 }
 
-func (c Client) GetVerifyResult() (res VerifyResponse, err error) {
-	verifyToken, err := c.VerifyToken()
+// GenVerifyUrlUsingStore 从store中获取verify_token，并生成人脸实名认证H5跳转链接
+//  successUrl 成功回调链接
+//  failedUrl 失败回调链接
+//  key 保存的verify_token的唯一键名
+func (c Client) GenVerifyUrlUsingStore(successUrl string, failedUrl string, key string) (u string, err error) {
+	verifyToken, err := c.VerifyTokenUsingStore(key)
 	if err != nil {
 		return
 	}
+	return c.GenVerifyUrl(successUrl, failedUrl, verifyToken)
+}
+
+func (c Client) GetVerifyResult(verifyToken string) (res VerifyResultResponse, err error) {
 	u, err := c.genUrl("rpc/2.0/brain/solution/faceprint/result/detail")
 	if err != nil {
 		return
@@ -96,6 +134,14 @@ func (c Client) GetVerifyResult() (res VerifyResponse, err error) {
 	}
 	err = c.Read(r, &res)
 	return
+}
+
+func (c Client) GetVerifyResultUsingStore(key string) (res VerifyResultResponse, err error) {
+	verifyToken, err := c.VerifyTokenUsingStore(key)
+	if err != nil {
+		return
+	}
+	return c.GetVerifyResult(verifyToken)
 }
 
 type VerifyResultResponse struct {

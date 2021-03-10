@@ -3,7 +3,8 @@ package tools
 import (
 	"errors"
 	"github.com/h2non/filetype"
-	"mime/multipart"
+	"github.com/h2non/filetype/types"
+	"io"
 	"os"
 )
 
@@ -11,17 +12,34 @@ var (
 	UnknownFileType = errors.New("Unknown file type")
 )
 
-func GetExt(file multipart.File) (string, error) {
+func getFileKind(file io.Reader) (kind types.Type, err error) {
 	b := make([]byte, 262)
-	if _, err := file.Read(b); err != nil {
-		return "", err
+	if _, err = file.Read(b); err != nil {
+		return
 	}
-	kind, _ := filetype.Match(b)
+	return filetype.Match(b)
+}
+
+func GetExt(file io.Reader) (ext string, err error) {
+	kind, err := getFileKind(file)
+	if err != nil {
+		return
+	}
 	if kind == filetype.Unknown {
 		return "", UnknownFileType
 	}
-
 	return kind.Extension, nil
+}
+
+func GetMimeType(file io.Reader) (mime string, err error) {
+	kind, err := getFileKind(file)
+	if err != nil {
+		return
+	}
+	if kind == filetype.Unknown {
+		return "", UnknownFileType
+	}
+	return kind.MIME.Value, nil
 }
 
 func PathExists(path string) bool {
