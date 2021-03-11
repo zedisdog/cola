@@ -22,6 +22,7 @@ func GenerateToken(key []byte, claims jwt.Claims) (string, error) {
 	return ss, nil
 }
 
+// Deprecated: Use Parse instead.
 func ParseToken(token string, key []byte, claims jwt.Claims) (jwt.Claims, error) {
 	t, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 		return key, nil
@@ -34,4 +35,20 @@ func ParseToken(token string, key []byte, claims jwt.Claims) (jwt.Claims, error)
 	} else {
 		return nil, TokenIsInvalid
 	}
+}
+
+// Parse token and fill claims
+func Parse(token string, key []byte, claims jwt.Claims) (err error) {
+	t, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return key, nil
+	})
+	if err != nil {
+		return
+	}
+	if !t.Valid {
+		err = TokenIsInvalid
+		return
+	}
+
+	return
 }
