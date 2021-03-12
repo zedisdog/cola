@@ -2,3 +2,7 @@ dsn: mysql://root:toor@tcp(localhost)/main?collation=utf8mb4_general_ci&loc=Asia
 baseUrl: http://localhost
 queue:
   enable: false
+storage:
+  path: ./storage
+  driver: local
+  url: http://localhost/storage
