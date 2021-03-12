@@ -1,9 +1,13 @@
 package controllers
 
-import "github.com/gin-gonic/gin"
+import (
+    "github.com/gin-gonic/gin"
+    "github.com/zedisdog/cola/transport/http/middlewares"
+)
 
 func NewRoutes() *gin.Engine {
 	r := gin.Default()
+	r.Use(middlewares.Cros)
 
 	r.GET("test", Test.Index)
 
