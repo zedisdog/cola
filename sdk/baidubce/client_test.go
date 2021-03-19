@@ -8,7 +8,7 @@ import (
 )
 
 func TestClient_Handwriting(t *testing.T) {
-	client := New("", "")
+	client := New("", "", 0)
 	pwd, _ := os.Getwd()
 	fp, err := os.Open(fmt.Sprintf("%s/../../test_data/3.jpg", pwd))
 	if err != nil {

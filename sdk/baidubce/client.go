@@ -19,19 +19,20 @@ import (
 
 const Host = "aip.baidubce.com"
 
-var s *store.VerifyToken
+var s store.VerifyToken
 
-func getStore() *store.VerifyToken {
+func getStore() store.VerifyToken {
 	if s == nil {
-		s = new(store.VerifyToken)
+		s = make(store.VerifyToken)
 	}
 	return s
 }
 
-func New(clientId string, clientSecret string) *Client {
+func New(clientId string, clientSecret string, verifyPlanId int) *Client {
 	a := auth.NewAuth(clientId, clientSecret, Host)
 	return &Client{
-		auth: a,
+		auth:         a,
+		verifyPlanId: verifyPlanId,
 	}
 }
 
@@ -50,6 +51,7 @@ func (c *Client) SetVerifyPlanId(id int) {
 func (c Client) VerifyToken() (token string, err error) {
 	if c.verifyPlanId == 0 {
 		err = errors.New("invalid plan id")
+		return
 	}
 	u, err := c.genUrl("rpc/2.0/brain/solution/faceprint/verifyToken/generate")
 	if err != nil {
@@ -87,7 +89,7 @@ type VerifyResponse struct {
 	Result  struct {
 		VerifyToken string `json:"verify_token"`
 	} `json:"result"`
-	LogId int64 `json:"log_id"`
+	LogId int64 `json:"log_id,string"`
 }
 
 // GenVerifyUrl 生成人脸实名认证H5跳转链接
@@ -172,7 +174,7 @@ type VerifyResultResponse struct {
 			Name         string `json:"name"`
 		} `json:"idcard_confirm"`
 	} `json:"result"`
-	LogId int64 `json:"log_id"`
+	LogId int64 `json:"log_id,string"`
 }
 
 type HandwritingConfig struct {
@@ -215,7 +217,7 @@ func (c Client) Handwriting(config HandwritingConfig) (result HandwritingRespons
 }
 
 type HandwritingResponse struct {
-	LogId       int64 `json:"log_id"`
+	LogId       int64 `json:"log_id,string"`
 	WordsResult []struct {
 		Location struct {
 			Left   int `json:"left"`

@@ -28,6 +28,10 @@ func ParseError(response *http.Response) (err error) {
 	if err != nil {
 		return
 	}
+	if len(errData) < 1 {
+		err = errors.New("body is empty")
+		return
+	}
 	err = json.Unmarshal(errData, &e)
 	if err != nil {
 		return
