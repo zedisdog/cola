@@ -4,7 +4,7 @@ import "testing"
 
 func TestLink_PushBack(t *testing.T) {
 	l := newLink()
-	l.pushBack(1)
+	l.put(1)
 	if l.count != 1 {
 		t.Fatal("count should be 1")
 	}
@@ -15,7 +15,7 @@ func TestLink_PushBack(t *testing.T) {
 		t.Fatal("first node's content should be 1")
 	}
 
-	l.pushBack(2)
+	l.put(2)
 	if l.count != 2 {
 		t.Fatal("count should be 2")
 	}
@@ -29,8 +29,8 @@ func TestLink_PushBack(t *testing.T) {
 
 func TestLink_pop(t *testing.T) {
 	l := newLink()
-	l.pushBack(1)
-	l.pushBack(2)
+	l.put(1)
+	l.put(2)
 
 	content := l.pop()
 	if content != 1 {

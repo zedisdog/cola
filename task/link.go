@@ -1,5 +1,9 @@
 package task
 
+import (
+	"sync"
+)
+
 type node struct {
 	next    *node
 	content interface{}
@@ -9,15 +13,16 @@ type link struct {
 	count int
 	first *node
 	end   *node
+	lock  sync.Mutex
 }
 
 func newLink() *link {
 	return &link{}
 }
 
-func (l *link) pushBack(content interface{}) {
-	l.count = l.count + 1
-	if l.count == 1 {
+func (l *link) put(content interface{}) {
+	l.lock.Lock()
+	if l.count == 0 {
 		l.end = &node{
 			next:    nil,
 			content: content,
@@ -30,19 +35,19 @@ func (l *link) pushBack(content interface{}) {
 		}
 		l.end = l.end.next
 	}
+	l.count++
+	l.lock.Unlock()
 }
 
 func (l *link) pop() interface{} {
-	if l.count-1 < 0 {
+	if l.count == 0 {
 		return nil
 	}
-	l.count = l.count - 1
+	l.lock.Lock()
 	first := l.first
-	if l.count < 1 {
-		l.first = nil
-	} else {
-		l.first = l.first.next
-	}
+	l.first = l.first.next
+	l.count--
+	l.lock.Unlock()
 	if first == nil {
 		return nil
 	}

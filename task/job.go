@@ -47,7 +47,7 @@ func (j *job) On(t time.Time) *job {
 // dispatcher 任务队列
 type dispatcher struct {
 	pool    chan *job
-	link    *link
+	link    queue
 	running bool
 }
 
@@ -66,7 +66,7 @@ func (d *dispatcher) start() {
 				job := j.(*job)
 				// 判断是否到了执行时间
 				if job.when > time.Now().Unix() {
-					d.link.pushBack(job)
+					d.link.put(job)
 					continue
 				}
 				d.pool <- job
@@ -83,7 +83,7 @@ func (d *dispatcher) start() {
 
 func (d dispatcher) put(job *job) error {
 	if d.running {
-		d.link.pushBack(job)
+		d.link.put(job)
 		return nil
 	} else {
 		return errors.New("dispatcher is closed and will not accepts jobs")
@@ -92,4 +92,9 @@ func (d dispatcher) put(job *job) error {
 
 func (d *dispatcher) stop() {
 	d.running = false
+}
+
+type queue interface {
+	put(interface{})
+	pop() interface{}
 }

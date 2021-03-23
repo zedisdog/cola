@@ -2,7 +2,10 @@ package task
 
 import (
 	"context"
+	"math/rand"
+	"sync"
 	"testing"
+	"time"
 )
 
 func TestQueue(t *testing.T) {
@@ -64,4 +67,26 @@ func TestNormal(t *testing.T) {
 		return nil
 	}, nil).Delay(20))
 	queue.Stop()
+}
+
+func TestMuch(t *testing.T) {
+	result := 0
+	queue := NewQueue(10, nil)
+	queue.Start()
+	var lock sync.Mutex
+	for i := 0; i < 100; i++ {
+		randPush := rand.Intn(5)
+		//println("randpush", randPush)
+		time.Sleep(time.Duration(randPush) * time.Second)
+		func(i int) {
+			_ = queue.Dispatch(NewJob(func(cxt context.Context) error {
+				lock.Lock()
+				result++
+				lock.Unlock()
+				return nil
+			}, nil).Delay(int64(randPush)))
+		}(i)
+	}
+	queue.Stop()
+	println(result)
 }
