@@ -21,7 +21,7 @@ func TestQueue_Dispatcher(t *testing.T) {
 			NewJob(func(cxt context.Context) error {
 				testData = append(testData, index+1) // 从1开始
 				return nil
-			}, nil).delay(delay),
+			}, nil).Delay(delay),
 		)
 	}
 	for _, job := range jobs {

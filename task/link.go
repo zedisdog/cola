@@ -38,10 +38,12 @@ func (l *link) pop() interface{} {
 	}
 	l.count = l.count - 1
 	first := l.first
+
 	if l.count < 1 {
 		l.first = nil
-	} else {
-		l.first = l.first.next
+		return nil
 	}
+
+	l.first = l.first.next
 	return first.content
 }

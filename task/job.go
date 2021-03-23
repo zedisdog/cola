@@ -34,12 +34,12 @@ func (j job) do() (err error) {
 	return j.callable(cxt)
 }
 
-func (j *job) delay(seconds int64) *job {
+func (j *job) Delay(seconds int64) *job {
 	j.when = time.Now().Unix() + seconds
 	return j
 }
 
-func (j *job) on(t time.Time) *job {
+func (j *job) On(t time.Time) *job {
 	j.when = t.Unix()
 	return j
 }

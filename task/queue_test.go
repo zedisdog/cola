@@ -19,7 +19,7 @@ func TestQueue(t *testing.T) {
 				NewJob(func(cxt context.Context) error {
 					testData = append(testData, index+1) // 从1开始
 					return nil
-				}, nil).delay(delay),
+				}, nil).Delay(delay),
 			)
 		}(index, delay)
 	}
@@ -44,4 +44,24 @@ func TestQueue(t *testing.T) {
 	if testData[0] != 3 || testData[1] != 2 || testData[2] != 1 {
 		t.Fatal("error")
 	}
+}
+
+func TestNormal(t *testing.T) {
+	queue := NewQueue(3, nil)
+	queue.Start()
+	_ = queue.Dispatch(NewJob(func(cxt context.Context) error {
+		println("执行任务来了")
+		return nil
+	}, nil).Delay(3))
+
+	_ = queue.Dispatch(NewJob(func(cxt context.Context) error {
+		println("执行任务来了2")
+		return nil
+	}, nil).Delay(1))
+
+	_ = queue.Dispatch(NewJob(func(cxt context.Context) error {
+		println("执行任务来了20")
+		return nil
+	}, nil).Delay(20))
+	queue.Stop()
 }
