@@ -47,17 +47,17 @@ func TestQueue(t *testing.T) {
 }
 
 func TestNormal(t *testing.T) {
-	queue := NewQueue(3, nil)
+	queue := NewQueue(1, nil)
 	queue.Start()
 	_ = queue.Dispatch(NewJob(func(cxt context.Context) error {
-		println("执行任务来了")
+		println("执行任务来了3")
 		return nil
 	}, nil).Delay(3))
 
 	_ = queue.Dispatch(NewJob(func(cxt context.Context) error {
 		println("执行任务来了2")
 		return nil
-	}, nil).Delay(1))
+	}, nil).Delay(2))
 
 	_ = queue.Dispatch(NewJob(func(cxt context.Context) error {
 		println("执行任务来了20")
