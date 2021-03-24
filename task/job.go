@@ -46,16 +46,27 @@ func (j *job) On(t time.Time) *job {
 
 // dispatcher 任务队列
 type dispatcher struct {
-	pool    chan *job
-	link    queue
-	running bool
+	pool     chan *job
+	link     queue
+	running  bool
+	location string
 }
 
-func newDispatcher() *dispatcher {
-	return &dispatcher{
+func withLocation(location string) func(d *dispatcher) {
+	return func(d *dispatcher) {
+		d.location = location
+	}
+}
+
+func newDispatcher(opts ...func(d *dispatcher)) *dispatcher {
+	d := &dispatcher{
 		pool: make(chan *job),
 		link: newLink(),
 	}
+	for _, opt := range opts {
+		opt(d)
+	}
+	return d
 }
 
 func (d *dispatcher) start() {
@@ -64,8 +75,15 @@ func (d *dispatcher) start() {
 		for {
 			if j := d.link.pop(); j != nil {
 				job := j.(*job)
+
+				now := time.Now()
+				loc, err := time.LoadLocation(d.location)
+				if err != nil {
+					panic(err)
+				}
+
 				// 判断是否到了执行时间
-				if job.when > time.Now().Unix() {
+				if job.when > now.In(loc).Unix() {
 					d.link.put(job)
 					continue
 				}

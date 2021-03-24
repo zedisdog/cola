@@ -5,17 +5,29 @@ import (
 	"sync"
 )
 
-func NewQueue(max int, logger *logrus.Logger) *Queue {
+func WithLocation(location string) func(q *Queue) {
+	return func(q *Queue) {
+		q.location = location
+	}
+}
+
+func NewQueue(max int, l *logrus.Logger, opts ...func(q *Queue)) *Queue {
 	if max < 1 {
 		panic("worker count can not little than 1")
 	}
-	return &Queue{
-		dispatcher: newDispatcher(),
+	q := &Queue{
 		wg:         &sync.WaitGroup{},
-		logger:     logger,
+		logger:     l,
 		workerPool: make(chan chan *job, max),
 		maxWorker:  max,
 	}
+	for _, opt := range opts {
+		opt(q)
+	}
+	if q.location != "" {
+		q.dispatcher = newDispatcher(withLocation(q.location))
+	}
+	return q
 }
 
 type Queue struct {
@@ -24,6 +36,7 @@ type Queue struct {
 	logger     *logrus.Logger
 	workerPool chan chan *job
 	maxWorker  int
+	location   string
 }
 
 func (q *Queue) Start() {
