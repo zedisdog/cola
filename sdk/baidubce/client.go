@@ -92,6 +92,10 @@ type VerifyResponse struct {
 	LogId int64 `json:"log_id,string"`
 }
 
+func (c Client) HasVerifyToken(key string) bool {
+	return s.Has(key)
+}
+
 // GenVerifyUrl 生成人脸实名认证H5跳转链接
 //  successUrl 成功回调链接
 //  failedUrl 失败回调链接
@@ -166,8 +170,8 @@ type VerifyResultResponse struct {
 			IdCardNumber   string `json:"id_card_number"`
 		} `json:"idcard_ocr_result"`
 		IdcardImages struct {
-			FrontBase64 string `json:"front_base_64"`
-			BackBase64  string `json:"back_base_64"`
+			FrontBase64 string `json:"front_base64"`
+			BackBase64  string `json:"back_base64"`
 		} `json:"idcard_images"`
 		IdcardConfirm struct {
 			IdcardNumber string `json:"idcard_number"`

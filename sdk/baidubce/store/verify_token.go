@@ -10,17 +10,29 @@ var lock sync.Mutex
 
 type VerifyTokenInfo struct {
 	Token  string
-	Expire time.Time
+	Expire int64
 }
 
 type VerifyToken map[string]VerifyTokenInfo
 
+func (v VerifyToken) Has(key string) bool {
+	lock.Lock()
+	defer lock.Unlock()
+	v.clear()
+	_, ok := v[key]
+	return ok
+}
+
 func (v VerifyToken) Put(key string, value string) {
+	v.PutWithExpire(key, value, carbon.Now().AddHours(2).SubMinutes(30).Unix())
+}
+
+func (v VerifyToken) PutWithExpire(key string, value string, expire int64) {
 	lock.Lock()
 	v.clear()
 	v[key] = VerifyTokenInfo{
 		Token:  value,
-		Expire: carbon.Now().AddHours(2).SubMinutes(30).Time,
+		Expire: expire,
 	}
 	lock.Unlock()
 }
@@ -37,7 +49,8 @@ func (v VerifyToken) Pull(key string) string {
 
 func (v VerifyToken) clear() {
 	for key, value := range v {
-		if carbon.Now().Lt(carbon.NewCarbon(value.Expire)) {
+		now := time.Now().Unix()
+		if now >= value.Expire {
 			delete(v, key)
 		}
 	}

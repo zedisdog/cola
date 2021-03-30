@@ -27,11 +27,11 @@ type Local struct {
 }
 
 func (l Local) Put(path string, data []byte) (err error) {
-	err = os.Mkdir(l.path.Dir(path), 0766)
+	err = os.MkdirAll(l.path.Dir(path), 0766)
 	if err != nil {
 		return
 	}
-	f, err := os.OpenFile(l.path.Gen(path), os.O_TRUNC|os.O_CREATE, 0766)
+	f, err := os.OpenFile(l.path.Gen(path), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0766)
 	if err != nil {
 		return
 	}
