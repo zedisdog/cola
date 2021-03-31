@@ -77,6 +77,13 @@ func (s Storage) Path(path string) string {
 	panic(errors.New("driver is not implement interface <DriverHasPath>"))
 }
 
+func (s Storage) Base64(path string) (string, error) {
+	if ss, ok := interface{}(s.driver).(DriverHasBase64); ok {
+		return ss.Base64(path)
+	}
+	panic(errors.New("driver is not implement interface <DriverHasPath>"))
+}
+
 type Driver interface {
 	Put(path string, data []byte) error
 	Get(path string) ([]byte, error)
@@ -93,6 +100,10 @@ type DriverHasUrl interface {
 
 type DriverHasPath interface {
 	Path(path string) string
+}
+
+type DriverHasBase64 interface {
+	Base64(path string) (string, error)
 }
 
 // NewByViper 从viper中获取配置

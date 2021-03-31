@@ -1,6 +1,7 @@
 package drivers
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"github.com/h2non/filetype"
@@ -87,4 +88,13 @@ func (l Local) GetMime(path string) string {
 	}
 
 	return kind.MIME.Value
+}
+
+func (l Local) Base64(path string) (s string, err error) {
+	d, err := l.Get(path)
+	if err != nil {
+		return
+	}
+	s = base64.StdEncoding.EncodeToString(d)
+	return
 }
