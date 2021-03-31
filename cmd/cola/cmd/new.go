@@ -114,6 +114,11 @@ func renderTemp(path string, moduleName string) (err error) {
 		return
 	}
 
+	err = renderAirConf(p)
+	if err != nil {
+		return
+	}
+
 	err = renderDB(p)
 	if err != nil {
 		return
@@ -160,6 +165,13 @@ func renderMain(path *pather.Pather, moduleName string) error {
 	)
 }
 
+func renderAirConf(path *pather.Pather) error {
+	return renderFile(
+		path.Gen(".air.conf"),
+		stubs.AirConf,
+	)
+}
+
 func renderLog(path *pather.Pather) error {
 	return renderFile(
 		path.Gen("internal/log/log.go"),
@@ -170,7 +182,7 @@ func renderLog(path *pather.Pather) error {
 func renderFile(path string, tmp string, oldnew ...string) error {
 	f, err := os.OpenFile(
 		path,
-		os.O_CREATE|os.O_TRUNC,
+		os.O_CREATE|os.O_TRUNC|os.O_WRONLY,
 		0777,
 	)
 	if err != nil {

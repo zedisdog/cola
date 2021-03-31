@@ -50,7 +50,7 @@ to quickly create a Cobra application.`,
 			os.Exit(1)
 		}
 		modelPath := fmt.Sprintf("%s/%s.go", path.Gen("internal/models"), strcase.ToSnake(args[0]))
-		f, err := os.OpenFile(modelPath, os.O_CREATE|os.O_TRUNC, 0777)
+		f, err := os.OpenFile(modelPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
