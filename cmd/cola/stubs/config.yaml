@@ -1,4 +1,5 @@
-dsn: mysql://root:toor@tcp(localhost)/main?collation=utf8mb4_general_ci&loc=Asia/Shanghai&parseTime=true
+database:
+  dsn: mysql://root:toor@tcp(localhost)/main?collation=utf8mb4_general_ci&loc=Asia/Shanghai&parseTime=true
 baseUrl: http://localhost
 queue:
   enable: false

@@ -2,15 +2,16 @@ package migrate
 
 import (
 	"embed"
+	"os"
+	"os/exec"
+	"sync"
+
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/pather"
 	"github.com/zedisdog/cola/tools"
-	"os"
-	"os/exec"
-	"sync"
 )
 
 var instance *migrate.Migrate

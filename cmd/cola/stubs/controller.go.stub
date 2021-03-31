@@ -12,7 +12,7 @@ type {{name}} struct {}
 
 func ({{shortName}} {{name}}) Index(cxt *gin.Context) {
 	_ = database.GetInstance()
-	response.Success(cxt)
+	response.Success(cxt, gin.H{"success": true, "msg": "愿你有个美好的明天"})
 }
 
 func ({{shortName}} {{name}}) Create(cxt *gin.Context) {

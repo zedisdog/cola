@@ -46,11 +46,12 @@ var newCmd = &cobra.Command{
 				return
 			}
 		}
+		installGoMigrate(cmd)
 		initModule(path, args[0], cmd)
 		err := renderTemp(path, args[0])
 		if err != nil {
 			color.Red("Error: %s", err.Error())
-			return
+			panic(err)
 		}
 		tidy(path, cmd)
 	},
@@ -72,6 +73,22 @@ func init() {
 	newCmd.Flags().BoolP("currentPath", "c", false, "if use current path as project root path.")
 }
 
+func installGoMigrate(cmd *cobra.Command) {
+	c := exec.Command(
+		"go",
+		"install",
+		"github.com/golang-migrate/migrate/v4/cmd/migrate@latest",
+	)
+	c.Stdout = cmd.OutOrStdout()
+	c.Stderr = cmd.OutOrStderr()
+	err := c.Run()
+	if err != nil {
+		color.Red("Error: %s", err.Error())
+		panic(err)
+	}
+	color.Green("go-migrate install successful.")
+}
+
 func initModule(path string, name string, cmd *cobra.Command) {
 	c := exec.Command("go", "mod", "init", name)
 	c.Dir = path
@@ -80,7 +97,7 @@ func initModule(path string, name string, cmd *cobra.Command) {
 	err := c.Run()
 	if err != nil {
 		color.Red("Error: %s", err.Error())
-		return
+		panic(err)
 	}
 	color.Green("go module init successful.")
 }
@@ -93,6 +110,7 @@ func tidy(path string, cmd *cobra.Command) {
 	err := c.Run()
 	if err != nil {
 		color.Red("Error: %s", err.Error())
+		panic(err)
 	}
 	color.Green("go mod tidy successful.")
 }
@@ -100,6 +118,16 @@ func tidy(path string, cmd *cobra.Command) {
 func renderTemp(path string, moduleName string) (err error) {
 	p := pather.New(strings.TrimLeft(path, "/"))
 	err = createDirectory(p)
+	if err != nil {
+		return
+	}
+
+	err = renderMigrate(p)
+	if err != nil {
+		return
+	}
+
+	err = renderGitIgnore(p)
 	if err != nil {
 		return
 	}
@@ -155,6 +183,13 @@ func renderTemp(path string, moduleName string) (err error) {
 	}
 
 	return nil
+}
+
+func renderGitIgnore(path *pather.Pather) error {
+	return renderFile(
+		path.Gen(".gitignore"),
+		stubs.GitIgnore,
+	)
 }
 
 func renderMain(path *pather.Pather, moduleName string) error {
@@ -216,6 +251,20 @@ func renderRoutes(path *pather.Pather) error {
 	return renderFile(
 		path.Gen("internal/controllers/routes.go"),
 		stubs.RoutesTemp,
+	)
+}
+
+func renderMigrate(path *pather.Pather) error {
+	err := renderFile(
+		path.Gen("internal/database/migrations/1615120646098759700_create_accounts_table.up.sql"),
+		stubs.MigrateUp,
+	)
+	if err != nil {
+		return err
+	}
+	return renderFile(
+		path.Gen("internal/database/migrations/1615120646098759700_create_accounts_table.down.sql"),
+		stubs.MigrateDown,
 	)
 }
 

@@ -42,3 +42,12 @@ var StorageTemp string
 
 //go:embed air.conf
 var AirConf string
+
+//go:embed 1615120646098759700_create_accounts_table.up.sql
+var MigrateUp string
+
+//go:embed 1615120646098759700_create_accounts_table.down.sql
+var MigrateDown string
+
+//go:embed gitignore
+var GitIgnore string
