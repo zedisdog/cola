@@ -15,7 +15,9 @@ func ValidateJSON(c *gin.Context, request interface{}) error {
 		if e, ok := err.(validator.ValidationErrors); ok {
 			c.AbortWithStatusJSON(422, response.NewValidateResponse(ParseValidateErrors(e)))
 		} else if errors.Is(err, io.EOF) {
-			c.AbortWithStatusJSON(400, response.NewErrorResponse(errors.New("body is empty")))
+			c.AbortWithStatusJSON(400, response.Response{
+				Msg: "body is empty",
+			})
 		} else {
 			panic(err)
 		}

@@ -1,7 +1,11 @@
 # cola
+
+## requirement
+go version > 1.16
+
 ## install
 ```bash
-go install github.com/zedisdog/cola/cmd/cola
+go install github.com/zedisdog/cola/cmd/cola@latest
 ```
 ## usage
 ```bash

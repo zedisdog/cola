@@ -29,6 +29,7 @@ func NewValidateResponse(message string, data interface{}) *Response {
 	}
 }
 
+// Deprecated: func is too many
 func NewErrorResponse(err error) *Response {
 	return &Response{
 		Msg: err.Error(),
@@ -67,11 +68,15 @@ func Error(c *gin.Context, params ...interface{}) {
 			code = http.StatusNotFound
 		} else if errors.Is(err, e.ConflictError) {
 			code = http.StatusConflict
+		} else if e, ok := err.(HttpError); ok {
+			code = e.StatusCode
 		} else {
 			code = http.StatusInternalServerError
 		}
 	}
-	c.AbortWithStatusJSON(code, NewErrorResponse(err))
+	c.AbortWithStatusJSON(code, &Response{
+		Msg: err.Error(),
+	})
 }
 
 // Success params[0]: data
