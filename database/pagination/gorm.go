@@ -6,20 +6,20 @@ import (
 )
 
 func NewGormPaginator(db *gorm.DB, conditions string, binds ...interface{}) Paginator {
-	return &Gorm{
+	return &GormPaginator{
 		db,
 		conditions,
 		binds,
 	}
 }
 
-type Gorm struct {
+type GormPaginator struct {
 	db         *gorm.DB
 	conditions string
 	binds      []interface{}
 }
 
-func (g Gorm) Page(list interface{}, currentPage int, pageSize int) (total int, err error) {
+func (g GormPaginator) Page(list interface{}, currentPage int, pageSize int) (total int, err error) {
 	var count int64
 	err = g.db.Model(g.newStructWithSlice(list)).Where(g.conditions, g.binds...).Count(&count).Error
 	if err != nil {
@@ -30,7 +30,7 @@ func (g Gorm) Page(list interface{}, currentPage int, pageSize int) (total int, 
 	return
 }
 
-func (g Gorm) newStructWithSlice(ptr interface{}) interface{} {
+func (g GormPaginator) newStructWithSlice(ptr interface{}) interface{} {
 	t := reflect.ValueOf(ptr).Elem().Type().Elem()
 	return reflect.New(t).Interface()
 }

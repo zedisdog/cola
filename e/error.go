@@ -1,3 +1,4 @@
+// Package e
 package e
 
 import (
@@ -8,45 +9,61 @@ import (
 )
 
 var (
-	NotFoundError        = errors.New("resource not found")
+	// Deprecated: use package errx instead
+	NotFoundError = errors.New("resource not found")
+	// Deprecated: use package errx instead
 	UnknownFileTypeError = errors.New("unknown file type")
-	InvalidFileError     = errors.New("无效的文件")
-	ConflictError        = errors.New("资源冲突")
-	BadGetaway           = errors.New("网关错误")
+	// Deprecated: use package errx instead
+	InvalidFileError = errors.New("无效的文件")
+	// Deprecated: use package errx instead
+	ConflictError = errors.New("资源冲突")
+	// Deprecated: use package errx instead
+	BadGetaway = errors.New("网关错误")
 )
 
+// Deprecated: use package errx instead
 type Error struct {
 	message string
-	Stack   []byte
+	stack   []byte
 	err     error
 }
 
-func (e *Error) Format(s fmt.State, r rune) {
+// Deprecated: use package errx instead
+func (e Error) Stack() []byte {
+	return e.stack
+}
+
+// Deprecated: use package errx instead
+func (e Error) Format(s fmt.State, r rune) {
 	switch r {
 	case 'w':
-		io.WriteString(s, e.message)
+		_, _ = io.WriteString(s, e.message)
 	case 'v':
-		io.WriteString(s, fmt.Sprintf("%s\n", e.message))
-		io.WriteString(s, fmt.Sprintf("\t%s\n", e.Stack))
+		_, _ = io.WriteString(s, fmt.Sprintf("%s\n", e.message))
+		_, _ = io.WriteString(s, fmt.Sprintf("\t%s\n", e.Stack))
 	}
 }
 
-func (e *Error) Error() string {
+// Deprecated: use package errx instead
+func (e Error) Error() string {
 	return e.message
 }
 
-func (e *Error) Unwrap() error {
+// Deprecated: use package errx instead
+func (e Error) Unwrap() error {
 	return e.err
 }
 
+// Deprecated: use package errx instead
 func New(message string) error {
 	return &Error{
 		err:     nil,
 		message: message,
-		Stack:   debug.Stack(),
+		stack:   debug.Stack(),
 	}
 }
 
+// Deprecated: use package errx instead
 func WithStack(err error) error {
 	if err == nil {
 		return nil
@@ -54,16 +71,17 @@ func WithStack(err error) error {
 	return &Error{
 		err:     err,
 		message: err.Error(),
-		Stack:   debug.Stack(),
+		stack:   debug.Stack(),
 	}
 }
 
+// Deprecated: use package errx instead
 func WithMessage(err error, message string) error {
 	if e, ok := err.(*Error); ok {
 		return &Error{
 			err:     err,
 			message: message,
-			Stack:   e.Stack,
+			stack:   e.stack,
 		}
 	} else {
 		e := Wrap(err, message)
@@ -72,6 +90,7 @@ func WithMessage(err error, message string) error {
 
 }
 
+// Deprecated: use package errx instead
 func Wrap(err error, message string) error {
 	if err == nil {
 		return nil
@@ -79,6 +98,6 @@ func Wrap(err error, message string) error {
 	return &Error{
 		err:     err,
 		message: message,
-		Stack:   debug.Stack(),
+		stack:   debug.Stack(),
 	}
 }

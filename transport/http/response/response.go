@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/zedisdog/cola/e"
+	"github.com/zedisdog/cola/errx"
 	"gorm.io/gorm"
 	"math"
 	"net/http"
@@ -54,6 +55,13 @@ func NewPageResponse(data interface{}, total int, page int, perPage int) *Respon
 	}
 }
 
+func NewPageResponseWithMeta(data interface{}, meta *Meta) *Response {
+	return &Response{
+		Meta: meta,
+		Data: data,
+	}
+}
+
 // Error 返回错误响应 p1 错误 p2 status code
 func Error(c *gin.Context, params ...interface{}) {
 	if len(params) == 0 {
@@ -68,8 +76,10 @@ func Error(c *gin.Context, params ...interface{}) {
 			code = http.StatusNotFound
 		} else if errors.Is(err, e.ConflictError) {
 			code = http.StatusConflict
-		} else if e, ok := err.(HttpError); ok {
-			code = e.StatusCode
+		} else if er, ok := err.(*HttpError); ok {
+			code = er.StatusCode
+		} else if er, ok := err.(*errx.HttpError); ok {
+			code = er.StatusCode
 		} else {
 			code = http.StatusInternalServerError
 		}
