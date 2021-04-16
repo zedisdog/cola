@@ -26,7 +26,7 @@ func TestGorm_Page(t *testing.T) {
 			t.Fatal(err.Error())
 		}
 	}
-	driver := NewGormDriver(db, "")
+	driver := NewGormPaginator(db, "")
 	var list []Test
 	actuallyTotal, err := driver.Page(&list, currentPage, pageSize)
 	if err != nil {
@@ -41,7 +41,7 @@ func TestGorm_Page(t *testing.T) {
 }
 
 func TestGorm_newStructWithSlice(t *testing.T) {
-	driver := NewGormDriver(nil, "")
+	driver := NewGormPaginator(nil, "")
 	var a []Test
 	s := driver.newStructWithSlice(&a)
 	if _, ok := s.(*Test); !ok {

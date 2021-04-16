@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func NewGormPaginator(db *gorm.DB, conditions string, binds ...interface{}) Paginator {
+func NewGormPaginator(db *gorm.DB, conditions string, binds ...interface{}) *GormPaginator {
 	return &GormPaginator{
 		db,
 		conditions,
