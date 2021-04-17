@@ -111,6 +111,12 @@ func Success(c *gin.Context, params ...interface{}) {
 	c.JSON(code, response)
 }
 
+func Pagination(c *gin.Context, data interface{}, total int, page int, perPage int) {
+	response := NewPageResponse(data, total, page, perPage)
+	c.JSON(http.StatusOK, response)
+}
+
+// Deprecated: use Pagination instead
 func ReturnPagination(c *gin.Context, data interface{}, total int, page int, perPage int) {
 	response := NewPageResponse(data, total, page, perPage)
 	c.JSON(http.StatusOK, response)

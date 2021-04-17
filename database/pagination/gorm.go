@@ -5,11 +5,11 @@ import (
 	"reflect"
 )
 
-func NewGormPaginator(db *gorm.DB, conditions string, binds ...interface{}) *GormPaginator {
+func NewGormPaginator(db *gorm.DB, conditionsAndBinds ...interface{}) *GormPaginator {
 	return &GormPaginator{
 		db,
-		conditions,
-		binds,
+		conditionsAndBinds[0].(string),
+		conditionsAndBinds[1:],
 	}
 }
 

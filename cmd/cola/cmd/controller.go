@@ -43,7 +43,7 @@ to quickly create a Cobra application.`,
 			color.Red("required a name for controller")
 			os.Exit(1)
 		}
-		controllerName := fmt.Sprintf("internal/controllers/%s_controller.go", strcase.ToSnake(args[0]))
+		controllerName := fmt.Sprintf("internal/controllers/%s.go", strcase.ToSnake(args[0]))
 		p := pather.NewProjectPath()
 		f, err := os.OpenFile(p.Gen(controllerName), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0777)
 		if err != nil {
