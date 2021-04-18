@@ -2,7 +2,7 @@ package task
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/zedisdog/cola/e"
+	"github.com/zedisdog/cola/errx"
 	"sync"
 )
 
@@ -44,8 +44,8 @@ func (w worker) run() {
 func (w worker) log(err error) {
 	if w.logger != nil {
 		entry := w.logger.WithError(err)
-		if er, ok := err.(*e.Error); ok {
-			entry = entry.WithField("stack", string(er.Stack))
+		if er, ok := err.(*errx.Error); ok {
+			entry = entry.WithField("stack", string(er.Stack()))
 		}
 		entry.Error("job is failed")
 	}
