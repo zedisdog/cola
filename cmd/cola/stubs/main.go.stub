@@ -13,6 +13,7 @@ import (
 	"github.com/zedisdog/cola/transport/http"
 	"os"
 	"os/signal"
+	"strings"
 )
 
 func main() {
@@ -31,6 +32,8 @@ func readConfig() {
 	if err != nil {
 		panic(err)
 	}
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "__"))
+    viper.AutomaticEnv()
 }
 
 func setConfig() {
