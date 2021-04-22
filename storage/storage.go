@@ -2,8 +2,6 @@ package storage
 
 import (
 	"errors"
-	"github.com/spf13/viper"
-	"github.com/zedisdog/cola/storage/drivers"
 	"io"
 	"mime/multipart"
 )
@@ -63,13 +61,6 @@ func (s Storage) GetMime(path string) string {
 	panic(errors.New("driver is not implement interface <DriverHasMime>"))
 }
 
-func (s Storage) GetUrl(path string) string {
-	if ss, ok := interface{}(s.driver).(DriverHasUrl); ok {
-		return ss.GetUrl(path)
-	}
-	panic(errors.New("driver is not implement interface <DriverHasUrl>"))
-}
-
 func (s Storage) Path(path string) string {
 	if ss, ok := interface{}(s.driver).(DriverHasPath); ok {
 		return ss.Path(path)
@@ -94,29 +85,10 @@ type DriverHasMime interface {
 	GetMime(path string) string
 }
 
-type DriverHasUrl interface {
-	GetUrl(path string) string
-}
-
 type DriverHasPath interface {
 	Path(path string) string
 }
 
 type DriverHasBase64 interface {
 	Base64(path string) (string, error)
-}
-
-// NewByViper 从viper中获取配置
-//   storage:
-//     path: ./storage
-//     driver: local
-func NewByViper(v *viper.Viper) *Storage {
-	var driver Driver
-	switch v.GetString("storage.driver") {
-	case "local":
-		driver = drivers.NewLocal(v.GetString("storage.path"), v.GetString("storage.url"))
-	}
-	return &Storage{
-		driver: driver,
-	}
 }
