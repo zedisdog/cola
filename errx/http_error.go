@@ -54,6 +54,13 @@ func NewHttpErrorConflict(msg string) error {
 	)
 }
 
+func NewHttpForbidden(msg string) error {
+	return NewHttpError(
+		http.StatusForbidden,
+		msg,
+	)
+}
+
 func WarpByHttpError(code int, err error) *HttpError {
 	return &HttpError{
 		StatusCode: code,

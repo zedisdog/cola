@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"net/http"
 	"time"
 )
@@ -15,11 +14,11 @@ type Server struct {
 	logger *logrus.Logger
 }
 
-func New(r *gin.Engine, c *viper.Viper, logger *logrus.Logger) *Server {
-	addr := c.GetString("host")
-	if c.IsSet("port") {
-		addr += fmt.Sprintf(":%s", c.GetString("port"))
+func New(r *gin.Engine, host string, port int, logger *logrus.Logger) *Server {
+	if port == 0 {
+		port = 80
 	}
+	addr := fmt.Sprintf("%s:%d", host, port)
 	svr := &http.Server{
 		Addr:    addr,
 		Handler: r,

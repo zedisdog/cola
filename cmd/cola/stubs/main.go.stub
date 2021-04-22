@@ -62,7 +62,7 @@ func startQueue(logger *logrus.Logger) (queue *task.Queue) {
 }
 
 func startServer(logger *logrus.Logger) (s *http.Server) {
-	s = http.New(controllers.NewRoutes(), viper.New(), logger)
+	s = http.New(controllers.NewRoutes(viper.GetViper()), "", viper.GetInt("http.port"), logger)
 	s.Start()
 	return
 }
