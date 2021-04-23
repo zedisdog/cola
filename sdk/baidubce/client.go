@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/zedisdog/cola/cache"
 	"github.com/zedisdog/cola/sdk/baidubce/auth"
 	"github.com/zedisdog/cola/sdk/baidubce/response"
-	"github.com/zedisdog/cola/sdk/baidubce/store"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -19,11 +19,11 @@ import (
 
 const Host = "aip.baidubce.com"
 
-var s store.VerifyToken
+var s *cache.Cache
 
-func getStore() store.VerifyToken {
+func getStore() *cache.Cache {
 	if s == nil {
-		s = make(store.VerifyToken)
+		s = &cache.Cache{}
 	}
 	return s
 }
@@ -73,7 +73,7 @@ func (c Client) VerifyToken() (token string, err error) {
 //  key 保存的verify_token的唯一键名
 func (c Client) VerifyTokenUsingStore(key string) (token string, err error) {
 	s := getStore()
-	token = s.Pull(key)
+	token = s.PullString(key)
 	if token == "" {
 		token, err = c.VerifyToken()
 		if err != nil {
@@ -93,7 +93,7 @@ type VerifyResponse struct {
 }
 
 func (c Client) HasVerifyToken(key string) bool {
-	return s.Has(key)
+	return getStore().Has(key)
 }
 
 // GenVerifyUrl 生成人脸实名认证H5跳转链接
