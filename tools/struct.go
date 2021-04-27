@@ -28,7 +28,7 @@ func CopyFields(src interface{}, dest interface{}) error {
 	for i := 0; i < dt.NumField(); i++ {
 		dtf := dt.Field(i)
 		svf := sv.FieldByName(dtf.Name)
-		if !svf.IsValid() {
+		if !svf.IsValid() || svf.IsZero() {
 			continue
 		}
 		dvf := dv.Field(i)

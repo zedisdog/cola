@@ -139,3 +139,11 @@ func NewListByPage(data interface{}, total int, page int, perPage int) *ListByPa
 		LastPage: int(math.Ceil(float64(total) / float64(perPage))),
 	}
 }
+
+func Return(cxt *gin.Context, data interface{}, err error) {
+	if err != nil {
+		Error(cxt, err)
+		return
+	}
+	Success(cxt, data)
+}

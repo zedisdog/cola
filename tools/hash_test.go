@@ -3,5 +3,5 @@ package tools
 import "testing"
 
 func TestHash(t *testing.T) {
-	println(Hash(""))
+	println(Hash("123456"))
 }

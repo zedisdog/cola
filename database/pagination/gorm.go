@@ -6,11 +6,14 @@ import (
 )
 
 func NewGormPaginator(db *gorm.DB, conditionsAndBinds ...interface{}) *GormPaginator {
-	return &GormPaginator{
-		db,
-		conditionsAndBinds[0].(string),
-		conditionsAndBinds[1:],
+	gp := &GormPaginator{
+		db: db,
 	}
+	if len(conditionsAndBinds) >= 2 {
+		gp.conditions = conditionsAndBinds[0].(string)
+		gp.binds = conditionsAndBinds[1:]
+	}
+	return gp
 }
 
 type GormPaginator struct {
