@@ -63,7 +63,9 @@ func startQueue(logger *logrus.Logger) (queue *task.Queue) {
 }
 
 func startServer(logger *logrus.Logger) (s *http.Server) {
-    gin.SetMode(viper.GetString("mode"))
+    if viper.GetString("mode") == "release" {
+        gin.SetMode(viper.GetString("mode"))
+    }
 	s = http.New(controllers.NewRoutes(viper.GetViper()), "", viper.GetInt("http.port"), logger)
 	s.Start()
 	return
