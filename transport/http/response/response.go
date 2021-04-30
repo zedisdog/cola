@@ -84,9 +84,13 @@ func Error(c *gin.Context, params ...interface{}) {
 			code = http.StatusInternalServerError
 		}
 	}
-	c.AbortWithStatusJSON(code, &Response{
-		Msg: err.Error(),
-	})
+
+	res := &Response{Msg: err.Error()}
+	if er, ok := err.(*errx.HttpError); ok && code == http.StatusTeapot {
+		res.Data = er.Data
+	}
+
+	c.AbortWithStatusJSON(code, res)
 }
 
 // Success params[0]: data

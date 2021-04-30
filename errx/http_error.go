@@ -9,6 +9,7 @@ import (
 type HttpError struct {
 	StatusCode int
 	err        error
+	Data       interface{}
 }
 
 func NewHttpError(code int, msg string) *HttpError {
@@ -54,11 +55,27 @@ func NewHttpErrorConflict(msg string) error {
 	)
 }
 
+//Deprecated: use NewHttpErrorForbidden instead
 func NewHttpForbidden(msg string) error {
 	return NewHttpError(
 		http.StatusForbidden,
 		msg,
 	)
+}
+
+func NewHttpErrorForbidden(msg string) error {
+	return NewHttpError(
+		http.StatusForbidden,
+		msg,
+	)
+}
+
+func NewHttpErrorTeapot(msg string, data interface{}) error {
+	err := NewHttpError(http.StatusTeapot, msg)
+	if data != nil {
+		err.Data = data
+	}
+	return err
 }
 
 func WarpByHttpError(code int, err error) *HttpError {
