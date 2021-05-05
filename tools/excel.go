@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+func ExcelCell(col int, row int) string {
+	return fmt.Sprintf("%s%d", ColIndexByNum(col), row)
+}
+
 func ColIndexByNum(num int) string {
 	s := make([]string, 0, num/26)
 	for num != 0 {
