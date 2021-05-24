@@ -3,85 +3,23 @@ package main
 import (
 	"{{moduleName}}"
 	"{{moduleName}}/internal/controllers"
-	"{{moduleName}}/internal/log"
-	"github.com/sirupsen/logrus"
 	"{{moduleName}}/internal/database"
-	"bytes"
+	"{{moduleName}}/internal/log"
 	"github.com/spf13/viper"
-	"github.com/zedisdog/cola/cmd/cola/migrate"
-	"github.com/zedisdog/cola/task"
-	"github.com/zedisdog/cola/transport/http"
-	"os"
-	"os/signal"
-	"strings"
-	"github.com/gin-gonic/gin"
+	"github.com/zedisdog/cola"
 )
 
+func init() {
+	cola.Config(dolores.Config)
+}
+
 func main() {
-	readConfig()
-	setConfig()
-	AutoMigrate()
-	logger := log.GetInstance()
-	queue := startQueue(logger)
-	s := startServer(logger)
-	waitQuit(s, queue)
-}
-
-func readConfig() {
-	viper.SetConfigType("yml")
-	err := viper.ReadConfig(bytes.NewBuffer({{moduleName}}.Config))
-	if err != nil {
-		panic(err)
-	}
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "__"))
-    viper.AutomaticEnv()
-}
-
-func setConfig() {
-	viper.Set("migrations", database.Migrations)
-}
-
-func AutoMigrate() {
-	m, err := migrate.GetInstance()
-	if err != nil {
-		panic(err)
-	}
-	err = m.Up()
-	if err != nil && err.Error() != "no change" {
-		panic(err)
-	}
-}
-
-func startQueue(logger *logrus.Logger) (queue *task.Queue) {
-	enable := viper.GetBool("queue.enable")
-	if enable {
-		queue = task.NewQueue(50, logger)
-		queue.Start()
-		return
-	}
-	return
-}
-
-func startServer(logger *logrus.Logger) (s *http.Server) {
-    if viper.GetString("mode") == "release" {
-        gin.SetMode(viper.GetString("mode"))
-    }
-	s = http.New(controllers.NewRoutes(viper.GetViper()), "", viper.GetInt("http.port"), logger)
-	s.Start()
-	return
-}
-
-func waitQuit(s *http.Server, queue *task.Queue) {
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, os.Kill)
-	for {
-		select {
-		case <-c:
-			s.Stop()
-			if queue != nil {
-				queue.Stop()
-			}
-			return
-		}
-	}
+	server := cola.NewServer(
+		viper.GetViper(),
+		controllers.NewRoutes(viper.GetViper()),
+		database.GetInstance(),
+		log.GetInstance(),
+		database.Migrations,
+	)
+	server.Start()
 }

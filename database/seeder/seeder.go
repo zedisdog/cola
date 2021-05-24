@@ -26,9 +26,9 @@ func (s seeders) seed(db *gorm.DB) {
 	}
 }
 
-func Add(seed func(db *gorm.DB) error) {
-	s.add(seed)
+func Add(seeders ...func(db *gorm.DB) error) {
+	s.add(seeders...)
 }
-func (s *seeders) add(seed func(db *gorm.DB) error) {
-	*s = append(*s, seed)
+func (s *seeders) add(seeders ...func(db *gorm.DB) error) {
+	*s = append(*s, seeders...)
 }

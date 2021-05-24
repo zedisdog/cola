@@ -78,6 +78,14 @@ func NewHttpErrorTeapot(msg string, data interface{}) error {
 	return err
 }
 
+func NewHttpErrorUnauthorized(msg string, data interface{}) error {
+	err := NewHttpError(http.StatusUnauthorized, msg)
+	if data != nil {
+		err.Data = data
+	}
+	return err
+}
+
 func WarpByHttpError(code int, err error) *HttpError {
 	return &HttpError{
 		StatusCode: code,
