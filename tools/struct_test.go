@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -30,5 +31,44 @@ func TestCopyFields(t *testing.T) {
 		if bb.Test2 != "111" {
 			t.Fatal("copy failed")
 		}
+	}
+}
+
+func TestCopyFields2(t *testing.T) {
+	a := struct {
+		Name       string
+		Code       string
+		AccountID  int
+		TypeID     int
+		IsOfficial int
+	}{
+		AccountID:  2,
+		Name:       "张哲的店铺",
+		Code:       "111",
+		TypeID:     1,
+		IsOfficial: 0,
+	}
+
+	b := struct {
+		AccountID  int
+		TypeID     int
+		Code       string
+		Name       string
+		IsOfficial int
+	}{
+		AccountID:  2,
+		Name:       "张哲的店铺",
+		Code:       "111",
+		TypeID:     1,
+		IsOfficial: 1,
+	}
+
+	err := CopyFields(a, &b)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.IsOfficial != 0 {
+		t.Fatal(errors.New("isOfficial should be 0"))
 	}
 }

@@ -1,38 +1,40 @@
 package tools
 
 import (
-	"github.com/zedisdog/cola/e"
+	"github.com/zedisdog/cola/errx"
 	"reflect"
 )
 
 func CopyFields(src interface{}, dest interface{}) error {
 	var (
-		sv reflect.Value
-		dv reflect.Value
-		dt reflect.Type
+		sValue reflect.Value
+		dValue reflect.Value
+		dType  reflect.Type
 	)
 
-	dt = reflect.TypeOf(dest)
-	if dt.Kind() != reflect.Ptr {
-		return e.New("need dest ptr")
+	// dest必须为指针
+	dType = reflect.TypeOf(dest)
+	if dType.Kind() != reflect.Ptr {
+		return errx.New("need dest ptr")
 	} else {
-		dt = dt.Elem()
+		dType = dType.Elem()
 	}
 
-	sv = reflect.ValueOf(src)
-	if sv.Kind() == reflect.Ptr {
-		sv = sv.Elem()
+	// 取src的value, 如果是指针就避开指针
+	sValue = reflect.ValueOf(src)
+	if sValue.Kind() == reflect.Ptr {
+		sValue = sValue.Elem()
 	}
 
-	dv = reflect.ValueOf(dest).Elem()
-	for i := 0; i < dt.NumField(); i++ {
-		dtf := dt.Field(i)
-		svf := sv.FieldByName(dtf.Name)
-		if !svf.IsValid() || svf.IsZero() {
+	dValue = reflect.ValueOf(dest).Elem()
+	for i := 0; i < dType.NumField(); i++ {
+		dTypeField := dType.Field(i)
+		sValueField := sValue.FieldByName(dTypeField.Name)
+		if !sValueField.IsValid() {
 			continue
 		}
-		dvf := dv.Field(i)
-		dvf.Set(svf)
+		dValueField := dValue.Field(i)
+		dValueField.Set(sValueField)
 	}
 
 	return nil
