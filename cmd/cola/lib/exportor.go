@@ -15,7 +15,7 @@ func Export(path string, moduleName string) (err error) {
 	dest := strings.TrimRight(path, "\\/")
 
 	info, err := os.Stat(dest)
-	if err == nil {
+	if err == nil { // if dest is exists, there is a tip for it will be cleaned.
 		var (
 			file  *os.File
 			names []string
@@ -50,6 +50,7 @@ func Export(path string, moduleName string) (err error) {
 	} else {
 		err = nil
 	}
+
 	os.RemoveAll(dest)
 	os.MkdirAll(dest, 0755)
 
