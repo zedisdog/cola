@@ -1,22 +1,22 @@
 package main
 
 import (
-	"{{moduleName}}"
-	"{{moduleName}}/internal/controllers"
-	"{{moduleName}}/internal/database"
-	"{{moduleName}}/internal/log"
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola"
+	"{{.}}"
+	"{{.}}/internal/controllers"
+	"{{.}}/internal/database"
+	"{{.}}/internal/log"
 )
 
 func init() {
-	cola.Config(dolores.Config)
+	cola.Config({{.}}.Config)
 }
 
 func main() {
 	server := cola.NewServer(
 		viper.GetViper(),
-		controllers.NewRoutes(viper.GetViper()),
+		controllers.NewRoutes(),
 		database.GetInstance(),
 		log.GetInstance(),
 		database.Migrations,

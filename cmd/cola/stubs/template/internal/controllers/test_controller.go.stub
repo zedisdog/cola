@@ -1,0 +1,33 @@
+package controllers
+
+import (
+	"{{.}}/internal/database"
+	"github.com/gin-gonic/gin"
+	"github.com/zedisdog/cola/transport/http/response"
+	"errors"
+)
+
+var Test = &test{}
+
+type test struct {}
+
+func (t test) Index(cxt *gin.Context) {
+	_ = database.GetInstance()
+	response.Success(cxt, gin.H{"success": true, "msg": "愿你有个美好的明天"})
+}
+
+func (t test) Create(cxt *gin.Context) {
+	response.Success(cxt, gin.H{"success": true})
+}
+
+func (t test) Update(cxt *gin.Context) {
+	cxt.JSON(200, gin.H{"success": true})
+}
+
+func (t test) Detail(cxt *gin.Context) {
+	response.Error(cxt, errors.New("test error"), 500)
+}
+
+func (t test) Delete(cxt *gin.Context) {
+	response.Error(cxt, errors.New("test error"), 500)
+}

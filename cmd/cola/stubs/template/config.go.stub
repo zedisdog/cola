@@ -1,4 +1,4 @@
-package {{moduleName}}
+package {{.}}
 
 import (
 	_ "embed"
