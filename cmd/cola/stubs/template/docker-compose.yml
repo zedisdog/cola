@@ -5,7 +5,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./data/mysql:/var/libs/mysql
+      - ./data/mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=toor
       - MYSQL_DATABASE=main

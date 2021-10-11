@@ -1,11 +1,12 @@
 package boot
 
 import (
+	"fmt"
+	"github.com/zedisdog/cola/transport/http/chttp"
 	// NOTE: DO NOT short
 	_ "{{.}}/config"
 	_ "{{.}}/internal/database"
 	_ "{{.}}/internal/database/seed"
-	_ "{{.}}/internal/queue"
 
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/storage"
@@ -13,5 +14,6 @@ import (
 )
 
 func init() {
+	chttp.Server().SetAddr(fmt.Sprintf("%s:%d", viper.GetString("http.host"), viper.GetInt("http.port")))
 	storage.SetDriver("default", drivers.NewLocal(viper.GetString("storage.path")))
 }

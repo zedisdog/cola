@@ -9,11 +9,13 @@ import (
 	"time"
 )
 
+// Deprecated: use chttp.Svr instead
 type Server struct {
 	svr    *http.Server
 	logger *logrus.Logger
 }
 
+// Deprecated: use chttp.New instead
 func New(r *gin.Engine, host string, port int, logger *logrus.Logger) *Server {
 	if port == 0 {
 		port = 80
