@@ -1,0 +1,14 @@
+package boot
+
+import (
+	"github.com/spf13/viper"
+	"github.com/zedisdog/cola"
+	"github.com/zedisdog/cola/storage"
+	"github.com/zedisdog/cola/storage/drivers"
+	"{{.}}"
+)
+
+func init() {
+	cola.Config({{.}}.Config)
+	storage.SetDriver("default", drivers.NewLocal(viper.GetString("storage.path")))
+}

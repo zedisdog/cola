@@ -18,7 +18,6 @@ import (
 
 // Config 配置
 //  config: 配置文件内容的bytes,yml格式
-//  migration: 迁移文件的虚拟文件系统
 func Config(config []byte) {
 	// 读config
 	viper.SetConfigType("yml")

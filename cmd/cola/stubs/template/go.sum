@@ -499,8 +499,8 @@ github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
-github.com/zedisdog/cola v0.0.0-20211005033718-8c2390440f01 h1:ujnVIb+uwLfKjQDXAjQEARaxSiX1CK4HMMHT+x82UTo=
-github.com/zedisdog/cola v0.0.0-20211005033718-8c2390440f01/go.mod h1:P5hF4BjjvGmnRhX16pDmO1JGxxWhFRLM37pmg2AYFTA=
+github.com/zedisdog/cola v0.0.0-20211010144712-2e25366ccc49 h1:+ccR/QaHCwlsC2Cg6MGcsmLXgP2nHekip+sgjcOqJIQ=
+github.com/zedisdog/cola v0.0.0-20211010144712-2e25366ccc49/go.mod h1:Uq665yvECMuUe7qqvNWux260Rur8P3f1B7DqBzEMvpw=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
 gitlab.com/nyarla/go-crypt v0.0.0-20160106005555-d9a5dc2b789b/go.mod h1:T3BPAOm2cqquPa0MKWeNkmOM5RQsRhkrwMWonFMN7fE=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

@@ -12,7 +12,7 @@ var Test = &test{}
 type test struct {}
 
 func (t test) Index(cxt *gin.Context) {
-	_ = database.GetInstance()
+	_ = database.Instance()
 	response.Success(cxt, gin.H{"success": true, "msg": "愿你有个美好的明天"})
 }
 

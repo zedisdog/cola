@@ -11,7 +11,7 @@ import (
 
 func NewLocal(path string) *Local {
 	p := pather.New(path)
-	err := os.MkdirAll(p.Gen(""), 0766)
+	err := os.MkdirAll(p.Gen(""), 0755)
 	if err != nil {
 		panic(err)
 	}
@@ -25,11 +25,11 @@ type Local struct {
 }
 
 func (l Local) Put(path string, data []byte) (err error) {
-	err = os.MkdirAll(l.path.Dir(path), 0766)
+	err = os.MkdirAll(l.path.Dir(path), 0755)
 	if err != nil {
 		return
 	}
-	f, err := os.OpenFile(l.path.Gen(path), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0766)
+	f, err := os.OpenFile(l.path.Gen(path), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0755)
 	if err != nil {
 		return
 	}

@@ -5,19 +5,21 @@ import (
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/database"
 	"gorm.io/gorm"
+	"sync"
 )
 
 var instance *gorm.DB
 
-func GetInstance() *gorm.DB {
-	var err error
-	if instance == nil {
+func Instance() *gorm.DB {
+	var once sync.Once
+	once.Do(func() {
+		var err error
 		instance, err = database.New(database.WithDsn(viper.GetString("database.dsn")))
-	}
-	if err != nil {
-		instance = nil
-		panic(err)
-	}
+		if err != nil {
+			instance = nil
+			panic(err)
+		}
+	})
 	return instance
 }
 

@@ -2,21 +2,86 @@ package storage
 
 import (
 	"errors"
+	"github.com/zedisdog/cola/errx"
 	"io"
 	"mime/multipart"
 )
 
-func New(driver Driver) *Storage {
+var drivers = make(map[string]IDriver)
+
+func SetDriver(name string, driver IDriver) {
+	drivers[name] = driver
+}
+
+func RemoveDriver(name string) {
+	delete(drivers, name)
+}
+
+func Driver(name string) *Storage {
+	if driver, ok := drivers[name]; ok {
+		return New(driver)
+	} else {
+		panic(errx.New("driver not found."))
+	}
+}
+
+func defaultDriver() *Storage {
+	if len(drivers) < 1 {
+		panic(errx.New("no driver found."))
+	}
+	for _, v := range drivers {
+		return New(v)
+	}
+	return nil
+}
+
+func Put(path string, data []byte) error {
+	return defaultDriver().Put(path, data)
+}
+
+func Get(path string) ([]byte, error) {
+	return defaultDriver().Get(path)
+}
+
+func Remove(path string) error {
+	return defaultDriver().Remove(path)
+}
+
+func PutString(path string, data string) error {
+	return defaultDriver().PutString(path, data)
+}
+
+func GetString(path string) (data string, err error) {
+	return defaultDriver().GetString(path)
+}
+
+func PutFile(path string, file *multipart.FileHeader) (err error) {
+	return defaultDriver().PutFile(path, file)
+}
+
+func GetMime(path string) string {
+	return defaultDriver().GetMime(path)
+}
+
+func Path(path string) string {
+	return defaultDriver().Path(path)
+}
+
+func Base64(path string) (string, error) {
+	return defaultDriver().Base64(path)
+}
+
+func New(driver IDriver) *Storage {
 	return &Storage{
 		driver: driver,
 	}
 }
 
 type Storage struct {
-	driver Driver
+	driver IDriver
 }
 
-func (s Storage) Put(path string, data []byte) error {
+func (s *Storage) Put(path string, data []byte) error {
 	return s.driver.Put(path, data)
 }
 
@@ -75,7 +140,7 @@ func (s Storage) Base64(path string) (string, error) {
 	panic(errors.New("driver is not implement interface <DriverHasPath>"))
 }
 
-type Driver interface {
+type IDriver interface {
 	Put(path string, data []byte) error
 	Get(path string) ([]byte, error)
 	Remove(path string) error
