@@ -88,7 +88,7 @@ func (s Server) autoMigrate() {
 func (s *Server) startQueue() {
 	enable := s.conf.GetBool("queue.enable")
 	if enable {
-		s.queue = task.NewQueue(50, s.logger)
+		s.queue = task.NewQueue(50)
 		s.queue.Start()
 		return
 	}

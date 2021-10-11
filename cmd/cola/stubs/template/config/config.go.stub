@@ -1,0 +1,13 @@
+package config
+
+import (
+	_ "embed"
+	"github.com/zedisdog/cola"
+)
+
+func init() {
+	cola.Config(Config)
+}
+
+//go:embed config.yaml
+var Config []byte

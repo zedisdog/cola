@@ -2,7 +2,7 @@ package job
 
 import (
 	"errors"
-	"github.com/zedisdog/cola/task/v2/job/features"
+	"github.com/zedisdog/cola/task/job/features"
 	"testing"
 	"time"
 )

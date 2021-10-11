@@ -1,57 +1,48 @@
 package task
 
 import (
-	"github.com/sirupsen/logrus"
+	"errors"
+	"github.com/zedisdog/cola/task/job"
 	"sync"
 )
 
-func WithLocation(location string) func(q *Queue) {
-	return func(q *Queue) {
-		q.location = location
-	}
-}
-
-func NewQueue(max int, l *logrus.Logger, opts ...func(q *Queue)) *Queue {
+func NewQueue(max int, opts ...func(q *Queue)) *Queue {
 	if max < 1 {
 		panic("worker count can not little than 1")
 	}
 	q := &Queue{
-		wg:         &sync.WaitGroup{},
-		logger:     l,
-		workerPool: make(chan chan *job, max),
+		workerPool: make(chan chan job.IJob, max),
 		maxWorker:  max,
 	}
 	for _, opt := range opts {
 		opt(q)
 	}
-	if q.location != "" {
-		q.dispatcher = newDispatcher(withLocation(q.location))
-	}
+	q.dispatcher = NewDispatcher()
 	return q
 }
 
 type Queue struct {
 	dispatcher *dispatcher
-	wg         *sync.WaitGroup
-	logger     *logrus.Logger
-	workerPool chan chan *job
+	running    bool
+	workerPool chan chan job.IJob
 	maxWorker  int
-	location   string
+	wg         sync.WaitGroup
 }
 
 func (q *Queue) Start() {
+	q.running = true
 	for i := 0; i < q.maxWorker; i++ {
-		worker := newWorker(q.workerPool, q.wg, q.logger)
+		worker := newWorker(q.workerPool, &q.wg)
 		worker.start()
 	}
-	q.dispatcher.start()
+	go q.dispatcher.run()
 	go q.run()
 }
 
-func (q Queue) run() {
-	for job := range q.dispatcher.pool {
+func (q *Queue) run() {
+	for j := range q.dispatcher.out {
 		worker := <-q.workerPool
-		worker <- job
+		worker <- j
 	}
 
 	for worker := range q.workerPool {
@@ -60,19 +51,17 @@ func (q Queue) run() {
 }
 
 func (q *Queue) Stop() {
-	q.log("queue is shutting down...")
-	q.dispatcher.stop()
+	q.running = false
+	close(q.dispatcher.in)
 	q.wg.Wait()
 	close(q.workerPool)
-	q.log("queue is shutdown")
 }
 
-func (q Queue) log(args ...interface{}) {
-	if q.logger != nil {
-		q.logger.Info(args...)
+func (q *Queue) Dispatch(job job.IJob) error {
+	if q.running {
+		q.dispatcher.in <- job
+		return nil
+	} else {
+		return errors.New("queue is shutdown")
 	}
-}
-
-func (q Queue) Dispatch(job *job) error {
-	return q.dispatcher.put(job)
 }

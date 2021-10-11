@@ -22,8 +22,8 @@ func (f fileName) toString(action string) string {
 	return fmt.Sprintf("%s/%s.%s.%s", f.dir, f.name, action, f.ext)
 }
 
-func NewEnbed(f embed.FS) *enbed {
-	e := &enbed{
+func NewEmbed(f embed.FS) *Embed {
+	e := &Embed{
 		sorts: make([]uint, 0, 20),
 		files: make(map[uint]fileName),
 		fs:    f,
@@ -58,28 +58,28 @@ func NewEnbed(f embed.FS) *enbed {
 	return e
 }
 
-type enbed struct {
+type Embed struct {
 	sorts []uint
 	fs    embed.FS
 	files map[uint]fileName
 }
 
-func (e *enbed) Open(url string) (source.Driver, error) {
+func (e *Embed) Open(url string) (source.Driver, error) {
 	return e, nil
 }
 
-func (e enbed) Close() error {
+func (e Embed) Close() error {
 	return nil
 }
 
-func (e enbed) First() (version uint, err error) {
+func (e Embed) First() (version uint, err error) {
 	if len(e.sorts) < 1 {
 		return 0, os.ErrNotExist
 	}
 	return e.sorts[0], nil
 }
 
-func (e enbed) find(version uint) (index int, err error) {
+func (e Embed) find(version uint) (index int, err error) {
 	var ver uint
 	for index, ver = range e.sorts {
 		if ver == version {
@@ -89,7 +89,7 @@ func (e enbed) find(version uint) (index int, err error) {
 	return 0, os.ErrNotExist
 }
 
-func (e enbed) Prev(version uint) (prevVersion uint, err error) {
+func (e Embed) Prev(version uint) (prevVersion uint, err error) {
 	index, err := e.find(version)
 	if err != nil {
 		return
@@ -100,7 +100,7 @@ func (e enbed) Prev(version uint) (prevVersion uint, err error) {
 	return 0, os.ErrNotExist
 }
 
-func (e enbed) Next(version uint) (nextVersion uint, err error) {
+func (e Embed) Next(version uint) (nextVersion uint, err error) {
 	index, err := e.find(version)
 	if err != nil {
 		return
@@ -111,7 +111,7 @@ func (e enbed) Next(version uint) (nextVersion uint, err error) {
 	return 0, os.ErrNotExist
 }
 
-func (e enbed) ReadUp(version uint) (r io.ReadCloser, identifier string, err error) {
+func (e Embed) ReadUp(version uint) (r io.ReadCloser, identifier string, err error) {
 	file, ok := e.files[version]
 	if !ok {
 		return nil, "", os.ErrNotExist
@@ -121,7 +121,7 @@ func (e enbed) ReadUp(version uint) (r io.ReadCloser, identifier string, err err
 	return
 }
 
-func (e enbed) ReadDown(version uint) (r io.ReadCloser, identifier string, err error) {
+func (e Embed) ReadDown(version uint) (r io.ReadCloser, identifier string, err error) {
 	file, ok := e.files[version]
 	if !ok {
 		return nil, "", os.ErrNotExist

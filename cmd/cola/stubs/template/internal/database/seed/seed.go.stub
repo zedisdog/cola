@@ -1,0 +1,10 @@
+package seed
+
+import (
+	"github.com/zedisdog/cola/database/seeder"
+	"{{.}}/internal/database"
+)
+
+func init() {
+	seeder.Seed(database.Instance())
+}

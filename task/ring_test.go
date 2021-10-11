@@ -1,7 +1,7 @@
-package v2
+package task
 
 import (
-	"github.com/zedisdog/cola/task/v2/job"
+	"github.com/zedisdog/cola/task/job"
 	"testing"
 )
 

@@ -1,22 +1,33 @@
 package main
 
 import (
-	_ "{{.}}/internal/boot"
-
 	"github.com/spf13/viper"
-	"github.com/zedisdog/cola"
+	"github.com/zedisdog/cola/transport/http"
+	"os"
+	"os/signal"
+	_ "{{.}}/internal/boot"
 	"{{.}}/internal/controllers"
-	"{{.}}/internal/database"
 	"{{.}}/internal/log"
+	"{{.}}/internal/queue"
 )
 
 func main() {
-	server := cola.NewServer(
-		viper.GetViper(),
-		controllers.NewRoutes(),
-		database.Instance(),
-		log.GetInstance(),
-		database.Migrations,
-	)
-	server.Start()
+	httpServer := http.New(controllers.NewRoutes(), "", viper.GetInt("http.port"), log.GetInstance())
+	httpServer.Start()
+	wait(httpServer)
+}
+
+func wait(server *http.Server) {
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, os.Kill)
+	for {
+		select {
+		case <-c:
+			server.Stop()
+			if queue.Queue != nil {
+				queue.Queue.Stop()
+			}
+			return
+		}
+	}
 }

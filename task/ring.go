@@ -1,8 +1,8 @@
-package v2
+package task
 
 import (
 	"errors"
-	"github.com/zedisdog/cola/task/v2/job"
+	"github.com/zedisdog/cola/task/job"
 )
 
 const MIN = 10

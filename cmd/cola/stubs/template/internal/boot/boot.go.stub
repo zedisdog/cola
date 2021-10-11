@@ -1,14 +1,17 @@
 package boot
 
 import (
+	// NOTE: DO NOT short
+	_ "{{.}}/config"
+	_ "{{.}}/internal/database"
+	_ "{{.}}/internal/database/seed"
+	_ "{{.}}/internal/queue"
+
 	"github.com/spf13/viper"
-	"github.com/zedisdog/cola"
 	"github.com/zedisdog/cola/storage"
 	"github.com/zedisdog/cola/storage/drivers"
-	"{{.}}"
 )
 
 func init() {
-	cola.Config({{.}}.Config)
 	storage.SetDriver("default", drivers.NewLocal(viper.GetString("storage.path")))
 }

@@ -1,8 +1,8 @@
-package v2
+package task
 
 import (
-	"github.com/zedisdog/cola/task/v2/job"
-	"github.com/zedisdog/cola/task/v2/job/features"
+	"github.com/zedisdog/cola/task/job"
+	"github.com/zedisdog/cola/task/job/features"
 )
 
 func NewDispatcher() *dispatcher {

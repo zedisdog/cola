@@ -1,7 +1,7 @@
 package job
 
 import (
-	"github.com/zedisdog/cola/task/v2/job/features"
+	"github.com/zedisdog/cola/task/job/features"
 	"reflect"
 	"time"
 )
