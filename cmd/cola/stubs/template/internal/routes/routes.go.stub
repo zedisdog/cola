@@ -1,16 +1,17 @@
-package controllers
+package routes
 
 import (
     "github.com/gin-gonic/gin"
 	"github.com/zedisdog/cola/transport/http/chttp"
 	"github.com/zedisdog/cola/transport/http/middlewares"
+	"{{.}}/internal/controllers"
 )
 
 func init() {
 	r := gin.Default()
 	r.Use(middlewares.Cros)
 
-	r.GET("test", Test.Index)
+	r.GET("test", controllers.Test.Index)
 
 	chttp.Server().SetRouter(r)
 }

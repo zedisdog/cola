@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"{{.}}/internal/database"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/zedisdog/cola/transport/http/response"
-	"errors"
+	"{{.}}/internal/database"
 )
 
 var Test = &test{}

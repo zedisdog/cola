@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/iancoleman/strcase"
+	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/cmd/cola/stubs"
 	"github.com/zedisdog/cola/pather"
 	"os"
@@ -59,6 +60,8 @@ to quickly create a Cobra application.`,
 		replacer := strings.NewReplacer(
 			"{{name}}", strcase.ToCamel(args[0]),
 			"{{daoName}}", strcase.ToLowerCamel(args[0]),
+			"{{moduleName}}", viper.GetString("moduleName"),
+			"{{shortName}}", string([]rune(strcase.ToLowerCamel(args[0]))[0]),
 		)
 		f.WriteString(replacer.Replace(stubs.DaoTemp))
 	},
