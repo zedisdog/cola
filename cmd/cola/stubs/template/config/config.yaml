@@ -1,13 +1,9 @@
 mode: debug
 database:
-  dsn: mysql://root:toor@tcp(localhost)/main?collation=utf8mb4_general_ci&loc=Asia/Shanghai&parseTime=true
-baseUrl: http://localhost
+  dsn: mysql://root:toor@tcp(mysql)/main?collation=utf8mb4_general_ci&loc=Asia/Shanghai&parseTime=true
 queue:
   enable: false
 storage:
   path: ./storage
-  driver: local
-  url: http://localhost/storage
 http:
   port: 8080
-  host: 0.0.0.0

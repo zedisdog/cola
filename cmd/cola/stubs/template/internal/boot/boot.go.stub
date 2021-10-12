@@ -14,6 +14,6 @@ import (
 )
 
 func init() {
-	chttp.Server().SetAddr(fmt.Sprintf("%s:%d", viper.GetString("http.host"), viper.GetInt("http.port")))
+	chttp.Server().SetAddr(fmt.Sprintf("%s:%d", "", viper.GetInt("http.port")))
 	storage.SetDriver("default", drivers.NewLocal(viper.GetString("storage.path")))
 }
