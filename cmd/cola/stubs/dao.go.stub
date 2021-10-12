@@ -1,19 +1,19 @@
 package dao
 
 import (
-	"github.com/zedisdog/cola/database"
+	baseDatabase "github.com/zedisdog/cola/database"
 	"gorm.io/gorm"
-	database2 "{{moduleName}}/internal/database"
+	"{{moduleName}}/internal/database"
 )
 
 var {{name}} = &{{daoName}}{
-    db: database.DB{
-        Db: database2.Instance(),
+    db: baseDatabase.DB{
+        Db: database.Instance(),
     },
 }
 
 type {{daoName}} struct {
-    db database.DB
+    db baseDatabase.DB
 }
 
 func ({{shortName}} {{daoName}}) WithTx(tx *gorm.DB) *{{daoName}} {
