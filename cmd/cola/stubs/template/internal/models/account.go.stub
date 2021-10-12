@@ -1,0 +1,9 @@
+package models
+
+import "github.com/zedisdog/cola/database"
+
+type Account struct {
+	database.Model
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
