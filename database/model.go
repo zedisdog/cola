@@ -1,7 +1,7 @@
 package database
 
 import (
-	//"github.com/zedisdog/cola/tools"
+	"github.com/zedisdog/cola/tools"
 	"gorm.io/gorm"
 	"time"
 )
@@ -13,12 +13,12 @@ type Model struct {
 }
 
 func (m *Model) BeforeCreate(tx *gorm.DB) error {
-	//if m.ID == 0 {
-	//	id, err := tools.GetSnow().NextID()
-	//	if err != nil {
-	//		return err
-	//	}
-	//	m.ID = id
-	//}
+	if m.ID == 0 {
+		id, err := tools.GetSnow().NextID()
+		if err != nil {
+			return err
+		}
+		m.ID = id
+	}
 	return nil
 }

@@ -17,5 +17,5 @@ var DaoTemp string
 //go:embed service.go.stub
 var ServiceTemp string
 
-//go:embed template
+//go:embed template/*
 var Template embed.FS

@@ -9,3 +9,4 @@ gen
 /data
 /storage
 /cmd/app/storage
+/tmp
