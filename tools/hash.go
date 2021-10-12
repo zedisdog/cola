@@ -25,6 +25,14 @@ func Hash(str string, options ...WithHashOption) (string, error) {
 	return hex.EncodeToString(cryptor.Sum(option.Key)), nil
 }
 
+func CheckHash(expect string, actual string, options ...WithHashOption) bool {
+	hash, err := Hash(actual, options...)
+	if err != nil {
+		return false
+	}
+	return hash == expect
+}
+
 // WithKey set the key to sha256
 func WithKey(str []byte) WithHashOption {
 	return func(option *HashOption) {
