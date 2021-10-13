@@ -37,7 +37,7 @@ func WithWorkNum(num int) func(*queue) {
 
 func IsRunning() bool {
 	for _, queue := range queues {
-		if queue.Running {
+		if queue.running {
 			return true
 		}
 	}
@@ -47,7 +47,7 @@ func IsRunning() bool {
 
 func Stop() {
 	for _, queue := range queues {
-		if queue.Running {
+		if queue.running {
 			queue.Stop()
 		}
 	}
@@ -66,7 +66,7 @@ func NewQueue(opts ...func(q *queue)) *queue {
 
 type queue struct {
 	dispatcher *dispatcher
-	Running    bool
+	running    bool
 	workerPool chan chan job.IJob
 	maxWorker  int
 	wg         sync.WaitGroup
@@ -76,7 +76,7 @@ func (q *queue) Start() {
 	if q.workerPool == nil {
 		q.workerPool = make(chan chan job.IJob, q.maxWorker)
 	}
-	q.Running = true
+	q.running = true
 	for i := 0; i < q.maxWorker; i++ {
 		worker := newWorker(q.workerPool, &q.wg)
 		worker.start()
@@ -97,14 +97,14 @@ func (q *queue) run() {
 }
 
 func (q *queue) Stop() {
-	q.Running = false
+	q.running = false
 	close(q.dispatcher.in)
 	q.wg.Wait()
 	close(q.workerPool)
 }
 
 func (q *queue) Dispatch(job job.IJob) error {
-	if q.Running {
+	if q.running {
 		q.dispatcher.in <- job
 		return nil
 	} else {

@@ -24,11 +24,11 @@ func wait() {
 	for {
 		select {
 		case <-c:
-			chttp.Server().Stop()
-			if task.Queue().Running {
-				task.Queue().Stop()
-			}
-			return
-		}
+            chttp.Server().Stop()
+            if task.IsRunning() {
+                task.Stop()
+            }
+            return
+        }
 	}
 }
