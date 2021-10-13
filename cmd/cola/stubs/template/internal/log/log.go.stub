@@ -10,7 +10,7 @@ var (
 	once     sync.Once
 )
 
-func GetInstance() *logrus.Logger {
+func Instance() *logrus.Logger {
 	once.Do(func() {
 		instance = logrus.New()
 		instance.SetFormatter(&logrus.JSONFormatter{})
