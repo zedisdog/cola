@@ -1,17 +1,15 @@
 # cola
 
 ## requirement
-go version > 1.16
+go version >= 1.17
 
 ## install
 ```bash
-go install github.com/zedisdog/cola/cmd/cola@latest
+go install github.com/zedisdog/cola/cmd/cola@develop
 ```
 ## usage
 ```bash
-cola new test #this will install the package github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+cola new test #suggest install github.com/golang-migrate/migrate/v4/cmd/migrate@latest for database migrate
 cd test
-docker-compose up -d #start mysql and redis
-cd test/cmd/app
-go run main.go
+docker-compose up -d #start mysql and redis and app
 ```
