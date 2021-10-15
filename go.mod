@@ -3,6 +3,7 @@ module github.com/zedisdog/cola
 go 1.17
 
 require (
+	github.com/Selvatico/go-mocket v1.0.7
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
