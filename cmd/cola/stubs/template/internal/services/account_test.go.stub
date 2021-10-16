@@ -12,7 +12,7 @@ func TestAccount_Login(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	pHash,_ := tools.Hash("123")
+	pHash, _ := tools.Hash("123")
 	m := mock_interfaces.NewMockAccountDao(ctrl)
 	m.EXPECT().FindByUsername("admin").Return(models.Account{
 		Username: "admin",

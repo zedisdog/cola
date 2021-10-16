@@ -1,7 +1,7 @@
 package routes
 
 import (
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 	"github.com/zedisdog/cola/transport/http/chttp"
 	"github.com/zedisdog/cola/transport/http/middlewares"
 	"{{.}}/internal/controllers"

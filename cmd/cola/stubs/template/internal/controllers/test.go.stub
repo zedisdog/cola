@@ -10,7 +10,7 @@ import (
 
 var Test = &test{}
 
-type test struct {}
+type test struct{}
 
 func (t test) Index(cxt *gin.Context) {
 	_ = database.Instance()

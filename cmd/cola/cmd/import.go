@@ -33,7 +33,7 @@ var importCmd = &cobra.Command{
 	Short: "import a project as a template",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		skipDir := []string{".idea", "data"}
+		skipDir := []string{".idea", "data", ".git"}
 		dest := fmt.Sprintf("stubs%stemplate", string(os.PathSeparator))
 		src := strings.TrimRight(args[0], "\\/")
 
