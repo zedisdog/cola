@@ -13,13 +13,12 @@ import (
 )
 
 type fileName struct {
-	dir  string
 	name string
 	ext  string
 }
 
 func (f fileName) toString(action string) string {
-	return fmt.Sprintf("%s/%s.%s.%s", f.dir, f.name, action, f.ext)
+	return fmt.Sprintf("%s.%s.%s", f.name, action, f.ext)
 }
 
 func NewEmbed(f embed.FS) *Embed {
@@ -28,7 +27,7 @@ func NewEmbed(f embed.FS) *Embed {
 		files: make(map[uint]fileName),
 		fs:    f,
 	}
-	dirEntries, _ := fs.ReadDir(f, "migrations")
+	dirEntries, _ := fs.ReadDir(f, ".")
 	for _, entry := range dirEntries {
 		sFileName := strings.Split(entry.Name(), ".")
 
@@ -46,7 +45,6 @@ func NewEmbed(f embed.FS) *Embed {
 		// 保存文件名
 		if _, ok := e.files[version]; !ok {
 			e.files[version] = fileName{
-				dir:  "migrations",
 				name: strings.Join(sFileName[:len(sFileName)-2], "."),
 				ext:  sFileName[len(sFileName)-1],
 			}

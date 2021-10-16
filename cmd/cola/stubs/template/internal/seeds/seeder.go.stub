@@ -1,0 +1,21 @@
+package seeds
+
+import (
+	"github.com/zedisdog/cola/database/seeder"
+	"github.com/zedisdog/cola/tools"
+	"gorm.io/gorm"
+	"{{.}}/internal/models"
+)
+
+func init() {
+	seeder.Add(SeederAccount)
+}
+
+func SeederAccount(db *gorm.DB) error {
+	pHash, _ := tools.Hash("123")
+	account := &models.Account{
+		Username: "admin",
+		Password: pHash,
+	}
+	return db.Create(&account).Error
+}

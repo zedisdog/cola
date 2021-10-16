@@ -12,7 +12,7 @@ func TestGetDialector(t *testing.T) {
 }
 
 func TestWithDsn(t *testing.T) {
-	o := &options{}
+	o := &Options{}
 	WithDsn("mysql://root:toor@tcp(localhost)/main?abc=a/b&abc=c/d")(o)
 	if o.dsn != "mysql://root:toor@tcp(localhost)/main?abc=a%2Fb&abc=c%2Fd" {
 		println(o.dsn)

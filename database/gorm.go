@@ -24,8 +24,8 @@ func NewMocker() (db *gorm.DB, err error) {
 	return
 }
 
-func New(setOptions ...func(*options)) (*gorm.DB, error) {
-	o := &options{
+func New(setOptions ...func(*Options)) (*gorm.DB, error) {
+	o := &Options{
 		config: &gorm.Config{},
 	}
 	for _, setOption := range setOptions {
@@ -59,26 +59,26 @@ func getDialector(dsn string) (gorm.Dialector, error) {
 	return nil, errors.New("not support database type")
 }
 
-type options struct {
+type Options struct {
 	config    *gorm.Config
 	dialector gorm.Dialector
 	dsn       string
 }
 
-func WithConfig(config *gorm.Config) func(o *options) {
-	return func(o *options) {
+func WithConfig(config *gorm.Config) func(o *Options) {
+	return func(o *Options) {
 		o.config = config
 	}
 }
 
-func WithDialector(d gorm.Dialector) func(o *options) {
-	return func(o *options) {
+func WithDialector(d gorm.Dialector) func(o *Options) {
+	return func(o *Options) {
 		o.dialector = d
 	}
 }
 
-func WithDsn(dsn string) func(o *options) {
-	return func(o *options) {
+func WithDsn(dsn string) func(o *Options) {
+	return func(o *Options) {
 		o.dsn = tools.EncodeQuery(dsn)
 	}
 }

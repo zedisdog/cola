@@ -1,0 +1,22 @@
+package dao
+
+import (
+	gomocket "github.com/Selvatico/go-mocket"
+	"github.com/zedisdog/cola/database"
+	"github.com/zedisdog/cola/test"
+	"{{.}}/internal/models"
+	"testing"
+)
+
+func TestAccount_FindById(t *testing.T) {
+	test.Fake(func() {
+		gomocket.Catcher.Logging = true
+		reply := []map[string]interface{}{{"username": "test", "password": "123"}}
+		gomocket.Catcher.NewMock().WithQuery("SELECT * FROM `accounts` ORDER BY `accounts`.`id` LIMIT 1").WithReply(reply)
+		var account models.Account
+		database.Instance().First(&account)
+		if account.Username != "test" {
+			t.Fatal("username should be `test`")
+		}
+	}, test.FakeDB)
+}

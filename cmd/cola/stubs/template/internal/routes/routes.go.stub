@@ -12,6 +12,7 @@ func init() {
 	r.Use(middlewares.Cros)
 
 	r.GET("test", controllers.Test.Index)
+	r.POST("login", controllers.Account.Login)
 
 	chttp.Server().SetRouter(r)
 }

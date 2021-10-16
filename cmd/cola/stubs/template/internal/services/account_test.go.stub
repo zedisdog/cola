@@ -1,0 +1,33 @@
+package services
+
+import (
+	"github.com/golang/mock/gomock"
+	"github.com/zedisdog/cola/tools"
+	"{{.}}/internal/models"
+	mock_interfaces "{{.}}/internal/test"
+	"testing"
+)
+
+func TestAccount_Login(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	pHash,_ := tools.Hash("123")
+	m := mock_interfaces.NewMockAccountDao(ctrl)
+	m.EXPECT().FindByUsername("admin").Return(models.Account{
+		Username: "admin",
+		Password: pHash,
+	}, nil)
+
+	service := account{
+		accountDao: m,
+	}
+
+	token, err := service.Login("admin", "password")
+	if err != nil {
+		t.Fatal("should not be error")
+	}
+	if token == "" {
+		t.Fatal("should be token")
+	}
+}

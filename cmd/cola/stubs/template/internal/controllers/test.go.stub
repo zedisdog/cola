@@ -3,8 +3,9 @@ package controllers
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/zedisdog/cola/database"
 	"github.com/zedisdog/cola/transport/http/response"
-	"{{.}}/internal/database"
+	"net/http"
 )
 
 var Test = &test{}
@@ -17,17 +18,17 @@ func (t test) Index(cxt *gin.Context) {
 }
 
 func (t test) Create(cxt *gin.Context) {
-	response.Success(cxt, gin.H{"success": true})
+	response.Success(cxt, gin.H{"test": true}, http.StatusCreated)
 }
 
 func (t test) Update(cxt *gin.Context) {
-	cxt.JSON(200, gin.H{"success": true})
+	cxt.JSON(http.StatusOK, gin.H{"success": true})
 }
 
 func (t test) Detail(cxt *gin.Context) {
-	response.Error(cxt, errors.New("test error"), 500)
+	response.Error(cxt, errors.New("test error"), http.StatusInternalServerError)
 }
 
 func (t test) Delete(cxt *gin.Context) {
-	response.Error(cxt, errors.New("test error"), 500)
+	response.Success(cxt)
 }

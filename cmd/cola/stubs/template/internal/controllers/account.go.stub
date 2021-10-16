@@ -1,0 +1,37 @@
+package controllers
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/zedisdog/cola/transport/http"
+	"github.com/zedisdog/cola/transport/http/response"
+	"{{.}}/internal/interfaces"
+	"{{.}}/internal/services"
+)
+
+var Account = &account{
+	AccountService: services.Account,
+}
+
+type account struct {
+	AccountService interfaces.AccountService
+}
+
+type loginReq struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+func (a account) Login(cxt *gin.Context) {
+	var request loginReq
+	if err := http.ValidateJSON(cxt, &request); err != nil {
+		return
+	}
+	token, err := a.AccountService.Login(request.Username, request.Password)
+	if err != nil {
+		response.Error(cxt, err, 401)
+		return
+	}
+	response.Success(cxt, gin.H{
+		"token": token,
+	})
+}
