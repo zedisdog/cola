@@ -24,14 +24,14 @@ func NewFilter(params ...interface{}) *Filter {
 		f.table = params[4].(string)
 		f.on = params[5].(string)
 	case 5:
-		if !tools.InArray(params[1], []interface{}{">", "<", "=", "like", "!="}) {
+		if !tools.InSlice(params[1], []interface{}{">", "<", "=", "like", "!="}) {
 			f.field = params[0].(string)
 			f.operator = "="
 			f.value = params[1]
 			f.logicOperator = params[2].(string)
 			f.table = params[3].(string)
 			f.on = params[4].(string)
-		} else if !tools.InArray(params[3], []interface{}{"and", "or"}) {
+		} else if !tools.InSlice(params[3], []interface{}{"and", "or"}) {
 			f.field = params[0].(string)
 			f.operator = params[1].(string)
 			f.value = params[2]
@@ -42,14 +42,14 @@ func NewFilter(params ...interface{}) *Filter {
 			panic(errors.New("relate table should with condition"))
 		}
 	case 4:
-		if tools.InArray(params[1], []interface{}{">", "<", "=", "like", "!="}) &&
-			tools.InArray(params[3], []interface{}{"and", "or"}) {
+		if tools.InSlice(params[1], []interface{}{">", "<", "=", "like", "!="}) &&
+			tools.InSlice(params[3], []interface{}{"and", "or"}) {
 			f.field = params[0].(string)
 			f.operator = params[1].(string)
 			f.value = params[2]
 			f.logicOperator = params[3].(string)
-		} else if !tools.InArray(params[1], []interface{}{">", "<", "=", "like", "!="}) &&
-			!tools.InArray(params[2], []interface{}{"and", "or"}) {
+		} else if !tools.InSlice(params[1], []interface{}{">", "<", "=", "like", "!="}) &&
+			!tools.InSlice(params[2], []interface{}{"and", "or"}) {
 			f.field = params[0].(string)
 			f.operator = "="
 			f.value = params[1]
@@ -60,12 +60,12 @@ func NewFilter(params ...interface{}) *Filter {
 			panic(errors.New("relate table should with condition1"))
 		}
 	case 3:
-		if tools.InArray(params[1], []interface{}{">", "<", "=", "like", "!="}) {
+		if tools.InSlice(params[1], []interface{}{">", "<", "=", "like", "!="}) {
 			f.field = params[0].(string)
 			f.operator = params[1].(string)
 			f.value = params[2]
 			f.logicOperator = "and"
-		} else if tools.InArray(params[2], []interface{}{"and", "or"}) {
+		} else if tools.InSlice(params[2], []interface{}{"and", "or"}) {
 			f.field = params[0].(string)
 			f.operator = "="
 			f.value = params[1]
@@ -74,7 +74,7 @@ func NewFilter(params ...interface{}) *Filter {
 			panic(errors.New("relate table should with condition2"))
 		}
 	case 2:
-		if !tools.InArray(params[1], []interface{}{">", "<", "=", "like", "!="}) {
+		if !tools.InSlice(params[1], []interface{}{">", "<", "=", "like", "!="}) {
 			f.field = params[0].(string)
 			f.operator = "="
 			f.value = params[1]
