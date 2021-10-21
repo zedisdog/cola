@@ -5,7 +5,12 @@ import (
 	"reflect"
 )
 
-func CopyFields(src interface{}, dest interface{}) error {
+//CopyFields copy fields from src to dest, note: dest mast be point
+//	params:
+//		src       source object
+//		dest      point of dest object
+//		copyZero  if copy zero field too
+func CopyFields(src interface{}, dest interface{}, copyZero ...bool) error {
 	var (
 		sValue reflect.Value
 		dValue reflect.Value
@@ -30,7 +35,7 @@ func CopyFields(src interface{}, dest interface{}) error {
 	for i := 0; i < dType.NumField(); i++ {
 		dTypeField := dType.Field(i)
 		sValueField := sValue.FieldByName(dTypeField.Name)
-		if !sValueField.IsValid() {
+		if !sValueField.IsValid() && (copyZero[0] && sValueField.IsZero()) {
 			continue
 		}
 		dValueField := dValue.Field(i)
