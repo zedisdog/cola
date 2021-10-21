@@ -4,7 +4,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/zedisdog/cola/tools"
 	"{{.}}/internal/app/database/models"
-	mock_interfaces "{{.}}/internal/test"
+	mock_interfaces "{{.}}/internal/app/test"
 	"testing"
 )
 
