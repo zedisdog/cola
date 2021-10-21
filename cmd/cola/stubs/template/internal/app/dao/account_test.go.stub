@@ -4,7 +4,7 @@ import (
 	gomocket "github.com/Selvatico/go-mocket"
 	"github.com/zedisdog/cola/database"
 	"github.com/zedisdog/cola/test"
-	"{{.}}/internal/models"
+	"{{.}}/internal/app/database/models"
 	"testing"
 )
 

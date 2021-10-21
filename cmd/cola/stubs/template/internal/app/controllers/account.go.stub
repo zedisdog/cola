@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zedisdog/cola/transport/http"
 	"github.com/zedisdog/cola/transport/http/response"
-	"{{.}}/internal/interfaces"
-	"{{.}}/internal/services"
+	"{{.}}/internal/app/controllers/iface"
+	"{{.}}/internal/app/services"
 )
 
 var Account = &account{
@@ -13,7 +13,7 @@ var Account = &account{
 }
 
 type account struct {
-	AccountService interfaces.AccountService
+	AccountService iface.AccountService
 }
 
 type loginReq struct {

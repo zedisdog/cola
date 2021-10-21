@@ -4,7 +4,7 @@ import (
 	"github.com/zedisdog/cola/database/seeder"
 	"github.com/zedisdog/cola/tools"
 	"gorm.io/gorm"
-	"{{.}}/internal/models"
+	"{{.}}/internal/app/database/models"
 )
 
 func init() {
@@ -17,5 +17,5 @@ func SeederAccount(db *gorm.DB) error {
 		Username: "admin",
 		Password: pHash,
 	}
-	return db.Create(&account).Error
+	return db.FirstOrCreate(&account, "username = ?", "admin").Error
 }

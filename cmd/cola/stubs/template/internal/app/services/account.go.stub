@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/auth"
 	"github.com/zedisdog/cola/tools"
-	"{{.}}/internal/dao"
-	"{{.}}/internal/interfaces"
+	"{{.}}/internal/app/dao"
+	"{{.}}/internal/app/services/iface"
 )
 
 var Account = &account{
@@ -16,7 +16,7 @@ var Account = &account{
 }
 
 type account struct {
-	accountDao interfaces.AccountDao
+	accountDao iface.AccountDao
 }
 
 func (a *account) Login(username string, password string) (token string, err error) {

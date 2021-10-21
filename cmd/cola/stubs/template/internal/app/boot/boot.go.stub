@@ -2,7 +2,8 @@ package boot
 
 import (
 	_ "{{.}}/config"
-	_ "{{.}}/internal/seeds"
+	"{{.}}/internal/app/database/migrations"
+	_ "{{.}}/internal/app/database/seeds"
 
 	"fmt"
 	"github.com/spf13/viper"
@@ -11,7 +12,6 @@ import (
 	"github.com/zedisdog/cola/storage"
 	"github.com/zedisdog/cola/storage/drivers"
 	"github.com/zedisdog/cola/transport/http/chttp"
-	"{{.}}/internal/migrations"
 )
 
 func init() {

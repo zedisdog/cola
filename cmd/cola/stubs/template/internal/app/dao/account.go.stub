@@ -3,8 +3,8 @@ package dao
 import (
 	"github.com/zedisdog/cola/database"
 	"gorm.io/gorm"
-	"{{.}}/internal/interfaces"
-	"{{.}}/internal/models"
+	"{{.}}/internal/app/database/models"
+	"{{.}}/internal/app/services/iface"
 )
 
 var Account = &account{
@@ -17,7 +17,7 @@ type account struct {
 	DB database.DB
 }
 
-func (a account) WithTx(tx *gorm.DB) interfaces.AccountDao {
+func (a account) WithTx(tx *gorm.DB) iface.AccountDao {
 	a.DB.SetTx(tx)
 	return &a
 }

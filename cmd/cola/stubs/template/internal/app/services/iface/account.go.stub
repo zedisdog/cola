@@ -1,0 +1,11 @@
+package iface
+
+import (
+	"gorm.io/gorm"
+	"{{.}}/internal/app/database/models"
+)
+
+type AccountDao interface {
+	WithTx(tx *gorm.DB) AccountDao
+	FindByUsername(username string) (models.Account, error)
+}
