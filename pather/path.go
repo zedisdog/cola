@@ -46,10 +46,12 @@ type Pather struct {
 	root string
 }
 
+//Gen generate path with given path
 func (p Pather) Gen(path string) string {
 	return fmt.Sprintf("%s/%s", p.root, strings.TrimLeft(path, "/"))
 }
 
+//Dir return dir name of path
 func (p Pather) Dir(path string) string {
 	return filepath.Dir(p.Gen(path))
 }

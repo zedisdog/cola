@@ -43,9 +43,19 @@ to quickly create a Cobra application.`,
 			color.Red("required a name for controller")
 			os.Exit(1)
 		}
-		controllerName := fmt.Sprintf("internal/controllers/%s.go", strcase.ToSnake(args[0]))
+		packageName, _ := cmd.Flags().GetString("packageName")
+		path, _ := cmd.Flags().GetString("path")
+
 		p := pather.NewProjectPath()
-		f, err := os.OpenFile(p.Gen(controllerName), os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
+		fileName := fmt.Sprintf("%s/%s.go", path, strcase.ToSnake(args[0]))
+
+		err := os.MkdirAll(p.Dir(fileName), 0777)
+		if err != nil {
+			color.Red(err.Error())
+			os.Exit(1)
+		}
+
+		f, err := os.OpenFile(p.Gen(fileName), os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
@@ -56,6 +66,7 @@ to quickly create a Cobra application.`,
 			"{{moduleName}}", viper.GetString("moduleName"),
 			"{{shortName}}", string([]rune(strcase.ToLowerCamel(args[0]))[0]),
 			"{{varName}}", strcase.ToCamel(args[0]),
+			"{{packageName}}", packageName,
 		)
 		f.WriteString(replacer.Replace(stubs.ControllerTemp))
 	},
@@ -73,4 +84,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// controllerCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	controllerCmd.Flags().StringP("path", "p", "internal/app/api", "Specify directory path to create in")
+	controllerCmd.Flags().StringP("packageName", "P", "api", "Specify package name")
 }

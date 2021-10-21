@@ -1,4 +1,4 @@
-package models
+package {{packageName}}
 
 import "github.com/zedisdog/cola/database"
 

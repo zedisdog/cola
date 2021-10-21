@@ -42,15 +42,19 @@ to quickly create a Cobra application.`,
 			color.Red("required a name for service")
 			os.Exit(1)
 		}
-		path := pather.NewProjectPath()
+		packageName, _ := cmd.Flags().GetString("packageName")
+		path, _ := cmd.Flags().GetString("path")
+
+		p := pather.NewProjectPath()
+		fileName := fmt.Sprintf("%s/%s.go", path, strcase.ToSnake(args[0]))
 		// 创建目录
-		err := os.MkdirAll(path.Gen("internal/services"), 0777)
+		err := os.MkdirAll(p.Dir(fileName), 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
-		servicePath := fmt.Sprintf("%s/%s.go", path.Gen("internal/services"), strcase.ToSnake(args[0]))
-		f, err := os.OpenFile(servicePath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
+
+		f, err := os.OpenFile(p.Gen(fileName), os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
@@ -59,6 +63,7 @@ to quickly create a Cobra application.`,
 		replacer := strings.NewReplacer(
 			"{{name}}", strcase.ToCamel(args[0]),
 			"{{serviceName}}", strcase.ToLowerCamel(args[0]),
+			"{{packageName}}", packageName,
 		)
 		f.WriteString(replacer.Replace(stubs.ServiceTemp))
 	},
@@ -76,4 +81,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// serviceCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	serviceCmd.Flags().StringP("path", "p", "internal/app/services", "Specify directory path to create in")
+	serviceCmd.Flags().StringP("packageName", "P", "services", "Specify package name")
 }

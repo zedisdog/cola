@@ -43,15 +43,19 @@ to quickly create a Cobra application.`,
 			color.Red("required a name for dao")
 			os.Exit(1)
 		}
-		path := pather.NewProjectPath()
+		packageName, _ := cmd.Flags().GetString("packageName")
+		path, _ := cmd.Flags().GetString("path")
+
+		p := pather.NewProjectPath()
+		fileName := fmt.Sprintf("%s/%s.go", path, strcase.ToSnake(args[0]))
 		// 创建目录
-		err := os.MkdirAll(path.Gen("internal/dao"), 0777)
+		err := os.MkdirAll(p.Dir(fileName), 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
-		daoPath := fmt.Sprintf("%s/%s.go", path.Gen("internal/dao"), strcase.ToSnake(args[0]))
-		f, err := os.OpenFile(daoPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
+
+		f, err := os.OpenFile(p.Gen(fileName), os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
@@ -62,6 +66,7 @@ to quickly create a Cobra application.`,
 			"{{daoName}}", strcase.ToLowerCamel(args[0]),
 			"{{moduleName}}", viper.GetString("moduleName"),
 			"{{shortName}}", string([]rune(strcase.ToLowerCamel(args[0]))[0]),
+			"{{packageName}}", packageName,
 		)
 		f.WriteString(replacer.Replace(stubs.DaoTemp))
 	},
@@ -79,4 +84,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// daoCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	daoCmd.Flags().StringP("path", "p", "internal/app/dao", "Specify directory path to create in")
+	daoCmd.Flags().StringP("packageName", "P", "dao", "Specify package name")
 }

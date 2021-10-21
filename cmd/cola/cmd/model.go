@@ -42,15 +42,19 @@ to quickly create a Cobra application.`,
 			color.Red("required a name for model")
 			os.Exit(1)
 		}
-		path := pather.NewProjectPath()
+		packageName, _ := cmd.Flags().GetString("packageName")
+		path, _ := cmd.Flags().GetString("path")
+
+		p := pather.NewProjectPath()
+		filePath := fmt.Sprintf("%s/%s.go", path, strcase.ToSnake(args[0]))
 		// 创建目录
-		err := os.MkdirAll(path.Gen("internal/models"), 0777)
+		err := os.MkdirAll(p.Dir(filePath), 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
-		modelPath := fmt.Sprintf("%s/%s.go", path.Gen("internal/models"), strcase.ToSnake(args[0]))
-		f, err := os.OpenFile(modelPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
+
+		f, err := os.OpenFile(p.Gen(filePath), os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
@@ -58,6 +62,7 @@ to quickly create a Cobra application.`,
 		defer f.Close()
 		replacer := strings.NewReplacer(
 			"{{name}}", strcase.ToCamel(args[0]),
+			"{{packageName}}", packageName,
 		)
 		f.WriteString(replacer.Replace(stubs.ModelTemp))
 	},
@@ -75,4 +80,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// modelCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	modelCmd.Flags().StringP("path", "p", "internal/app/database/models", "Specify directory path to create in")
+	modelCmd.Flags().StringP("packageName", "P", "models", "Specify package name")
 }

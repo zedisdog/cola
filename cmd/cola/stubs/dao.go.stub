@@ -1,4 +1,4 @@
-package dao
+package {{packageName}}
 
 import (
 	"github.com/zedisdog/cola/database"
