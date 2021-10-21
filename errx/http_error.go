@@ -70,20 +70,24 @@ func NewHttpErrorForbidden(msg string) error {
 	)
 }
 
-func NewHttpErrorTeapot(msg string, data interface{}) error {
+func NewHttpErrorTeapot(msg string, data ...interface{}) error {
 	err := NewHttpError(http.StatusTeapot, msg)
-	if data != nil {
-		err.Data = data
+	if len(data) > 0 {
+		err.Data = data[0]
 	}
 	return err
 }
 
-func NewHttpErrorUnauthorized(msg string, data interface{}) error {
+func NewHttpErrorUnauthorized(msg string, data ...interface{}) error {
 	err := NewHttpError(http.StatusUnauthorized, msg)
-	if data != nil {
-		err.Data = data
+	if len(data) > 0 {
+		err.Data = data[0]
 	}
 	return err
+}
+
+func NewHttpErrorNotFound(msg string) error {
+	return NewHttpError(http.StatusNotFound, msg)
 }
 
 func WarpByHttpError(code int, err error) *HttpError {

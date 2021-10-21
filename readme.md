@@ -16,3 +16,6 @@ docker-compose up -d #start mysql and redis and app
 ### settings in environment variable
 cause shell not supports the environment variable which contains `.`, use `__` instead.
 e.g.: `WX__WECHAT__APPID` is presents `wx.wechat.appId` or `wx.wechat.appid`. ps: keys is case-insensitive in viper.
+
+### seed
+> note: all seed function will be wrapped by transaction
