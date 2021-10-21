@@ -1,10 +1,10 @@
-package controllers
+package api
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/zedisdog/cola/transport/http"
 	"github.com/zedisdog/cola/transport/http/response"
-	"{{.}}/internal/app/controllers/iface"
+	"{{.}}/internal/app/api/iface"
 	"{{.}}/internal/app/services"
 )
 

@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zedisdog/cola/transport/http/chttp"
 	"github.com/zedisdog/cola/transport/http/middlewares"
-	controllers2 "{{.}}/internal/app/controllers"
+	controllers2 "{{.}}/internal/app/api"
 )
 
 func init() {
