@@ -35,7 +35,7 @@ func CopyFields(src interface{}, dest interface{}, copyZero ...bool) error {
 	for i := 0; i < dType.NumField(); i++ {
 		dTypeField := dType.Field(i)
 		sValueField := sValue.FieldByName(dTypeField.Name)
-		if !sValueField.IsValid() && (copyZero[0] && sValueField.IsZero()) {
+		if !sValueField.IsValid() || (len(copyZero) > 0 && copyZero[0] && sValueField.IsZero()) {
 			continue
 		}
 		dValueField := dValue.Field(i)
