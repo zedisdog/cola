@@ -72,7 +72,7 @@ func PutFileQuick(file *multipart.FileHeader, directory string) (path string, er
 	}
 	//path = directory/xxxx.jpg
 	path = fmt.Sprintf(
-		"%s%s%s.%s",
+		"%s%s%s%s",
 		strings.Trim(directory, "\\/"),
 		string(os.PathSeparator),
 		id.String(),
