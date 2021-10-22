@@ -2,9 +2,14 @@ package storage
 
 import (
 	"errors"
+	"fmt"
+	"github.com/gofrs/uuid"
 	"github.com/zedisdog/cola/errx"
 	"io"
 	"mime/multipart"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 var drivers = make(map[string]IDriver)
@@ -57,6 +62,24 @@ func GetString(path string) (data string, err error) {
 
 func PutFile(path string, file *multipart.FileHeader) (err error) {
 	return defaultDriver().PutFile(path, file)
+}
+
+//PutFileQuick is similar than PutFile, but don't set filename.
+func PutFileQuick(file *multipart.FileHeader, directory string) (path string, err error) {
+	id, err := uuid.NewV4()
+	if err != nil {
+		return
+	}
+	//path = directory/xxxx.jpg
+	path = fmt.Sprintf(
+		"%s%s%s.%s",
+		strings.Trim(directory, "\\/"),
+		string(os.PathSeparator),
+		id.String(),
+		filepath.Ext(file.Filename),
+	)
+	err = defaultDriver().PutFile(path, file)
+	return
 }
 
 func GetMime(path string) string {
