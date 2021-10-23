@@ -1,8 +1,9 @@
 package main
 
 import (
-	_ "{{.}}/internal/app/boot"
-	_ "{{.}}/internal/app/routes"
+	//DO NOT SORT
+	_ "{{.}}/internal/app/api/routes"
+	_ "{{.}}/internal/boot"
 
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/task"
