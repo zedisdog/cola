@@ -20,6 +20,14 @@ func (d DB) get() *gorm.DB {
 	}
 }
 
+func (d *DB) Where(conds ...interface{}) {
+	if cond, ok := conds[0].(map[string]interface{}); ok {
+		d.Conds = cond
+	} else {
+		d.Conds = conds
+	}
+}
+
 func (d *DB) Query() *gorm.DB {
 	//every query will be a new query.
 	defer func() {
