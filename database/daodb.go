@@ -1,11 +1,15 @@
 package database
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+	"github.com/zedisdog/cola/errx"
+	"gorm.io/gorm"
+)
 
 type DB struct {
 	Db    *gorm.DB
 	Tx    *gorm.DB
-	Conds map[string]interface{}
+	Conds interface{}
 }
 
 func (d DB) get() *gorm.DB {
@@ -17,11 +21,18 @@ func (d DB) get() *gorm.DB {
 }
 
 func (d *DB) Query() *gorm.DB {
+	//every query will be a new query.
 	defer func() {
 		d.Conds = nil
 	}()
 	if d.Conds != nil {
-		return d.get().Where(d.Conds)
+		if cMap, ok := d.Conds.(map[string]interface{}); ok {
+			return d.get().Where(cMap)
+		} else if cSlice, ok := d.Conds.([]interface{}); ok && len(cSlice) > 1 {
+			return d.get().Where(cSlice[0], cSlice[1:]...)
+		} else {
+			panic(errx.New(fmt.Sprintf("unsupported format: %+v", d.Conds)))
+		}
 	} else {
 		return d.get()
 	}
