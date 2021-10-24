@@ -3,22 +3,26 @@ package database
 import "gorm.io/gorm"
 
 type DB struct {
-	Db *gorm.DB
-	tx *gorm.DB
+	Db    *gorm.DB
+	Tx    *gorm.DB
+	Conds map[string]interface{}
 }
 
-func (d DB) Get() *gorm.DB {
-	if d.tx != nil {
-		return d.tx
+func (d DB) get() *gorm.DB {
+	if d.Tx != nil {
+		return d.Tx
 	} else {
 		return d.Db
 	}
 }
 
-func (d DB) SetDb(db *gorm.DB) {
-	d.Db = db
-}
-
-func (d DB) SetTx(tx *gorm.DB) {
-	d.tx = tx
+func (d *DB) Query() *gorm.DB {
+	defer func() {
+		d.Conds = nil
+	}()
+	if d.Conds != nil {
+		return d.get().Where(d.Conds)
+	} else {
+		return d.get()
+	}
 }
