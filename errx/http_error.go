@@ -96,3 +96,7 @@ func WarpByHttpError(code int, err error) *HttpError {
 		err:        err,
 	}
 }
+
+func NewHttpErrorBadGateway(msg string) error {
+	return NewHttpError(http.StatusBadGateway, msg)
+}
