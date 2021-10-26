@@ -57,10 +57,10 @@ type FetchQuery struct {
 }
 
 type PageQuery struct {
-	Page    int `form:"page,default=1"`
-	PerPage int `form:"per_page,default=20"`
+	Page int `form:"page,default=1"`
+	Size int `form:"size,default=15"`
 }
 
 func (p *PageQuery) Offset() int {
-	return (p.Page - 1) * p.PerPage
+	return (p.Page - 1) * p.Size
 }
