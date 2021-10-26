@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"crypto"
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
@@ -41,6 +42,13 @@ func WithKey(str []byte) WithHashOption {
 }
 
 type WithHashOption func(option *HashOption)
+
+//Sha1 sha1算法
+func Sha1(str string) string {
+	hash := crypto.SHA1.New()
+	hash.Write([]byte(str))
+	return hex.EncodeToString(hash.Sum(nil))
+}
 
 func CheckSha1(expect string, actual []byte) bool {
 	encoder := sha1.New()
