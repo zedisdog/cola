@@ -16,6 +16,6 @@ type {{daoName}} struct {
 }
 
 func ({{shortName}} {{daoName}}) WithTx(tx *gorm.DB) *{{daoName}} {
-    {{shortName}}.db.SetTx(tx)
+    {{shortName}}.db.Tx = tx
     return &{{shortName}}
 }
