@@ -104,3 +104,7 @@ func NewHttpErrorBadGateway(msg string) error {
 func NewHttpErrorBadRequest(msg string) error {
 	return NewHttpError(http.StatusBadRequest, msg)
 }
+
+func NewHttpErrorInternalServerError(msg string) error {
+	return NewHttpError(http.StatusInternalServerError, msg)
+}
