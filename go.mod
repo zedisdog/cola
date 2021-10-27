@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/Selvatico/go-mocket v1.0.7
+	github.com/beevik/etree v1.1.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
@@ -30,7 +31,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/uniplaces/carbon v0.1.6
-	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
+	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
 	golang.org/x/mod v0.4.1
 	golang.org/x/sys v0.0.0-20210305230114-8fe3ee5dd75b // indirect
 	golang.org/x/text v0.3.5 // indirect
