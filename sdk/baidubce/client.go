@@ -15,18 +15,7 @@ import (
 	"net/url"
 )
 
-// todo: 5,423
-
 const Host = "aip.baidubce.com"
-
-var s *cache.Cache
-
-func getStore() *cache.Cache {
-	if s == nil {
-		s = &cache.Cache{}
-	}
-	return s
-}
 
 func New(clientId string, clientSecret string, verifyPlanId int) *Client {
 	a := auth.NewAuth(clientId, clientSecret, Host)
@@ -72,14 +61,13 @@ func (c Client) VerifyToken() (token string, err error) {
 // VerifyTokenUsingStore 获取verify_token,并且存到store中
 //  key 保存的verify_token的唯一键名
 func (c Client) VerifyTokenUsingStore(key string) (token string, err error) {
-	s := getStore()
-	token = s.PullString(key)
+	token = cache.PullString(key)
 	if token == "" {
 		token, err = c.VerifyToken()
 		if err != nil {
 			return
 		}
-		s.Put(key, token)
+		cache.Put(key, token)
 	}
 	return
 }
@@ -93,7 +81,7 @@ type VerifyResponse struct {
 }
 
 func (c Client) HasVerifyToken(key string) bool {
-	return getStore().Has(key)
+	return cache.Has(key)
 }
 
 // GenVerifyUrl 生成人脸实名认证H5跳转链接

@@ -1,73 +1,74 @@
 package cache
 
 import (
-	"github.com/uniplaces/carbon"
 	"sync"
 	"time"
 )
-
-var lock sync.Mutex
 
 type item struct {
 	Value  interface{}
 	Expire int64
 }
 
-type Cache map[string]item
-
-func (v Cache) Has(key string) bool {
-	lock.Lock()
-	defer lock.Unlock()
-	v.clear()
-	_, ok := v[key]
-	return ok
+type cache struct {
+	sync.Map
 }
 
-func (v Cache) Put(key string, value interface{}) {
-	v.PutWithExpire(key, value, carbon.Now().AddHours(2).SubMinutes(30).Unix())
+func (c *cache) Has(key string) (ok bool) {
+	c.clear()
+	_, ok = c.Load(key)
+	return
 }
 
-func (v Cache) PutWithExpire(key string, value interface{}, expire int64) {
-	lock.Lock()
-	v.clear()
-	v[key] = item{
+func (c *cache) Put(key string, value interface{}) {
+	c.Store(key, value)
+}
+
+func (c *cache) PutWithExpire(key string, value interface{}, expire int64) {
+	c.clear()
+	c.Store(key, item{
 		Value:  value,
 		Expire: expire,
-	}
-	lock.Unlock()
+	})
 }
 
-func (v Cache) Pull(key string) interface{} {
-	if item, ok := v[key]; ok {
-		lock.Lock()
-		delete(v, key)
-		lock.Unlock()
-		return item.Value
+func (c *cache) Pull(key string) (value interface{}) {
+	tmp, exists := c.LoadAndDelete(key)
+	if tmp == nil || !exists {
+		return nil
 	}
-	return nil
+
+	if value, ok := tmp.(item); ok {
+		return value.Value
+	} else {
+		return tmp
+	}
 }
 
-func (v Cache) PullString(key string) string {
-	value := v.Pull(key)
+func (c *cache) PullString(key string) string {
+	value := c.Pull(key)
 	if value != nil {
 		return value.(string)
 	}
 	return ""
 }
 
-func (v Cache) PullInt(key string) int {
-	value := v.Pull(key)
+func (c *cache) PullInt(key string) int {
+	value := c.Pull(key)
 	if value != nil {
 		return value.(int)
 	}
 	return 0
 }
 
-func (v Cache) clear() {
-	for key, value := range v {
-		now := time.Now().Unix()
-		if now >= value.Expire {
-			delete(v, key)
+func (c *cache) clear() {
+	c.Range(func(key, value interface{}) bool {
+		if i, ok := value.(item); ok {
+			now := time.Now().Unix()
+			if now >= i.Expire {
+				c.Delete(key)
+			}
 		}
-	}
+		return true
+	})
 }
