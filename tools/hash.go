@@ -2,6 +2,7 @@ package tools
 
 import (
 	"crypto"
+	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
@@ -55,4 +56,10 @@ func CheckSha1(expect string, actual []byte) bool {
 	encoder.Write(actual)
 	test := fmt.Sprintf("%x", encoder.Sum(nil))
 	return expect == test
+}
+
+func Md5(str string) string {
+	h := md5.New()
+	h.Write([]byte(str))
+	return hex.EncodeToString(h.Sum(nil))
 }
