@@ -19,3 +19,8 @@ func ({{shortName}} {{daoName}}) WithTx(tx *gorm.DB) *{{daoName}} {
     {{shortName}}.db.Tx = tx
     return &{{shortName}}
 }
+
+func ({{shortName}} {{daoName}}) Where(conds ...interface{}) *{{daoName}} {
+	{{shortName}}.db.Where(conds...)
+	return &{{shortName}}
+}
