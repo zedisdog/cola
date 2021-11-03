@@ -1,5 +1,0 @@
-package iface
-
-type AccountService interface {
-	Login(username string, password string) (token string, err error)
-}

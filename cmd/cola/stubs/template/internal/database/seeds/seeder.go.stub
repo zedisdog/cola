@@ -4,7 +4,7 @@ import (
 	"github.com/zedisdog/cola/database/seeder"
 	"github.com/zedisdog/cola/tools"
 	"gorm.io/gorm"
-	"{{.}}/internal/app/database/models"
+	"{{.}}/internal/database/models"
 )
 
 func init() {

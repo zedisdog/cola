@@ -7,16 +7,19 @@ import (
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/auth"
 	"github.com/zedisdog/cola/tools"
-	"{{.}}/internal/app/dao"
-	"{{.}}/internal/app/services/iface"
+	"{{.}}/internal/dao"
 )
+
+type AccountService interface {
+	Login(username string, password string) (token string, err error)
+}
 
 var Account = &account{
 	accountDao: dao.Account,
 }
 
 type account struct {
-	accountDao iface.AccountDao
+	accountDao dao.AccountDao
 }
 
 func (a *account) Login(username string, password string) (token string, err error) {

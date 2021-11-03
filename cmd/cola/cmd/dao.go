@@ -84,6 +84,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// daoCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	daoCmd.Flags().StringP("path", "p", "internal/app/dao", "Specify directory path to create in")
+	daoCmd.Flags().StringP("path", "p", "internal/dao", "Specify directory path to create in")
 	daoCmd.Flags().StringP("packageName", "P", "dao", "Specify package name")
 }

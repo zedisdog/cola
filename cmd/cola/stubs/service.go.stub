@@ -1,5 +1,10 @@
 package {{packageName}}
 
+
+type {{name}}Service interface {
+
+}
+
 var {{name}} = &{{serviceName}}{}
 
 type {{serviceName}} struct {}

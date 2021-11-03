@@ -3,7 +3,7 @@ package main
 import (
 	//DO NOT SORT
 	_ "{{.}}/internal/app/api/routes"
-	_ "{{.}}/internal/boot"
+	_ "{{.}}/internal/app/boot"
 
 	"github.com/spf13/viper"
 	"github.com/zedisdog/cola/task"

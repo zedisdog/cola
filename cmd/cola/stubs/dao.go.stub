@@ -5,6 +5,11 @@ import (
 	"gorm.io/gorm"
 )
 
+type {{name}}Dao interface {
+	WithTx(tx *gorm.DB) {{name}}Dao
+	Where(conds ...interface{}) {{name}}Dao
+}
+
 var {{name}} = &{{daoName}}{
     db: database.DB{
         Db: database.Instance(),
@@ -15,12 +20,12 @@ type {{daoName}} struct {
     db database.DB
 }
 
-func ({{shortName}} {{daoName}}) WithTx(tx *gorm.DB) *{{daoName}} {
+func ({{shortName}} {{daoName}}) WithTx(tx *gorm.DB) {{name}}Dao {
     {{shortName}}.db.Tx = tx
     return &{{shortName}}
 }
 
-func ({{shortName}} {{daoName}}) Where(conds ...interface{}) *{{daoName}} {
+func ({{shortName}} {{daoName}}) Where(conds ...interface{}) {{name}}Dao {
 	{{shortName}}.db.Where(conds...)
 	return &{{shortName}}
 }

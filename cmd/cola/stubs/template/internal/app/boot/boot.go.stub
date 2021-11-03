@@ -2,8 +2,8 @@ package boot
 
 import (
 	_ "{{.}}/config"
-	"{{.}}/internal/app/database/migrations"
-	_ "{{.}}/internal/app/database/seeds"
+	"{{.}}/internal/database/migrations"
+	_ "{{.}}/internal/database/seeds"
 
 	"fmt"
 	"github.com/spf13/viper"

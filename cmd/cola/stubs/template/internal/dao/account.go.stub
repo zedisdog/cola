@@ -1,0 +1,38 @@
+package dao
+
+import (
+	"github.com/zedisdog/cola/database"
+	"gorm.io/gorm"
+	"{{.}}/internal/database/models"
+)
+
+type AccountDao interface {
+	WithTx(tx *gorm.DB) AccountDao
+	FindByUsername(username string) (models.Account, error)
+	Where(conds ...interface{}) AccountDao
+}
+
+var Account = &account{
+	DB: database.DB{
+		Db: database.Instance(),
+	},
+}
+
+type account struct {
+	DB database.DB
+}
+
+func (a account) WithTx(tx *gorm.DB) AccountDao {
+	a.DB.Tx = tx
+	return &a
+}
+
+func (a account) Where(conds ...interface{}) AccountDao {
+	a.DB.Where(conds)
+	return &a
+}
+
+func (a *account) FindByUsername(username string) (account models.Account, err error) {
+	err = a.DB.Builder().First(&account, "username = ?", username).Error
+	return
+}

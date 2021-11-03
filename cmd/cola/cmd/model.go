@@ -80,6 +80,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// modelCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	modelCmd.Flags().StringP("path", "p", "internal/app/database/models", "Specify directory path to create in")
+	modelCmd.Flags().StringP("path", "p", "internal/database/models", "Specify directory path to create in")
 	modelCmd.Flags().StringP("packageName", "P", "models", "Specify package name")
 }
