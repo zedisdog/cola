@@ -4,15 +4,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zedisdog/cola/transport/http/chttp"
 	"github.com/zedisdog/cola/transport/http/middlewares"
-	controllers2 "{{.}}/internal/app/api"
+	"{{.}}/internal/app/api"
 )
 
 func init() {
 	r := gin.Default()
 	r.Use(middlewares.Cros)
 
-	r.GET("test", controllers2.Test.Index)
-	r.POST("login", controllers2.Account.Login)
+	r.GET("test", api.Test.Index)
+	r.POST("login", api.Account.Login)
 
 	chttp.Server().SetRouter(r)
 }
