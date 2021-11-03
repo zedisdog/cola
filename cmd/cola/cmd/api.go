@@ -28,19 +28,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// controllerCmd represents the controller command
-var controllerCmd = &cobra.Command{
-	Use:   "controller",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+// apiCmd represents the controller command
+var apiCmd = &cobra.Command{
+	Use:   "api",
+	Short: "generate api",
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
-			color.Red("required a name for controller")
+			color.Red("required a name for api")
 			os.Exit(1)
 		}
 		packageName, _ := cmd.Flags().GetString("packageName")
@@ -73,7 +68,7 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(controllerCmd)
+	rootCmd.AddCommand(apiCmd)
 
 	// Here you will define your flags and configuration settings.
 
@@ -84,6 +79,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// controllerCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	controllerCmd.Flags().StringP("path", "p", "internal/app/api", "Specify directory path to create in")
-	controllerCmd.Flags().StringP("packageName", "P", "api", "Specify package name")
+	apiCmd.Flags().StringP("path", "p", "internal/app/api", "Specify directory path to create in")
+	apiCmd.Flags().StringP("packageName", "P", "api", "Specify package name")
 }
