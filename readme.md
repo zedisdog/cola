@@ -36,3 +36,10 @@ r.StaticFS(
     http.FS(swagger.SwaggerUI("http://localhost/swagger")),
 )
 ```
+
+### Model
+cola provides gorm model helper struct.it can help simplify code when defining the model.
+there are:
+
+* database.Model
+* database.ModelWithUnixTimestamp
