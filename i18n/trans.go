@@ -1,5 +1,13 @@
 package i18n
 
+const VALIDATE_FAILED = "the request is validate failed"
+const EMPTY_BODY = "body is empty"
+
+func init() {
+	defaultTranslator.Set(VALIDATE_FAILED, "数据字段错误")
+	defaultTranslator.Set(EMPTY_BODY, "请求体不能为空")
+}
+
 var defaultTranslator = New("zh_CN")
 
 //Translator struct holds translate data

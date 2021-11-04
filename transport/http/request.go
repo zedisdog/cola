@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/iancoleman/strcase"
+	"github.com/zedisdog/cola/i18n"
 	"github.com/zedisdog/cola/transport/http/response"
 	"io"
 	"net/http"
@@ -16,7 +17,7 @@ func ValidateJSON(c *gin.Context, request interface{}) error {
 			c.AbortWithStatusJSON(422, response.NewValidateResponse(ParseValidateErrors(e)))
 		} else if errors.Is(err, io.EOF) {
 			c.AbortWithStatusJSON(400, response.Response{
-				Msg: "body is empty",
+				Msg: i18n.Trans(i18n.EMPTY_BODY),
 			})
 		} else {
 			panic(err)
@@ -38,7 +39,7 @@ func ValidateQuery(c *gin.Context, request interface{}) error {
 }
 
 func ParseValidateErrors(errors validator.ValidationErrors) (message string, es map[string]string) {
-	message = "the request is validate failed"
+	message = i18n.Trans(i18n.VALIDATE_FAILED)
 	es = make(map[string]string)
 	for _, e := range errors {
 		es[strcase.ToSnake(e.Field())] = e.(error).Error()
