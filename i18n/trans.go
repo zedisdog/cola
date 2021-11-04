@@ -61,7 +61,9 @@ func TransByLang(name, lang string) string {
 }
 func (t *Translator) TransByLang(name string, lang string) string {
 	if _, ok := t.trans[name]; !ok {
-		return ""
+		return name
+	} else if _, ok := t.trans[name][lang]; !ok {
+		return name
 	} else {
 		return t.trans[name][lang]
 	}

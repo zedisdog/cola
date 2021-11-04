@@ -4,16 +4,22 @@ package errx
 import (
 	"errors"
 	"fmt"
+	"github.com/zedisdog/cola/i18n"
 	"io"
 	"runtime/debug"
 )
 
 var (
-	NotFoundError        = errors.New("resource not found")
+	// Deprecated: use customize instead
+	NotFoundError = errors.New("resource not found")
+	// Deprecated: use customize instead
 	UnknownFileTypeError = errors.New("unknown file type")
-	InvalidFileError     = errors.New("invalid file")
-	ConflictError        = errors.New("conflict")
-	BadGetaway           = errors.New("bad getaway")
+	// Deprecated: use customize instead
+	InvalidFileError = errors.New("invalid file")
+	// Deprecated: use customize instead
+	ConflictError = errors.New("conflict")
+	// Deprecated: use customize instead
+	BadGetaway = errors.New("bad getaway")
 )
 
 type HasStack interface {
@@ -49,7 +55,13 @@ func (e Error) Format(s fmt.State, r rune) {
 	}
 }
 
+//Error return error string translate by i18n
 func (e Error) Error() string {
+	return i18n.Trans(e.message)
+}
+
+//RawError return raw error string
+func (e Error) RawError() string {
 	return e.message
 }
 
