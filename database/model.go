@@ -26,9 +26,9 @@ func (m *Model) BeforeCreate(tx *gorm.DB) error {
 
 //ModelWithUnixTimeStamp is gorm model helper struct with snowflakeID and int64.
 type ModelWithUnixTimestamp struct {
-	ID       uint64 `gorm:"primary_key" json:"id,string"`
-	CreateAt int64  `json:"create_at"`
-	UpdateAt int64  `json:"update_at"`
+	ID        uint64 `gorm:"primary_key" json:"id,string"`
+	CreatedAt int64  `json:"created_at"`
+	UpdatedAt int64  `json:"updated_at"`
 }
 
 func (m *ModelWithUnixTimestamp) BeforeCreate(tx *gorm.DB) error {
@@ -40,19 +40,27 @@ func (m *ModelWithUnixTimestamp) BeforeCreate(tx *gorm.DB) error {
 		m.ID = id
 	}
 	now := time.Now().Unix()
-	if m.CreateAt == 0 {
-		m.CreateAt = now
+	if m.CreatedAt == 0 {
+		m.CreatedAt = now
 	}
-	if m.UpdateAt == 0 {
-		m.UpdateAt = now
+	if m.UpdatedAt == 0 {
+		m.UpdatedAt = now
 	}
 	return nil
 }
 
 func (m *ModelWithUnixTimestamp) BeforeUpdate(tx *gorm.DB) error {
 	now := time.Now().Unix()
-	if m.UpdateAt == 0 {
-		m.UpdateAt = now
+	if m.UpdatedAt == 0 {
+		m.UpdatedAt = now
 	}
 	return nil
+}
+
+func (m *ModelWithUnixTimestamp) CreatedAtTime() time.Time {
+	return time.Unix(m.CreatedAt, 0)
+}
+
+func (m *ModelWithUnixTimestamp) UpdatedAtTime() time.Time {
+	return time.Unix(m.UpdatedAt, 0)
 }
