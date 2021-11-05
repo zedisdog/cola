@@ -27,12 +27,13 @@ func Hash(str string, options ...WithHashOption) (string, error) {
 	return hex.EncodeToString(cryptor.Sum(option.Key)), nil
 }
 
-func CheckHash(expect string, actual string, options ...WithHashOption) bool {
-	hash, err := Hash(actual, options...)
+//CheckHash check if hash and text string are equaled.
+func CheckHash(hashStr string, text string, options ...WithHashOption) bool {
+	hash, err := Hash(text, options...)
 	if err != nil {
 		return false
 	}
-	return hash == expect
+	return hash == hashStr
 }
 
 // WithKey set the key to sha256
