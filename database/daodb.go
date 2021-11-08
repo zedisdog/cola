@@ -25,7 +25,7 @@ func (d DB) get() *gorm.DB {
 //   example:
 //     DB.Where("id = ?", 1) => gorm.DB.Where("id = ?", 1)
 //     DB.Where(map[string]interface{"id": 1}) => gorm.DB.Where(map[string]interface{"id": 1})
-func (d DB) Where(conds ...interface{}) {
+func (d *DB) Where(conds ...interface{}) {
 	if d.Conds == nil {
 		d.Conds = make([]interface{}, 0, 5)
 	}
@@ -36,7 +36,7 @@ func (d DB) Where(conds ...interface{}) {
 	}
 }
 
-func (d DB) Join(conds string) {
+func (d *DB) Join(conds string) {
 	if d.Joins == nil {
 		d.Joins = make([]string, 0, 5)
 	}
@@ -50,6 +50,10 @@ func (d *DB) Query() *gorm.DB {
 
 //Builder return an instance of gorm.DB, which with simple query conditions set by DB.Where.
 func (d *DB) Builder() *gorm.DB {
+	defer func() {
+		d.Conds = nil
+		d.Joins = nil
+	}()
 	query := d.get()
 	for _, c := range d.Conds {
 		if cMap, ok := c.(map[string]interface{}); ok {
