@@ -9,7 +9,7 @@ import (
 type DB struct {
 	Db    *gorm.DB
 	Tx    *gorm.DB
-	Conds interface{}
+	Conds []interface{}
 }
 
 func (d DB) get() *gorm.DB {
@@ -25,10 +25,13 @@ func (d DB) get() *gorm.DB {
 //     DB.Where("id = ?", 1) => gorm.DB.Where("id = ?", 1)
 //     DB.Where(map[string]interface{"id": 1}) => gorm.DB.Where(map[string]interface{"id": 1})
 func (d *DB) Where(conds ...interface{}) {
+	if d.Conds == nil {
+		d.Conds = make([]interface{}, 0, 5)
+	}
 	if cond, ok := conds[0].(map[string]interface{}); ok {
-		d.Conds = cond
+		d.Conds = append(d.Conds, cond)
 	} else {
-		d.Conds = conds
+		d.Conds = append(d.Conds, conds)
 	}
 }
 
@@ -43,15 +46,16 @@ func (d *DB) Builder() *gorm.DB {
 	defer func() {
 		d.Conds = nil
 	}()
-	if d.Conds != nil {
-		if cMap, ok := d.Conds.(map[string]interface{}); ok {
-			return d.get().Where(cMap)
-		} else if cSlice, ok := d.Conds.([]interface{}); ok && len(cSlice) > 1 {
-			return d.get().Where(cSlice[0], cSlice[1:]...)
+	query := d.get()
+	for _, c := range d.Conds {
+		if cMap, ok := c.(map[string]interface{}); ok {
+			query = query.Where(cMap)
+		} else if cSlice, ok := c.([]interface{}); ok && len(cSlice) > 1 {
+			query = query.Where(cSlice[0], cSlice[1:]...)
 		} else {
 			panic(errx.New(fmt.Sprintf("unsupported format: %+v", d.Conds)))
 		}
-	} else {
-		return d.get()
 	}
+
+	return query
 }
