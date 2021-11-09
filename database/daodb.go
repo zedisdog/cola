@@ -37,9 +37,6 @@ func (d *DB) Where(conds ...interface{}) {
 }
 
 func (d *DB) Join(conds string) {
-	if d.Joins == nil {
-		d.Joins = make([]string, 0, 5)
-	}
 	d.Joins = append(d.Joins, conds)
 }
 
@@ -63,6 +60,10 @@ func (d *DB) Builder() *gorm.DB {
 		} else {
 			panic(errx.New(fmt.Sprintf("unsupported format: %+v", d.Conds)))
 		}
+	}
+
+	for _, c := range d.Joins {
+		query = query.Joins(c)
 	}
 
 	return query
