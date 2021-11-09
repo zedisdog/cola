@@ -8,6 +8,7 @@ import (
 type {{name}}Dao interface {
 	WithTx(tx *gorm.DB) {{name}}Dao
 	Where(conds ...interface{}) {{name}}Dao
+	Join(statement string) {{name}}Dao
 }
 
 var {{name}} = &{{daoName}}{
@@ -27,5 +28,10 @@ func ({{shortName}} {{daoName}}) WithTx(tx *gorm.DB) {{name}}Dao {
 
 func ({{shortName}} {{daoName}}) Where(conds ...interface{}) {{name}}Dao {
 	{{shortName}}.db.Where(conds...)
+	return &{{shortName}}
+}
+
+func ({{shortName}} {{daoName}}) Join(statement string) {{name}}Dao {
+	{{shortName}}.db.Join(statement)
 	return &{{shortName}}
 }
