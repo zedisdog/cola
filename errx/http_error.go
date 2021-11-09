@@ -12,11 +12,15 @@ type HttpError struct {
 	Data       interface{}
 }
 
-func NewHttpError(code int, msg string) *HttpError {
-	return &HttpError{
+func NewHttpError(code int, msg string, data ...interface{}) *HttpError {
+	err := &HttpError{
 		StatusCode: code,
 		err:        New(msg),
 	}
+	if data != nil && len(data) > 0 {
+		err.Data = data[0]
+	}
+	return err
 }
 
 func (he HttpError) Error() string {
@@ -39,6 +43,14 @@ func (he HttpError) Format(s fmt.State, r rune) {
 
 func (he HttpError) Unwrap() error {
 	return he.err
+}
+
+func NewHttpErrorUnprocessableEntityWithDetail(msg string, data map[string]string) error {
+	return NewHttpError(
+		http.StatusUnprocessableEntity,
+		msg,
+		data,
+	)
 }
 
 func NewHttpErrorUnprocessableEntity(msg string) error {
