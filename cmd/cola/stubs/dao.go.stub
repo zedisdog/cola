@@ -35,3 +35,8 @@ func ({{shortName}} {{daoName}}) Join(statement string) {{name}}Dao {
 	{{shortName}}.db.Join(statement)
 	return &{{shortName}}
 }
+
+func ({{shortName}} {{daoName}}) Preload(relates ...string) {{name}}Dao {
+	{{shortName}}.db.Preload(relates...)
+	return &{{shortName}}
+}
