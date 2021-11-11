@@ -7,10 +7,11 @@ import (
 )
 
 type DB struct {
-	Db    *gorm.DB
-	Tx    *gorm.DB
-	Conds []interface{}
-	Joins []string
+	Db       *gorm.DB
+	Tx       *gorm.DB
+	Conds    []interface{}
+	Joins    []string
+	Preloads []string
 }
 
 func (d DB) get() *gorm.DB {
@@ -36,8 +37,12 @@ func (d *DB) Where(conds ...interface{}) {
 	}
 }
 
-func (d *DB) Join(conds string) {
-	d.Joins = append(d.Joins, conds)
+func (d *DB) Join(conds ...string) {
+	d.Joins = append(d.Joins, conds...)
+}
+
+func (d *DB) Preload(relates ...string) {
+	d.Preloads = append(d.Preloads, relates...)
 }
 
 //Deprecated: use Builder instead
@@ -50,6 +55,7 @@ func (d *DB) Builder() *gorm.DB {
 	defer func() {
 		d.Conds = nil
 		d.Joins = nil
+		d.Preloads = nil
 	}()
 	query := d.get()
 	for _, c := range d.Conds {
@@ -64,6 +70,10 @@ func (d *DB) Builder() *gorm.DB {
 
 	for _, c := range d.Joins {
 		query = query.Joins(c)
+	}
+
+	for _, p := range d.Preloads {
+		query = query.Preload(p)
 	}
 
 	return query
