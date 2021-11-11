@@ -9,6 +9,7 @@ type {{name}}Dao interface {
 	WithTx(tx *gorm.DB) {{name}}Dao
 	Where(conds ...interface{}) {{name}}Dao
 	Join(statement string) {{name}}Dao
+	Preload(relates ...string) {{name}}Dao
 }
 
 var {{name}} = &{{daoName}}{
