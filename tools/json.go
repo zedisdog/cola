@@ -19,3 +19,14 @@ func (c *CTime) UnmarshalJSON(b []byte) (err error) {
 	*c = CTime{tmp}
 	return
 }
+
+type CJson string
+
+func (c *CJson) UnmarshalJSON(b []byte) (err error) {
+	*c = CJson(b)
+	return nil
+}
+
+func (c CJson) MarshalJSON() ([]byte, error) {
+	return []byte(c), nil
+}
