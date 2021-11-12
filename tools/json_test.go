@@ -9,7 +9,7 @@ import (
 
 func TestCTime_UnmarshalJSON(t *testing.T) {
 	type a struct {
-		A *CTime `json:"a"`
+		A *JTime `json:"a"`
 	}
 	var aa a
 	j := `{"a": "2006-02-06"}`
@@ -21,7 +21,7 @@ func TestCTime_UnmarshalJSON(t *testing.T) {
 
 func TestCJson_UnmarshalJSON(t *testing.T) {
 	type a struct {
-		A CJson `json:"a"`
+		A JJson `json:"a"`
 	}
 
 	var aa a
@@ -37,7 +37,7 @@ func TestCJson_UnmarshalJSON(t *testing.T) {
 
 func TestCJson_MarshalJSON(t *testing.T) {
 	type a struct {
-		A CJson `json:"a"`
+		A JJson `json:"a"`
 	}
 
 	aa := a{

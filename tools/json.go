@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+type JTime = CTime
+
+//CTime parse string time to time.Time
+//Deprecated: use JTime instead
 type CTime struct {
 	time.Time
 }
@@ -20,13 +24,13 @@ func (c *CTime) UnmarshalJSON(b []byte) (err error) {
 	return
 }
 
-type CJson string
+type JJson string
 
-func (c *CJson) UnmarshalJSON(b []byte) (err error) {
-	*c = CJson(b)
+func (c *JJson) UnmarshalJSON(b []byte) (err error) {
+	*c = JJson(b)
 	return nil
 }
 
-func (c CJson) MarshalJSON() ([]byte, error) {
+func (c JJson) MarshalJSON() ([]byte, error) {
 	return []byte(c), nil
 }
