@@ -2,45 +2,85 @@ package http
 
 import (
 	"bytes"
-	"fmt"
-	"io/ioutil"
+	"encoding/json"
+	"github.com/zedisdog/cola/errx"
+	"io"
 	"net/http"
+	urlpkg "net/url"
 )
 
 //PostJSON post json
-//	url: url to post data
-//	data: the json string as []byte
-func PostJSON(url string, data []byte) ([]byte, error) {
-	body := bytes.NewBuffer(data)
-	response, err := http.Post(url, "application/json;charset=utf-8", body)
+//	url is the target to post.
+//
+//	data is to be posted.it can be string, []byte and struct, also nil.
+func PostJSON(url string, data interface{}) ([]byte, error) {
+	u, err := urlpkg.Parse(url)
 	if err != nil {
-		return nil, err
+		return nil, errx.Wrap(err, "parse url error")
 	}
-	defer response.Body.Close()
-	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("http get error : url=%v , statusCode=%v", url, response.StatusCode)
+
+	var body io.ReadCloser
+	switch data.(type) {
+	case []byte:
+		body = io.NopCloser(bytes.NewBuffer(data.([]byte)))
+	case string:
+		body = io.NopCloser(bytes.NewBufferString(data.(string)))
+	default:
+		if data == nil {
+			break
+		}
+		tmp, err := json.Marshal(data)
+		if err != nil {
+			return nil, errx.Wrap(err, "covert interface{} to json bytes error")
+		}
+		body = io.NopCloser(bytes.NewBuffer(tmp))
 	}
-	v, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
+
+	req := http.Request{
+		Header: map[string][]string{
+			"Content-Type": {"application/json"},
+			"Accept":       {"application/json"},
+		},
+		Method: http.MethodPost,
+		Body:   body,
+		URL:    u,
 	}
-	return v, nil
+
+	return Request(&req)
 }
 
 //GetJSON get json
 func GetJSON(url string) ([]byte, error) {
-	response, err := http.Get(url)
+	u, err := urlpkg.Parse(url)
+	if err != nil {
+		return nil, errx.Wrap(err, "parse url error")
+	}
+	request := http.Request{
+		Method: http.MethodGet,
+		URL:    u,
+		Header: map[string][]string{
+			"Content-Type": {"application/json"},
+			"Accept":       {"application/json"},
+		},
+	}
+	return Request(&request)
+}
 
+func Request(request *http.Request) (response []byte, err error) {
+	resp, err := http.DefaultClient.Do(request)
 	if err != nil {
-		return nil, err
+		return
 	}
-	defer response.Body.Close()
-	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("http get error : url=%v , statusCode=%v", url, response.StatusCode)
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= http.StatusBadRequest {
+		content, _ := io.ReadAll(resp.Body)
+		return nil, errx.NewHttpError(resp.StatusCode, string(content))
 	}
-	v, err := ioutil.ReadAll(response.Body)
+
+	response, err = io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		err = errx.Wrap(err, "read body err")
 	}
-	return v, nil
+	return
 }

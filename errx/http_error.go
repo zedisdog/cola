@@ -102,6 +102,11 @@ func NewHttpErrorNotFound(msg string) error {
 	return NewHttpError(http.StatusNotFound, msg)
 }
 
+func WrapByHttpError(code int, err error) *HttpError {
+	return WarpByHttpError(code, err)
+}
+
+//Deprecated: use WrapByHttpError instead
 func WarpByHttpError(code int, err error) *HttpError {
 	return &HttpError{
 		StatusCode: code,

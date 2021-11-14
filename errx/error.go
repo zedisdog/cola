@@ -91,3 +91,19 @@ func Wrap(err error, message string) error {
 		}
 	}
 }
+
+func WrapOrNew(err error, message string) error {
+	if e, ok := err.(HasStack); ok {
+		return &Error{
+			err:     err,
+			message: message,
+			stack:   e.Stack(),
+		}
+	} else {
+		return &Error{
+			err:     err,
+			message: message,
+			stack:   debug.Stack(),
+		}
+	}
+}
