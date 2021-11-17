@@ -47,3 +47,8 @@ func PullInt(key string) int {
 	instance, _ := Instance()
 	return instance.PullInt(key)
 }
+
+func Get(key string) (v interface{}, ok bool) {
+	instance, _ := Instance()
+	return instance.Get(key)
+}

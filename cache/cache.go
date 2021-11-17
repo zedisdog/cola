@@ -20,6 +20,10 @@ func (c *cache) Has(key string) (ok bool) {
 	return
 }
 
+func (c *cache) Get(key string) (v interface{}, ok bool) {
+	return c.Load(key)
+}
+
 func (c *cache) Put(key string, value interface{}) {
 	c.Store(key, value)
 }
