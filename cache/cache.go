@@ -37,6 +37,7 @@ func (c *cache) PutWithExpire(key string, value interface{}, expire int64) {
 }
 
 func (c *cache) Pull(key string) (value interface{}) {
+	c.clear()
 	tmp, exists := c.LoadAndDelete(key)
 	if tmp == nil || !exists {
 		return nil
