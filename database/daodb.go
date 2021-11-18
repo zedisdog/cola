@@ -12,6 +12,8 @@ type DB struct {
 	Conds    []interface{}
 	Joins    []string
 	Preloads []string
+	Offset   *int
+	Limit    int
 }
 
 func (d DB) get() *gorm.DB {
@@ -45,6 +47,14 @@ func (d *DB) Preload(relates ...string) {
 	d.Preloads = append(d.Preloads, relates...)
 }
 
+func (d *DB) setOffset(offset int) {
+	d.Offset = &offset
+}
+
+func (d *DB) setLimit(limit int) {
+	d.Limit = limit
+}
+
 //Deprecated: use Builder instead
 func (d *DB) Query() *gorm.DB {
 	return d.Builder()
@@ -56,6 +66,8 @@ func (d *DB) Builder() *gorm.DB {
 		d.Conds = nil
 		d.Joins = nil
 		d.Preloads = nil
+		d.Offset = nil
+		d.Limit = 0
 	}()
 	query := d.get()
 	for _, c := range d.Conds {
@@ -74,6 +86,14 @@ func (d *DB) Builder() *gorm.DB {
 
 	for _, p := range d.Preloads {
 		query = query.Preload(p)
+	}
+
+	if d.Offset != nil {
+		query = query.Offset(*d.Offset)
+	}
+
+	if d.Limit != 0 {
+		query = query.Limit(d.Limit)
 	}
 
 	return query
