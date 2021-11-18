@@ -51,7 +51,7 @@ func (d *DB) SetOffset(offset int) {
 	d.Offset = &offset
 }
 
-func (d *DB) setLimit(limit int) {
+func (d *DB) SetLimit(limit int) {
 	d.Limit = limit
 }
 
