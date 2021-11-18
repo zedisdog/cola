@@ -47,7 +47,7 @@ func (d *DB) Preload(relates ...string) {
 	d.Preloads = append(d.Preloads, relates...)
 }
 
-func (d *DB) setOffset(offset int) {
+func (d *DB) SetOffset(offset int) {
 	d.Offset = &offset
 }
 
