@@ -6,6 +6,7 @@ import (
 	"github.com/zedisdog/cola/errx"
 	"github.com/zedisdog/cola/sdk/wechat/util"
 	"github.com/zedisdog/cola/transport/http"
+	"net/url"
 	"strings"
 )
 
@@ -43,14 +44,33 @@ type Auth struct {
 	Lang      string
 }
 
-func (c *Auth) GenRedirectUrl(redirectURI string, scope string, state ...string) string {
+func (c *Auth) GenRedirectUrl(redirectURI string, scope string, states ...string) string {
 	return fmt.Sprintf(
 		redirectUrl,
 		c.AppID,
 		redirectURI,
 		scope,
-		strings.Join(state, ","),
+		strings.Join(states, ","),
 	)
+}
+
+//AuthResponse 微信网页授权回调的code和state
+type AuthResponse struct {
+	Code  string
+	State []string
+}
+
+func NewAuthResponse(query string) (response *AuthResponse, err error) {
+	values, err := url.ParseQuery(query)
+	if err != nil {
+		return
+	}
+
+	response = new(AuthResponse)
+	response.State = strings.Split(values.Get("state"), ",")
+	response.Code = values.Get("code")
+
+	return
 }
 
 //AccessToken struct of response
@@ -72,25 +92,25 @@ type AccessToken struct {
 
 //ExToken exchange access token of user by code.
 func (a *Auth) ExToken(code string) (token AccessToken, err error) {
-	url := fmt.Sprintf(
+	u := fmt.Sprintf(
 		exchangeUrl,
 		a.AppID,
 		a.AppSecret,
 		code,
 	)
-	response, err := http.GetJSON(url)
+	response, err := http.GetJSON(u)
 	err = parseResponse(response, err, &token)
 	return
 }
 
 func (a *Auth) RefreshToken(refreshToken string) (token AccessToken, err error) {
-	url := fmt.Sprintf(
+	u := fmt.Sprintf(
 		refreshUrl,
 		a.AppID,
 		refreshToken,
 	)
 
-	response, err := http.GetJSON(url)
+	response, err := http.GetJSON(u)
 	err = parseResponse(response, err, &token)
 	return
 }
@@ -122,14 +142,14 @@ type UserInfo struct {
 
 //UserInfo get user info.
 func (a *Auth) UserInfo(accessToken string, openID string) (info UserInfo, err error) {
-	url := fmt.Sprintf(
+	u := fmt.Sprintf(
 		userInfoUrl,
 		accessToken,
 		openID,
 		a.Lang,
 	)
 
-	response, err := http.GetJSON(url)
+	response, err := http.GetJSON(u)
 	err = parseResponse(response, err, &info)
 	return
 }
@@ -137,12 +157,12 @@ func (a *Auth) UserInfo(accessToken string, openID string) (info UserInfo, err e
 //ValidateAccessToken validates if is valid which given accessToken of openID.
 func (a *Auth) ValidateAccessToken(accessToken string, openID string) bool {
 	var errMsg util.Error
-	url := fmt.Sprintf(
+	u := fmt.Sprintf(
 		validateTokenUrl,
 		accessToken,
 		openID,
 	)
-	response, err := http.GetJSON(url)
+	response, err := http.GetJSON(u)
 	err = parseResponse(response, err, &errMsg)
 	if err != nil {
 		return false
