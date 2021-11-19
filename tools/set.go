@@ -30,3 +30,13 @@ func (s *Set) ToSlice() (result []interface{}) {
 	}
 	return
 }
+
+func (s *Set) ToUint64Slice() (result []uint64) {
+	result = make([]uint64, 0, s.count)
+	for key, value := range s.data {
+		if value {
+			result = append(result, key.(uint64))
+		}
+	}
+	return
+}
