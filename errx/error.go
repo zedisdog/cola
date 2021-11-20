@@ -48,10 +48,10 @@ func (e Error) Stack() []byte {
 func (e Error) Format(s fmt.State, r rune) {
 	switch r {
 	case 'w':
-		_, _ = io.WriteString(s, e.message)
+		_, _ = io.WriteString(s, e.Error())
 	case 'v':
 		_, _ = io.WriteString(s, fmt.Sprintf("%s\n", e.Error()))
-		_, _ = io.WriteString(s, fmt.Sprintf("\t%s\n", string(e.Stack())))
+		_, _ = io.WriteString(s, fmt.Sprintf("%s\n", string(e.Stack())))
 	}
 }
 
