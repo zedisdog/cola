@@ -10,7 +10,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/sirupsen/logrus v1.8.0
 	github.com/spf13/viper v1.7.1
-	github.com/zedisdog/cola v0.0.0-20211119065959-e5028caea109
+	github.com/zedisdog/cola develop
 	gorm.io/gorm v1.22.2
 )
 
