@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/zedisdog/cola/i18n"
 	"io"
+	"runtime"
 	"runtime/debug"
 )
 
@@ -28,6 +29,8 @@ type HasStack interface {
 }
 
 type Error struct {
+	file    string
+	line    int
 	message string
 	stack   []byte
 	err     error
@@ -59,7 +62,9 @@ func (e Error) Format(s fmt.State, r rune) {
 
 //Error return error string translate by i18n
 func (e Error) Error() string {
-	return fmt.Sprintf("%s>%s",
+	return fmt.Sprintf("%s:%d %s\n%s",
+		e.file,
+		e.line,
 		i18n.Trans(e.message),
 		e.Unwrap(),
 	)
@@ -82,19 +87,21 @@ func Wrap(err error, message string) error {
 	if err == nil {
 		return nil
 	}
+	var e Error
 	if e, ok := err.(HasStack); ok {
-		return &Error{
-			err:     err,
-			message: message,
-			stack:   e.Stack(),
+		e = &Error{
+			stack: e.Stack(),
 		}
 	} else {
-		return &Error{
-			err:     err,
-			message: message,
-			stack:   debug.Stack(),
+		e = &Error{
+			stack: debug.Stack(),
 		}
 	}
+
+	e.message = message
+	e.err = err
+	_, e.file, e.line, _ = runtime.Caller(1)
+	return e
 }
 
 func WrapOrNew(err error, message string) error {

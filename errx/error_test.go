@@ -8,6 +8,7 @@ import (
 func TestPanic(t *testing.T) {
 	err := fmt.Errorf("read private pem file err:%s", "file not exists")
 	err = Wrap(err, "321")
+	err = Wrap(err, "hehehehe")
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Printf("......%s", err)
