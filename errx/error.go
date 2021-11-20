@@ -57,7 +57,7 @@ func (e Error) Format(s fmt.State, r rune) {
 
 //Error return error string translate by i18n
 func (e Error) Error() string {
-	return fmt.Sprintf("%s: %e",
+	return fmt.Sprintf(">%s\n>%e",
 		i18n.Trans(e.message),
 		e.Unwrap(),
 	)
