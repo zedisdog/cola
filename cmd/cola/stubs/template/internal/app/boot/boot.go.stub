@@ -2,13 +2,11 @@ package boot
 
 import (
 	_ "{{.}}/config"
-	"{{.}}/internal/database/migrations"
+	_ "{{.}}/internal/database"
 	_ "{{.}}/internal/database/seeds"
 
 	"fmt"
 	"github.com/spf13/viper"
-	baseDatabase "github.com/zedisdog/cola/database"
-	"github.com/zedisdog/cola/database/seeder"
 	"github.com/zedisdog/cola/storage"
 	"github.com/zedisdog/cola/storage/drivers"
 	"github.com/zedisdog/cola/transport/http/chttp"
@@ -17,7 +15,4 @@ import (
 func init() {
 	chttp.Server().SetAddr(fmt.Sprintf("%s:%d", "", viper.GetInt("http.port")))
 	storage.SetDriver("default", drivers.NewLocal(viper.GetString("storage.path")))
-	baseDatabase.AutoMigrate(migrations.Files, viper.GetString("database.dsn"))
-	baseDatabase.Init(baseDatabase.WithDsn(viper.GetString("database.dsn")))
-	seeder.Seed(baseDatabase.Instance())
 }

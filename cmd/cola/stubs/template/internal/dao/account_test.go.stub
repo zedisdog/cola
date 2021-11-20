@@ -1,14 +1,19 @@
 package dao
 
 import (
+	//this required by test which with Real database
+	_ "{{.}}/config"
+	_ "{{.}}/internal/database"
+
 	gomocket "github.com/Selvatico/go-mocket"
 	"github.com/zedisdog/cola/database"
 	"github.com/zedisdog/cola/test"
+	"gorm.io/gorm"
 	"{{.}}/internal/database/models"
 	"testing"
 )
 
-func TestAccount_FindById(t *testing.T) {
+func TestWithFakeDatabase(t *testing.T) {
 	test.Fake(func() {
 		gomocket.Catcher.Logging = true
 		reply := []map[string]interface{}{{"username": "test", "password": "123"}}
@@ -19,4 +24,12 @@ func TestAccount_FindById(t *testing.T) {
 			t.Fatal("username should be `test`")
 		}
 	}, test.FakeDB)
+}
+
+func TestWithRealDatabase(t *testing.T) {
+	var account models.Account
+	err := database.Instance().First(&account).Error
+	if err != gorm.ErrRecordNotFound {
+		t.Fatal("data should not be found")
+	}
 }

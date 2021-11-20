@@ -1,0 +1,14 @@
+package database
+
+import (
+	"github.com/spf13/viper"
+	"github.com/zedisdog/cola/database"
+	"github.com/zedisdog/cola/database/seeder"
+	"{{.}}/internal/database/migrations"
+)
+
+func init() {
+	database.AutoMigrate(migrations.Files, viper.GetString("database.dsn"))
+	database.Init(database.WithDsn(viper.GetString("database.dsn")))
+	seeder.Seed(database.Instance())
+}
