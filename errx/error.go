@@ -50,14 +50,14 @@ func (e Error) Format(s fmt.State, r rune) {
 	case 'w':
 		_, _ = io.WriteString(s, e.message)
 	case 'v':
-		_, _ = io.WriteString(s, fmt.Sprintf("%s\n", e.message))
-		_, _ = io.WriteString(s, fmt.Sprintf("\t%s\n", e.Stack))
+		_, _ = io.WriteString(s, fmt.Sprintf("%s\n", e.Error()))
+		_, _ = io.WriteString(s, fmt.Sprintf("\t%s\n", string(e.Stack())))
 	}
 }
 
 //Error return error string translate by i18n
 func (e Error) Error() string {
-	return fmt.Sprintf(">%s\n>%e",
+	return fmt.Sprintf("%s>%s",
 		i18n.Trans(e.message),
 		e.Unwrap(),
 	)
