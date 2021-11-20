@@ -1,12 +1,17 @@
 package errx
 
 import (
-	"errors"
+	"fmt"
 	"testing"
 )
 
 func TestPanic(t *testing.T) {
-	err := errors.New("123")
+	err := fmt.Errorf("read private pem file err:%s", "file not exists")
 	err = Wrap(err, "321")
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Printf("......%s", err)
+		}
+	}()
 	panic(err)
 }
