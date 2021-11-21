@@ -12,7 +12,7 @@ type DBHelper struct {
 	Conds    []interface{}
 	Joins    []string
 	Preloads []string
-	Offset   *int
+	Offset   int
 	Limit    int
 }
 
@@ -54,7 +54,7 @@ func (d *DBHelper) Preload(relates ...string) {
 }
 
 func (d *DBHelper) SetOffset(offset int) {
-	d.Offset = &offset
+	d.Offset = offset
 }
 
 func (d *DBHelper) SetLimit(limit int) {
@@ -72,7 +72,7 @@ func (d *DBHelper) Builder() *gorm.DB {
 		d.Conds = nil
 		d.Joins = nil
 		d.Preloads = nil
-		d.Offset = nil
+		d.Offset = 0
 		d.Limit = 0
 	}()
 	query := d.get()
@@ -94,9 +94,7 @@ func (d *DBHelper) Builder() *gorm.DB {
 		query = query.Preload(p)
 	}
 
-	if d.Offset != nil {
-		query = query.Offset(*d.Offset)
-	}
+	query = query.Offset(d.Offset)
 
 	if d.Limit != 0 {
 		query = query.Limit(d.Limit)
