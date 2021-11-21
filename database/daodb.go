@@ -6,8 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
-type DB struct {
-	DBFunc   func() *gorm.DB
+type DBHelper struct {
+	DBFunc   func(name ...string) *gorm.DB
 	Tx       *gorm.DB
 	Conds    []interface{}
 	Joins    []string
@@ -16,7 +16,13 @@ type DB struct {
 	Limit    int
 }
 
-func (d DB) get() *gorm.DB {
+func NewDBHelper() *DBHelper {
+	return &DBHelper{
+		DBFunc: Instance,
+	}
+}
+
+func (d DBHelper) get() *gorm.DB {
 	if d.Tx != nil {
 		return d.Tx
 	} else {
@@ -26,9 +32,9 @@ func (d DB) get() *gorm.DB {
 
 //Where set simple conditions supported by gorm.
 //   example:
-//     DB.Where("id = ?", 1) => gorm.DB.Where("id = ?", 1)
-//     DB.Where(map[string]interface{"id": 1}) => gorm.DB.Where(map[string]interface{"id": 1})
-func (d *DB) Where(conds ...interface{}) {
+//     DBHelper.Where("id = ?", 1) => gorm.DBHelper.Where("id = ?", 1)
+//     DBHelper.Where(map[string]interface{"id": 1}) => gorm.DBHelper.Where(map[string]interface{"id": 1})
+func (d *DBHelper) Where(conds ...interface{}) {
 	if d.Conds == nil {
 		d.Conds = make([]interface{}, 0, 5)
 	}
@@ -39,29 +45,29 @@ func (d *DB) Where(conds ...interface{}) {
 	}
 }
 
-func (d *DB) Join(conds ...string) {
+func (d *DBHelper) Join(conds ...string) {
 	d.Joins = append(d.Joins, conds...)
 }
 
-func (d *DB) Preload(relates ...string) {
+func (d *DBHelper) Preload(relates ...string) {
 	d.Preloads = append(d.Preloads, relates...)
 }
 
-func (d *DB) SetOffset(offset int) {
+func (d *DBHelper) SetOffset(offset int) {
 	d.Offset = &offset
 }
 
-func (d *DB) SetLimit(limit int) {
+func (d *DBHelper) SetLimit(limit int) {
 	d.Limit = limit
 }
 
 //Deprecated: use Builder instead
-func (d *DB) Query() *gorm.DB {
+func (d *DBHelper) Query() *gorm.DB {
 	return d.Builder()
 }
 
-//Builder return an instance of gorm.DB, which with simple query conditions set by DB.Where.
-func (d *DB) Builder() *gorm.DB {
+//Builder return an instance of gorm.DB, which with simple query conditions set by DBHelper.Where.
+func (d *DBHelper) Builder() *gorm.DB {
 	defer func() {
 		d.Conds = nil
 		d.Joins = nil

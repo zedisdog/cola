@@ -9,7 +9,7 @@ import (
 var fakeDB *gorm.DB
 var unDo = make([]func(), 0, 1)
 
-//FakeDB use a fake DB instance.
+//FakeDB use a fake DBHelper instance.
 func FakeDB() {
 	var once sync.Once
 	once.Do(func() {
