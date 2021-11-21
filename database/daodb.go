@@ -7,7 +7,7 @@ import (
 )
 
 type DB struct {
-	Db       *gorm.DB
+	DBFunc   func() *gorm.DB
 	Tx       *gorm.DB
 	Conds    []interface{}
 	Joins    []string
@@ -20,7 +20,7 @@ func (d DB) get() *gorm.DB {
 	if d.Tx != nil {
 		return d.Tx
 	} else {
-		return d.Db
+		return d.DBFunc()
 	}
 }
 
