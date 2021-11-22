@@ -103,19 +103,3 @@ func Wrap(err error, message string) error {
 	_, e.file, e.line, _ = runtime.Caller(1)
 	return e
 }
-
-func WrapOrNew(err error, message string) error {
-	if e, ok := err.(HasStack); ok {
-		return &Error{
-			err:     err,
-			message: message,
-			stack:   e.Stack(),
-		}
-	} else {
-		return &Error{
-			err:     err,
-			message: message,
-			stack:   debug.Stack(),
-		}
-	}
-}
