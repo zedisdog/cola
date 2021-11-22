@@ -44,7 +44,7 @@ func NewResponse(data interface{}) *Response {
 }
 
 func NewPageResponse(data interface{}, total int, page int, perPage int) *Response {
-	return &Response{
+	resp := &Response{
 		Meta: &Meta{
 			CurrentPage: uint(page),
 			Total:       uint(total),
@@ -53,6 +53,13 @@ func NewPageResponse(data interface{}, total int, page int, perPage int) *Respon
 		},
 		Data: data,
 	}
+	if resp.Meta.CurrentPage == 0 {
+		resp.Meta.CurrentPage = 1
+	}
+	if resp.Meta.LastPage == 0 {
+		resp.Meta.LastPage = 1
+	}
+	return resp
 }
 
 func NewPageResponseWithMeta(data interface{}, meta *Meta) *Response {
