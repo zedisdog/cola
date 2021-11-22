@@ -13,13 +13,11 @@ type {{name}}Dao interface {
 }
 
 var {{name}} = &{{daoName}}{
-    db: database.DB{
-        Db: database.Instance(),
-    },
+    db: database.NewDBHelper(),
 }
 
 type {{daoName}} struct {
-    db database.DB
+    db database.DBHelper
 }
 
 func ({{shortName}} {{daoName}}) WithTx(tx *gorm.DB) {{name}}Dao {
