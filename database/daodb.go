@@ -16,8 +16,8 @@ type DBHelper struct {
 	Limit    int
 }
 
-func NewDBHelper() *DBHelper {
-	return &DBHelper{
+func NewDBHelper() DBHelper {
+	return DBHelper{
 		DBFunc: Instance,
 	}
 }
