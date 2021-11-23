@@ -1,6 +1,7 @@
 package seeds
 
 import (
+	"github.com/zedisdog/cola/database"
 	"github.com/zedisdog/cola/database/seeder"
 	"github.com/zedisdog/cola/tools"
 	"gorm.io/gorm"
@@ -9,6 +10,7 @@ import (
 
 func init() {
 	seeder.Add(SeederAccount)
+	seeder.Seed(database.Instance())
 }
 
 func SeederAccount(db *gorm.DB) error {

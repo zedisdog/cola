@@ -1,4 +1,4 @@
-package test
+package gorm
 
 import (
 	"github.com/zedisdog/cola/database"
