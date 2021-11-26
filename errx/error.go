@@ -51,9 +51,19 @@ func (e Error) Stack() []byte {
 func (e Error) Format(s fmt.State, r rune) {
 	switch r {
 	case 's':
-		_, _ = io.WriteString(s, e.Error())
+		_, _ = io.WriteString(s, fmt.Sprintf("> %s:%d %s\n> %s",
+			e.file,
+			e.line,
+			i18n.Trans(e.message),
+			e.Unwrap(),
+		))
 	case 'w':
-		_, _ = io.WriteString(s, e.Error())
+		_, _ = io.WriteString(s, fmt.Sprintf("> %s:%d %s\n> %s",
+			e.file,
+			e.line,
+			i18n.Trans(e.message),
+			e.Unwrap(),
+		))
 	case 'v':
 		_, _ = io.WriteString(s, fmt.Sprintf("%s\n", e.Error()))
 		_, _ = io.WriteString(s, fmt.Sprintf("%s\n", string(e.Stack())))
@@ -62,12 +72,7 @@ func (e Error) Format(s fmt.State, r rune) {
 
 //Error return error string translate by i18n
 func (e Error) Error() string {
-	return fmt.Sprintf("> %s:%d %s\n> %s",
-		e.file,
-		e.line,
-		i18n.Trans(e.message),
-		e.Unwrap(),
-	)
+	return i18n.Trans(e.message)
 }
 
 //RawError return raw error string
