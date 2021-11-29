@@ -1,9 +1,7 @@
 package auth
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/zedisdog/cola/errx"
 	"github.com/zedisdog/cola/sdk/wechat/util"
 	"github.com/zedisdog/cola/transport/http"
 	"net/url"
@@ -99,7 +97,7 @@ func (a *Auth) ExToken(code string) (token AccessToken, err error) {
 		code,
 	)
 	response, err := http.GetJSON(u)
-	err = parseResponse(response, err, &token)
+	err = util.ParseResponse(response, err, &token)
 	return
 }
 
@@ -111,7 +109,7 @@ func (a *Auth) RefreshToken(refreshToken string) (token AccessToken, err error) 
 	)
 
 	response, err := http.GetJSON(u)
-	err = parseResponse(response, err, &token)
+	err = util.ParseResponse(response, err, &token)
 	return
 }
 
@@ -150,7 +148,7 @@ func (a *Auth) UserInfo(accessToken string, openID string) (info UserInfo, err e
 	)
 
 	response, err := http.GetJSON(u)
-	err = parseResponse(response, err, &info)
+	err = util.ParseResponse(response, err, &info)
 	return
 }
 
@@ -163,26 +161,10 @@ func (a *Auth) ValidateAccessToken(accessToken string, openID string) bool {
 		openID,
 	)
 	response, err := http.GetJSON(u)
-	err = parseResponse(response, err, &errMsg)
+	err = util.ParseResponse(response, err, &errMsg)
 	if err != nil {
 		return false
 	}
 
 	return errMsg.Errcode == 0
-}
-
-func parseResponse(response []byte, err error, data interface{}) error {
-	if err != nil {
-		return errx.Wrap(err, "get user info error")
-	}
-
-	err = json.Unmarshal(response, data)
-	if err != nil {
-		return errx.Wrap(err, "parse response error")
-	}
-
-	if data.(util.Error).Errcode != 0 {
-		err = errx.New(fmt.Sprintf("refresh token error: errcode=%d errmsg=%s", data.(util.Error).Errcode, data.(util.Error).Errmsg))
-	}
-	return err
 }
