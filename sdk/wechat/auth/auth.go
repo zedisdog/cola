@@ -34,7 +34,7 @@ func (a *Auth) AccessToken() string {
 		var err error
 		token, err = a.GetAccessToken()
 		if err != nil {
-			fmt.Printf("get access token error: %s", errx.Wrap(err, "error").Error())
+			fmt.Printf("get access token error: %s", errx.Wrap(err, "error"))
 			return ""
 		}
 		cache.PutWithExpire(key, token, time.Now().Add(time.Duration(token.(Token).ExpiresIn-60)*time.Second).Unix())
@@ -68,7 +68,7 @@ func (a *Auth) JsTicket() string {
 		var err error
 		ticket, err = a.GetJsTicket()
 		if err != nil {
-			fmt.Printf("get js ticket error: %s", errx.Wrap(err, "error").Error())
+			fmt.Printf("get js ticket error: %s", errx.Wrap(err, "error"))
 			return ""
 		}
 		cache.PutWithExpire(key, ticket, time.Now().Add(time.Duration(ticket.(JsTicket).ExpiresIn-60)*time.Second).Unix())
