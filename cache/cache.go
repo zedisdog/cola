@@ -21,7 +21,16 @@ func (c *cache) Has(key string) (ok bool) {
 }
 
 func (c *cache) Get(key string) (v interface{}, ok bool) {
-	return c.Load(key)
+	v, ok = c.Load(key)
+	if !ok {
+		return
+	}
+	if v, ok = v.(item); ok {
+		v = v.(item).Value
+		return
+	}
+
+	return
 }
 
 func (c *cache) Put(key string, value interface{}) {
