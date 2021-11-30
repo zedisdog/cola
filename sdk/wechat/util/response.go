@@ -16,8 +16,8 @@ func ParseResponse(response []byte, err error, data interface{}) error {
 		return errx.Wrap(err, "parse response error")
 	}
 
-	if data.(Error).Errcode != 0 {
-		err = errx.New(fmt.Sprintf("refresh token error: errcode=%d errmsg=%s", data.(Error).Errcode, data.(Error).Errmsg))
+	if data.(WechatError).ErrCode() != 0 {
+		err = errx.New(fmt.Sprintf("refresh token error: errcode=%d errmsg=%s", data.(WechatError).ErrCode(), data.(WechatError).ErrMsg()))
 	}
 	return err
 }
