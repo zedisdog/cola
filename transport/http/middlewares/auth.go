@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/zedisdog/cola/auth"
@@ -32,6 +33,8 @@ func GenAuthMiddleware(claims jwt.Claims, key string, isUserExists func(id inter
 
 		err := auth.Parse(token, []byte(key), claims)
 		if err != nil {
+			fmt.Printf("%+v\n", err)
+			fmt.Printf("%+v\n", token)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]string{"message": "未授权的访问3"})
 			return
 		}
