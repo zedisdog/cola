@@ -48,7 +48,7 @@ func GenAuthMiddleware(claims jwt.Claims, key string, isUserExists func(id inter
 		}
 
 		// use jti to keep the identification of account, jti in jwt.StandardClaims is Id
-		id := valueOfClaims.Elem().FieldByName("Id").String()
+		id := valueOfClaims.Elem().FieldByName("ID").String()
 		if !isUserExists(id) {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]string{"message": "未授权的访问4"})
 			return
