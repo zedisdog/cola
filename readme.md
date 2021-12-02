@@ -45,5 +45,6 @@ there are:
 * database.ModelWithUnixTimestamp
 
 ### test with database
-use github.com/zedisdog/cola/test/gorm.Fake(testfunc, github.com/zedisdog/cola/test/gorm.FakeDB()) to fake database
-use package github.com/zedisdog/cola/test/gorm/refresh_database can test with real database in transaction
+* use github.com/zedisdog/cola/test/gorm.Fake(testfunc, github.com/zedisdog/cola/test/gorm.FakeDB()) to fake database
+* use package github.com/zedisdog/cola/test/gorm/refresh_database can test with real database in transaction. when use this, 
+the business code must use gorm.DB.Transaction cause there has no way to use gorm.DB.Begin().Begin()
