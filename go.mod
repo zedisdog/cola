@@ -10,6 +10,7 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/gofrs/uuid v4.0.0+incompatible
+	github.com/golang-jwt/jwt/v4 v4.1.0
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/h2non/filetype v1.1.1
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -39,8 +40,6 @@ require (
 	gorm.io/driver/postgres v1.2.1
 	gorm.io/gorm v1.22.2
 )
-
-require github.com/golang-jwt/jwt/v4 v4.1.0
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
