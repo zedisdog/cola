@@ -43,3 +43,7 @@ there are:
 
 * database.Model
 * database.ModelWithUnixTimestamp
+
+### test with database
+use github.com/zedisdog/cola/test/gorm.Fake(testfunc, github.com/zedisdog/cola/test/gorm.FakeDB()) to fake database
+use package github.com/zedisdog/cola/test/gorm/refresh_database can test with real database in transaction
