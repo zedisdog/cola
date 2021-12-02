@@ -5,7 +5,6 @@ go 1.17
 require (
 	github.com/Selvatico/go-mocket v1.0.7
 	github.com/beevik/etree v1.1.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gin-gonic/gin v1.6.3
@@ -40,6 +39,8 @@ require (
 	gorm.io/driver/postgres v1.2.1
 	gorm.io/gorm v1.22.2
 )
+
+require github.com/golang-jwt/jwt/v4 v4.1.0
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
