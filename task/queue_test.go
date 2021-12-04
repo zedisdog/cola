@@ -26,7 +26,7 @@ func TestQueue(t *testing.T) {
 	}
 
 	// 开始跑
-	queue := NewQueue(3)
+	queue := NewQueue(WithWorkNum(3))
 	queue.Start()
 	// dispatch顺序是 job1 -> job2 -> job3
 	for _, j := range jobs {
@@ -50,7 +50,7 @@ func TestQueue(t *testing.T) {
 }
 
 func TestNormal(t *testing.T) {
-	queue := NewQueue(1)
+	queue := NewQueue(WithWorkNum(1))
 	queue.Start()
 	_ = queue.Dispatch(job.NewJob(func() {
 		println("执行任务来了3")
@@ -68,7 +68,7 @@ func TestNormal(t *testing.T) {
 
 func TestMuch(t *testing.T) {
 	result := 0
-	queue := NewQueue(10)
+	queue := NewQueue(WithWorkNum(10))
 	queue.Start()
 	var lock sync.Mutex
 	for i := 0; i < 100; i++ {

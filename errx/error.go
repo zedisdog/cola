@@ -64,6 +64,13 @@ func (e Error) Format(s fmt.State, r rune) {
 			i18n.Trans(e.message),
 			e.Unwrap(),
 		))
+	case 'q':
+		_, _ = io.WriteString(s, fmt.Sprintf("> %s:%d %s\n> %s",
+			e.file,
+			e.line,
+			i18n.Trans(e.message),
+			e.Unwrap(),
+		))
 	case 'v':
 		_, _ = io.WriteString(s, fmt.Sprintf("%s\n", e.Error()))
 		_, _ = io.WriteString(s, fmt.Sprintf("%s\n", string(e.Stack())))
