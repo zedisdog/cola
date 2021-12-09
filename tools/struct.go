@@ -9,8 +9,8 @@ import (
 //	params:
 //		src       source object
 //		dest      point of dest object
-//		copyZero  if copy zero field too
-func CopyFields(src interface{}, dest interface{}, copyZero ...bool) error {
+//		notCopyZero  if copy zero field too
+func CopyFields(src interface{}, dest interface{}, notCopyZero ...bool) error {
 	var (
 		sValue reflect.Value
 		dValue reflect.Value
@@ -35,7 +35,7 @@ func CopyFields(src interface{}, dest interface{}, copyZero ...bool) error {
 	for i := 0; i < dType.NumField(); i++ {
 		dTypeField := dType.Field(i)
 		sValueField := sValue.FieldByName(dTypeField.Name)
-		if !sValueField.IsValid() || (len(copyZero) > 0 && copyZero[0] && sValueField.IsZero()) {
+		if !sValueField.IsValid() || (len(notCopyZero) > 0 && notCopyZero[0] && sValueField.IsZero()) {
 			continue
 		}
 		dValueField := dValue.Field(i)
