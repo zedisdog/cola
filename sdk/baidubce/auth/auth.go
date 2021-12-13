@@ -3,12 +3,13 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/uniplaces/carbon"
-	"github.com/zedisdog/cola/sdk/baidubce/response"
 	"io"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/uniplaces/carbon"
+	"github.com/zedisdog/cola/sdk/baidubce/response"
 )
 
 func NewAuth(clientId string, clientSecret string, host string) *Auth {
