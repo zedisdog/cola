@@ -160,9 +160,11 @@ func (a *Auth) ValidateAccessToken(accessToken string, openID string) bool {
 		accessToken,
 		openID,
 	)
+
 	response, err := http.GetJSON(u)
 	err = util.ParseResponse(response, err, &errMsg)
 	if err != nil {
+		println(err.Error())
 		return false
 	}
 

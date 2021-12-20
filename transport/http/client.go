@@ -54,7 +54,7 @@ func buildRequest(method string, url string, data interface{}) (request *http.Re
 	return
 }
 
-func PutJSON(url string, data interface{}) (response []byte, err *errx.HttpError) {
+func PutJSON(url string, data interface{}) (response []byte, err error) {
 	request, e := buildRequest(http.MethodPut, url, data)
 	if e != nil {
 		err = errx.NewHttpError(0, e.Error())
@@ -67,7 +67,7 @@ func PutJSON(url string, data interface{}) (response []byte, err *errx.HttpError
 //	url is the target to post.
 //
 //	data is to be posted.it can be string, []byte and struct, also nil.
-func PostJSON(url string, data interface{}) (response []byte, err *errx.HttpError) {
+func PostJSON(url string, data interface{}) (response []byte, err error) {
 	request, e := buildRequest(http.MethodPost, url, data)
 	if e != nil {
 		err = errx.NewHttpError(0, e.Error())
@@ -77,7 +77,7 @@ func PostJSON(url string, data interface{}) (response []byte, err *errx.HttpErro
 }
 
 //GetJSON get json
-func GetJSON(url string) (response []byte, err *errx.HttpError) {
+func GetJSON(url string) (response []byte, err error) {
 	request, e := buildRequest(http.MethodGet, url, nil)
 	if e != nil {
 		err = errx.NewHttpError(0, e.Error())
