@@ -103,22 +103,30 @@ func Error(c *gin.Context, params ...interface{}) {
 // Success params[0]: data
 //         params[1]: status code
 func Success(c *gin.Context, params ...interface{}) {
-	if len(params) == 0 {
-		c.JSON(http.StatusNoContent, nil)
-		return
-	}
-	var code int
-	if len(params) == 2 {
-		code = params[1].(int)
-	} else {
+	var (
+		code     int
+		response *Response
+	)
+
+	switch len(params) {
+	case 0:
+		code = http.StatusNoContent
+	case 1:
+		if list, ok := params[0].(*ListByPage); ok {
+			response = NewPageResponse(list.Data, list.Total, list.Page, list.PerPage)
+		} else {
+			response = NewResponse(params[0])
+		}
 		code = http.StatusOK
+	case 2:
+		if list, ok := params[0].(*ListByPage); ok {
+			response = NewPageResponse(list.Data, list.Total, list.Page, list.PerPage)
+		} else {
+			response = NewResponse(params[0])
+		}
+		code = params[1].(int)
 	}
-	var response *Response
-	if list, ok := params[0].(*ListByPage); ok {
-		response = NewPageResponse(list.Data, list.Total, list.Page, list.PerPage)
-	} else {
-		response = NewResponse(params[0])
-	}
+
 	c.JSON(code, response)
 }
 
