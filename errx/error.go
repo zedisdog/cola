@@ -99,10 +99,10 @@ func Wrap(err error, message string) error {
 	if err == nil {
 		return nil
 	}
-	var e Error
-	if e, ok := err.(HasStack); ok {
+	var e *Error
+	if _, ok := err.(HasStack); ok {
 		e = &Error{
-			stack: e.Stack(),
+			stack: err.(HasStack).Stack(),
 		}
 	} else {
 		e = &Error{

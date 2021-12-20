@@ -86,7 +86,7 @@ func GetJSON(url string) (response []byte, err error) {
 	return Request(request)
 }
 
-func Request(request *http.Request) (response []byte, err *errx.HttpError) {
+func Request(request *http.Request) (response []byte, err error) {
 	resp, e := http.DefaultClient.Do(request)
 	if e != nil {
 		err = errx.NewHttpError(0, err.Error())
