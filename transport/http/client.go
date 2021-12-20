@@ -9,17 +9,7 @@ import (
 	urlpkg "net/url"
 )
 
-//PostJSON post json
-//	url is the target to post.
-//
-//	data is to be posted.it can be string, []byte and struct, also nil.
-func PostJSON(url string, data interface{}) ([]byte, error) {
-	u, err := urlpkg.Parse(url)
-	if err != nil {
-		return nil, errx.Wrap(err, "parse url error")
-	}
-
-	var body io.ReadCloser
+func buildBody(data interface{}) (body io.ReadCloser, err error) {
 	switch data.(type) {
 	case []byte:
 		body = io.NopCloser(bytes.NewBuffer(data.([]byte)))
@@ -27,7 +17,7 @@ func PostJSON(url string, data interface{}) ([]byte, error) {
 		body = io.NopCloser(bytes.NewBufferString(data.(string)))
 	default:
 		if data == nil {
-			break
+			return
 		}
 		tmp, err := json.Marshal(data)
 		if err != nil {
@@ -35,52 +25,85 @@ func PostJSON(url string, data interface{}) ([]byte, error) {
 		}
 		body = io.NopCloser(bytes.NewBuffer(tmp))
 	}
+	return
+}
 
-	req := http.Request{
+func buildRequest(method string, url string, data interface{}) (request *http.Request, err error) {
+	u, err := urlpkg.Parse(url)
+	if err != nil {
+		err = errx.Wrap(err, "parse url error")
+		return
+	}
+
+	body, err := buildBody(data)
+	if err != nil {
+		err = errx.Wrap(err, "build body error")
+		return
+	}
+
+	request = &http.Request{
 		Header: map[string][]string{
 			"Content-Type": {"application/json"},
 			"Accept":       {"application/json"},
 		},
-		Method: http.MethodPost,
+		Method: method,
 		Body:   body,
 		URL:    u,
 	}
 
-	return Request(&req)
+	return
+}
+
+func PutJSON(url string, data interface{}) (response []byte, err *errx.HttpError) {
+	request, e := buildRequest(http.MethodPut, url, data)
+	if e != nil {
+		err = errx.NewHttpError(0, e.Error())
+		return
+	}
+	return Request(request)
+}
+
+//PostJSON post json
+//	url is the target to post.
+//
+//	data is to be posted.it can be string, []byte and struct, also nil.
+func PostJSON(url string, data interface{}) (response []byte, err *errx.HttpError) {
+	request, e := buildRequest(http.MethodPost, url, data)
+	if e != nil {
+		err = errx.NewHttpError(0, e.Error())
+		return
+	}
+	return Request(request)
 }
 
 //GetJSON get json
-func GetJSON(url string) ([]byte, error) {
-	u, err := urlpkg.Parse(url)
-	if err != nil {
-		return nil, errx.Wrap(err, "parse url error")
+func GetJSON(url string) (response []byte, err *errx.HttpError) {
+	request, e := buildRequest(http.MethodGet, url, nil)
+	if e != nil {
+		err = errx.NewHttpError(0, e.Error())
+		return
 	}
-	request := http.Request{
-		Method: http.MethodGet,
-		URL:    u,
-		Header: map[string][]string{
-			"Content-Type": {"application/json"},
-			"Accept":       {"application/json"},
-		},
-	}
-	return Request(&request)
+	return Request(request)
 }
 
-func Request(request *http.Request) (response []byte, err error) {
-	resp, err := http.DefaultClient.Do(request)
-	if err != nil {
+func Request(request *http.Request) (response []byte, err *errx.HttpError) {
+	resp, e := http.DefaultClient.Do(request)
+	if e != nil {
+		err = errx.NewHttpError(0, err.Error())
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= http.StatusBadRequest {
 		content, _ := io.ReadAll(resp.Body)
-		return nil, errx.NewHttpError(resp.StatusCode, string(content))
+		err = errx.NewHttpError(resp.StatusCode, string(content))
+		return
 	}
 
-	response, err = io.ReadAll(resp.Body)
-	if err != nil {
-		err = errx.Wrap(err, "read body err")
+	response, e = io.ReadAll(resp.Body)
+	if e != nil {
+		err = errx.NewHttpError(0, err.Error())
+		return
 	}
 	return
 }
