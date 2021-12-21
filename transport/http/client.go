@@ -28,7 +28,15 @@ func buildBody(data interface{}) (body io.ReadCloser, err error) {
 	return
 }
 
-func buildRequest(method string, url string, data interface{}) (request *http.Request, err error) {
+func WithHeaders(headers map[string][]string) RequestSetter {
+	return func(r *http.Request) {
+		r.Header = headers
+	}
+}
+
+type RequestSetter func(*http.Request)
+
+func buildRequest(method string, url string, data interface{}, setters ...RequestSetter) (request *http.Request, err error) {
 	u, err := urlpkg.Parse(url)
 	if err != nil {
 		err = errx.Wrap(err, "parse url error")
@@ -42,22 +50,29 @@ func buildRequest(method string, url string, data interface{}) (request *http.Re
 	}
 
 	request = &http.Request{
-		Header: map[string][]string{
-			"Content-Type": {"application/json"},
-			"Accept":       {"application/json"},
-		},
 		Method: method,
 		Body:   body,
 		URL:    u,
+	}
+
+	for _, setter := range setters {
+		setter(request)
 	}
 
 	return
 }
 
 func PutJSON(url string, data interface{}) (response []byte, err error) {
-	request, e := buildRequest(http.MethodPut, url, data)
-	if e != nil {
-		err = errx.NewHttpError(0, e.Error())
+	return PutWithHeader(url, data, map[string][]string{
+		"Content-Type": {"application/json"},
+		"Accept":       {"application/json"},
+	})
+}
+
+func PutWithHeader(url string, data interface{}, headers map[string][]string) (response []byte, err error) {
+	request, err := buildRequest(http.MethodPut, url, data, WithHeaders(headers))
+	if err != nil {
+		err = errx.NewHttpError(0, err.Error())
 		return
 	}
 	return Request(request)
@@ -68,9 +83,16 @@ func PutJSON(url string, data interface{}) (response []byte, err error) {
 //
 //	data is to be posted.it can be string, []byte and struct, also nil.
 func PostJSON(url string, data interface{}) (response []byte, err error) {
-	request, e := buildRequest(http.MethodPost, url, data)
-	if e != nil {
-		err = errx.NewHttpError(0, e.Error())
+	return PostWithHeader(url, data, map[string][]string{
+		"Content-Type": {"application/json"},
+		"Accept":       {"application/json"},
+	})
+}
+
+func PostWithHeader(url string, data interface{}, headers map[string][]string) (response []byte, err error) {
+	request, err := buildRequest(http.MethodPost, url, data, WithHeaders(headers))
+	if err != nil {
+		err = errx.NewHttpError(0, err.Error())
 		return
 	}
 	return Request(request)
@@ -78,11 +100,19 @@ func PostJSON(url string, data interface{}) (response []byte, err error) {
 
 //GetJSON get json
 func GetJSON(url string) (response []byte, err error) {
-	request, e := buildRequest(http.MethodGet, url, nil)
-	if e != nil {
-		err = errx.NewHttpError(0, e.Error())
+	return GetWithHeader(url, map[string][]string{
+		"Content-Type": {"application/json"},
+		"Accept":       {"application/json"},
+	})
+}
+
+func GetWithHeader(url string, headers map[string][]string) (response []byte, err error) {
+	request, err := buildRequest(http.MethodGet, url, nil, WithHeaders(headers))
+	if err != nil {
+		err = errx.NewHttpError(0, err.Error())
 		return
 	}
+
 	return Request(request)
 }
 
