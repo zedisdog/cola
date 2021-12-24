@@ -1,17 +1,17 @@
-package database
+package migrate
 
 import (
-	"embed"
+	_ "github.com/golang-migrate/migrate/v4/database/mysql"
+
 	"github.com/golang-migrate/migrate/v4"
-	migrate2 "github.com/zedisdog/cola/cmd/cola/migrate"
 	"github.com/zedisdog/cola/tools"
 )
 
 // AutoMigrate 自动迁移
-func AutoMigrate(migrations embed.FS, dsn string) {
+func AutoMigrate(dsn string) {
 	m, err := migrate.NewWithSourceInstance(
 		"",
-		migrate2.NewEmbed(migrations),
+		EmbedDriver,
 		tools.EncodeQuery(dsn),
 	)
 	if err != nil {
