@@ -1,6 +1,4 @@
-//go:build !gorm
-
-package database
+package mysql
 
 import (
 	"database/sql"
