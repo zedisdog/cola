@@ -2,6 +2,7 @@ package gorm
 
 import (
 	"errors"
+	"github.com/zedisdog/cola/tools"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -18,7 +19,7 @@ func InitDB(dsn string, setters ...func(*gorm.Config)) (db *gorm.DB, err error) 
 		}
 
 		var d gorm.Dialector
-		d, err = newDialector(dsn)
+		d, err = newDialector(tools.EncodeQuery(dsn))
 		if err != nil {
 			panic(err)
 		}
@@ -45,4 +46,12 @@ func newDialector(dsn string) (gorm.Dialector, error) {
 	}
 
 	return nil, errors.New("not support database type")
+}
+
+func Fake(f func()) {
+	tmp := DB
+	DB = DB.Begin()
+	f()
+	DB.Rollback()
+	DB = tmp
 }
