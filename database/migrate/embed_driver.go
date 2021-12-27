@@ -14,20 +14,20 @@ import (
 
 var EmbedDriver = NewEmbedDriver()
 
-func NewEmbedDriver() *embedDriver {
-	e := &embedDriver{
+func NewEmbedDriver() *EDriver {
+	e := &EDriver{
 		sorts: make([]uint, 0, 20),
 		files: make(map[string]file),
 	}
 	return e
 }
 
-type embedDriver struct {
+type EDriver struct {
 	sorts []uint
 	files map[string]file
 }
 
-func (e *embedDriver) Add(f *embed.FS) {
+func (e *EDriver) Add(f *embed.FS) {
 	dirEntries, _ := fs.ReadDir(f, ".")
 	for _, entry := range dirEntries {
 		// 取version
@@ -61,22 +61,22 @@ func (e *embedDriver) Add(f *embed.FS) {
 	return
 }
 
-func (e *embedDriver) Open(url string) (source.Driver, error) {
+func (e *EDriver) Open(url string) (source.Driver, error) {
 	return e, nil
 }
 
-func (e embedDriver) Close() error {
+func (e EDriver) Close() error {
 	return nil
 }
 
-func (e embedDriver) First() (version uint, err error) {
+func (e EDriver) First() (version uint, err error) {
 	if len(e.sorts) < 1 {
 		return 0, os.ErrNotExist
 	}
 	return e.sorts[0], nil
 }
 
-func (e embedDriver) find(version uint) (index int, err error) {
+func (e EDriver) find(version uint) (index int, err error) {
 	var ver uint
 	for index, ver = range e.sorts {
 		if ver == version {
@@ -86,7 +86,7 @@ func (e embedDriver) find(version uint) (index int, err error) {
 	return 0, os.ErrNotExist
 }
 
-func (e embedDriver) Prev(version uint) (prevVersion uint, err error) {
+func (e EDriver) Prev(version uint) (prevVersion uint, err error) {
 	index, err := e.find(version)
 	if err != nil {
 		return
@@ -97,7 +97,7 @@ func (e embedDriver) Prev(version uint) (prevVersion uint, err error) {
 	return 0, os.ErrNotExist
 }
 
-func (e embedDriver) Next(version uint) (nextVersion uint, err error) {
+func (e EDriver) Next(version uint) (nextVersion uint, err error) {
 	index, err := e.find(version)
 	if err != nil {
 		return
@@ -108,7 +108,7 @@ func (e embedDriver) Next(version uint) (nextVersion uint, err error) {
 	return 0, os.ErrNotExist
 }
 
-func (e embedDriver) ReadUp(version uint) (r io.ReadCloser, identifier string, err error) {
+func (e EDriver) ReadUp(version uint) (r io.ReadCloser, identifier string, err error) {
 	file, ok := e.files[fmt.Sprintf("%d_%s", version, "up")]
 	if !ok {
 		return nil, "", os.ErrNotExist
@@ -118,7 +118,7 @@ func (e embedDriver) ReadUp(version uint) (r io.ReadCloser, identifier string, e
 	return
 }
 
-func (e embedDriver) ReadDown(version uint) (r io.ReadCloser, identifier string, err error) {
+func (e EDriver) ReadDown(version uint) (r io.ReadCloser, identifier string, err error) {
 	file, ok := e.files[fmt.Sprintf("%d_%s", version, "down")]
 	if !ok {
 		return nil, "", os.ErrNotExist
