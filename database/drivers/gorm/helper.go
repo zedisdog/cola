@@ -13,21 +13,11 @@ func NewDBHelper() *DBHelper {
 
 type DBHelper struct {
 	*gorm.DB
-	tx *gorm.DB
 }
 
 //WithTx 没有返回指针是因为一般场景都是用了就丢弃 放到栈上不会给gc压力
-func (d DBHelper) WithTx(tx *gorm.DB) DBHelper {
-	d.tx = tx
-	return d
-}
-
-func (d DBHelper) Transaction(f func(tx *gorm.DB) error) error {
-	if d.tx != nil {
-		return d.tx.Transaction(f)
-	} else {
-		return d.DB.Transaction(f)
-	}
+func (d *DBHelper) WithTx(tx *gorm.DB) {
+	d.DB = tx
 }
 
 //Begin not implement
