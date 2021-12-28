@@ -48,10 +48,19 @@ func newDialector(dsn string) (gorm.Dialector, error) {
 	return nil, errors.New("not support database type")
 }
 
-func Fake(f func()) {
+//RefreshDatabase 测试时通过使用本函数来做到不生成实际数据
+func RefreshDatabase(f func()) {
 	tmp := DB
 	DB = DB.Begin()
 	f()
 	DB.Rollback()
+	DB = tmp
+}
+
+//Fake 测试时候可以使用gorm的mock工具
+func Fake(f func(), GormMockery *gorm.DB) {
+	tmp := DB
+	DB = GormMockery
+	f()
 	DB = tmp
 }
