@@ -5,7 +5,7 @@ const ContractTemp = `package {{.PkgName}}
 import (
 	Gorm "gorm.io/gorm"
 	"{{.ProjectName}}/internal/{{.PkgName}}/dto"
-	"{{.ProjectName}}/internal/{{.PkgName}}/model"
+	"{{.ProjectName}}/internal/{{.PkgName}}/models"
 )
 
 type Dao interface {

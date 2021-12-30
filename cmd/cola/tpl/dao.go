@@ -8,7 +8,7 @@ import (
 	Gorm "gorm.io/gorm"
 	"{{.PkgName}}/internal/{{.ModuleName}}"
 	"{{.PkgName}}/internal/{{.ModuleName}}/dto"
-	"{{.PkgName}}/internal/{{.ModuleName}}/model"
+	"{{.PkgName}}/internal/{{.ModuleName}}/models"
 )
 
 func NewGorm{{.Entity}}Dao() {{.ModuleName}}.Dao {
