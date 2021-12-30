@@ -20,7 +20,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/iancoleman/strcase"
 	"github.com/spf13/viper"
-	"github.com/zedisdog/cola/cmd/cola/stubs"
+	"github.com/zedisdog/cola/cmd/cola_bak/stubs"
 	"github.com/zedisdog/cola/pather"
 	"os"
 	"strings"

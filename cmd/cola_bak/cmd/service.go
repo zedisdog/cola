@@ -19,8 +19,7 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/iancoleman/strcase"
-	"github.com/spf13/viper"
-	"github.com/zedisdog/cola/cmd/cola/stubs"
+	"github.com/zedisdog/cola/cmd/cola_bak/stubs"
 	"github.com/zedisdog/cola/pather"
 	"os"
 	"strings"
@@ -28,14 +27,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// apiCmd represents the controller command
-var apiCmd = &cobra.Command{
-	Use:   "api",
-	Short: "generate api",
-	Long:  ``,
+// serviceCmd represents the service command
+var serviceCmd = &cobra.Command{
+	Use:   "service",
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
-			color.Red("required a name for api")
+			color.Red("required a name for service")
 			os.Exit(1)
 		}
 		packageName, _ := cmd.Flags().GetString("packageName")
@@ -43,7 +47,7 @@ var apiCmd = &cobra.Command{
 
 		p := pather.NewProjectPath()
 		fileName := fmt.Sprintf("%s/%s.go", path, strcase.ToSnake(args[0]))
-
+		// 创建目录
 		err := os.MkdirAll(p.Dir(fileName), 0777)
 		if err != nil {
 			color.Red(err.Error())
@@ -57,28 +61,26 @@ var apiCmd = &cobra.Command{
 		}
 		defer f.Close()
 		replacer := strings.NewReplacer(
-			"{{name}}", strcase.ToLowerCamel(args[0]),
-			"{{moduleName}}", viper.GetString("moduleName"),
-			"{{shortName}}", string([]rune(strcase.ToLowerCamel(args[0]))[0]),
-			"{{varName}}", strcase.ToCamel(args[0]),
+			"{{name}}", strcase.ToCamel(args[0]),
+			"{{serviceName}}", strcase.ToLowerCamel(args[0]),
 			"{{packageName}}", packageName,
 		)
-		f.WriteString(replacer.Replace(stubs.ControllerTemp))
+		f.WriteString(replacer.Replace(stubs.ServiceTemp))
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(apiCmd)
+	rootCmd.AddCommand(serviceCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// controllerCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// serviceCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// controllerCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	apiCmd.Flags().StringP("path", "p", "internal/app/api", "Specify directory path to create in")
-	apiCmd.Flags().StringP("packageName", "P", "api", "Specify package name")
+	// serviceCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	serviceCmd.Flags().StringP("path", "p", "internal/app/services", "Specify directory path to create in")
+	serviceCmd.Flags().StringP("packageName", "P", "services", "Specify package name")
 }

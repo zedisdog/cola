@@ -13,25 +13,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 package cmd
 
 import (
-	"github.com/zedisdog/cola/cmd/cola/migrate"
-
+	"errors"
 	"github.com/spf13/cobra"
+	"github.com/zedisdog/cola/cmd/cola_bak/lib"
 )
 
-// upCmd represents the up command
-var upCmd = &cobra.Command{
-	Use:   "up",
-	Short: "up migrations",
-	Long:  `up migrations`,
-	Run: func(cmd *cobra.Command, args []string) {
-		m, err := migrate.GetInstance()
-		if err != nil {
-			panic(err)
+// exportCmd represents the export command
+var exportCmd = &cobra.Command{
+	Use:   "export [path to export]",
+	Short: "export a app template to <path>",
+	Long:  ``,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 1 {
+			return errors.New("requires at least one arg")
 		}
-		err = m.Up()
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		err := lib.Export(args[0], "template")
 		if err != nil {
 			panic(err)
 		}
@@ -39,15 +42,16 @@ var upCmd = &cobra.Command{
 }
 
 func init() {
-	migrateCmd.AddCommand(upCmd)
+	devCmd.AddCommand(exportCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// upCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// exportCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// upCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// exportCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//exportCmd.Flags().StringP("path", "p", "", "the path to export")
 }

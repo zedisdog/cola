@@ -3,7 +3,7 @@ package lib
 import (
 	"bytes"
 	"fmt"
-	"github.com/zedisdog/cola/cmd/cola/stubs"
+	"github.com/zedisdog/cola/cmd/cola_bak/stubs"
 	"io/fs"
 	"os"
 	"path/filepath"

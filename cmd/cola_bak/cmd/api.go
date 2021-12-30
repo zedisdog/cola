@@ -19,7 +19,8 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/iancoleman/strcase"
-	"github.com/zedisdog/cola/cmd/cola/stubs"
+	"github.com/spf13/viper"
+	"github.com/zedisdog/cola/cmd/cola_bak/stubs"
 	"github.com/zedisdog/cola/pather"
 	"os"
 	"strings"
@@ -27,59 +28,57 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// modelCmd represents the model command
-var modelCmd = &cobra.Command{
-	Use:   "model",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+// apiCmd represents the controller command
+var apiCmd = &cobra.Command{
+	Use:   "api",
+	Short: "generate api",
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
-			color.Red("required a name for model")
+			color.Red("required a name for api")
 			os.Exit(1)
 		}
 		packageName, _ := cmd.Flags().GetString("packageName")
 		path, _ := cmd.Flags().GetString("path")
 
 		p := pather.NewProjectPath()
-		filePath := fmt.Sprintf("%s/%s.go", path, strcase.ToSnake(args[0]))
-		// 创建目录
-		err := os.MkdirAll(p.Dir(filePath), 0777)
+		fileName := fmt.Sprintf("%s/%s.go", path, strcase.ToSnake(args[0]))
+
+		err := os.MkdirAll(p.Dir(fileName), 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
 
-		f, err := os.OpenFile(p.Gen(filePath), os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
+		f, err := os.OpenFile(p.Gen(fileName), os.O_CREATE|os.O_TRUNC|os.O_WRONLY|os.O_EXCL, 0777)
 		if err != nil {
 			color.Red(err.Error())
 			os.Exit(1)
 		}
 		defer f.Close()
 		replacer := strings.NewReplacer(
-			"{{name}}", strcase.ToCamel(args[0]),
+			"{{name}}", strcase.ToLowerCamel(args[0]),
+			"{{moduleName}}", viper.GetString("moduleName"),
+			"{{shortName}}", string([]rune(strcase.ToLowerCamel(args[0]))[0]),
+			"{{varName}}", strcase.ToCamel(args[0]),
 			"{{packageName}}", packageName,
 		)
-		f.WriteString(replacer.Replace(stubs.ModelTemp))
+		f.WriteString(replacer.Replace(stubs.ControllerTemp))
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(modelCmd)
+	rootCmd.AddCommand(apiCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// modelCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// controllerCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// modelCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	modelCmd.Flags().StringP("path", "p", "internal/database/models", "Specify directory path to create in")
-	modelCmd.Flags().StringP("packageName", "P", "models", "Specify package name")
+	// controllerCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	apiCmd.Flags().StringP("path", "p", "internal/app/api", "Specify directory path to create in")
+	apiCmd.Flags().StringP("packageName", "P", "api", "Specify package name")
 }

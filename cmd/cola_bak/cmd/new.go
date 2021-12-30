@@ -19,7 +19,7 @@ package cmd
 import (
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	"github.com/zedisdog/cola/cmd/cola/lib"
+	"github.com/zedisdog/cola/cmd/cola_bak/lib"
 
 	"os/exec"
 )

@@ -19,7 +19,7 @@ require (
 	github.com/sirupsen/logrus v1.8.0
 	github.com/sony/sonyflake v1.0.0
 	github.com/spf13/afero v1.7.0 // indirect
-	github.com/spf13/cobra v1.1.3
+	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
 	github.com/uniplaces/carbon v0.1.6
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa

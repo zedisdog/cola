@@ -18,7 +18,7 @@ package cmd
 import (
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	"github.com/zedisdog/cola/cmd/cola/migrate"
+	"github.com/zedisdog/cola/cmd/cola_bak/migrate"
 	"os"
 )
 
