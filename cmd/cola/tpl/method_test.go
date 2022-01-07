@@ -15,7 +15,7 @@ func TestMethodTemp(t *testing.T) {
 		t.Fatal(err)
 	}
 	buff := bytes.NewBuffer([]byte{})
-	err = tmp.Execute(buff, MethodTempParams{
+	err = tmp.Execute(buff, FuncTempOptions{
 		Receiver:     "",
 		ReceiverType: "test",
 		Name:         "",

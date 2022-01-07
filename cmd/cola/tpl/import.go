@@ -6,10 +6,15 @@ import (
 )
 
 const ImportTemp = `import{{if lt (len .) 2}} "{{index . 0}}" {{else}} (
-{{range .}}	"{{.}}"
+{{range .}}	{{if .Alias}}{{.Alias}} {{end}}"{{.Import}}"
 {{end}}){{end}}`
 
-func GenImport(s []string) (r []byte, err error) {
+type ImportOptions struct {
+	Alias  string
+	Import string
+}
+
+func GenImport(s []ImportOptions) (r []byte, err error) {
 	tmp, err := template.New("test").Parse(ImportTemp)
 	if err != nil {
 		return

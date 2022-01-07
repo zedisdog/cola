@@ -6,7 +6,7 @@ import (
 	"text/template"
 )
 
-type MethodTempParams struct {
+type FuncTempOptions struct {
 	Receiver     string
 	ReceiverType string
 	Name         string
@@ -16,20 +16,49 @@ type MethodTempParams struct {
 	Content string
 }
 
-const FuncTemp = `func{{if .Name}} {{if .Receiver}}({{.Receiver}} {{.ReceiverType}}) {{end}}{{.Name}}{{end}}({{pList .Params}}) ({{pList .Returns}}) { {{- if .Content}}
+const FuncTemp = `func{{if .Name}} {{if .Receiver}}({{.Receiver}} {{.ReceiverType}}) {{end}}{{.Name}}{{end}}({{pList .Params}}) {{rList .Returns}} { {{- if .Content}}
 	{{.Content}}
-{{end -}} }
-`
+{{end -}} }`
 
-func GenMethod(params MethodTempParams) (r []byte, err error) {
-	tmp, err := template.New("method").Funcs(template.FuncMap{
+func GenFunc(options FuncTempOptions) (r []byte, err error) {
+	tmp, err := template.New("func").Funcs(template.FuncMap{
 		"pList": funcs.ParamList,
+		"rList": funcs.ReturnList,
 	}).Parse(FuncTemp)
 	if err != nil {
 		return
 	}
 	buff := bytes.NewBuffer([]byte{})
-	err = tmp.Execute(buff, params)
+	err = tmp.Execute(buff, options)
+	if err != nil {
+		return
+	}
+	r = buff.Bytes()
+	return
+}
+
+type FuncSignTempOptions struct {
+	Receiver     string
+	ReceiverType string
+	Name         string
+	Params       map[string]string
+	//Returns map[string]string or []string
+	Returns interface{}
+}
+
+const FuncSignTemp = `func{{if .Name}} {{if .Receiver}}({{.Receiver}} {{.ReceiverType}}) {{end}}{{.Name}}{{end}}({{pList .Params}}) {{rList .Returns}}
+`
+
+func GenFuncSign(options FuncSignTempOptions) (r []byte, err error) {
+	tmp, err := template.New("funcSign").Funcs(template.FuncMap{
+		"pList": funcs.ParamList,
+		"rList": funcs.ReturnList,
+	}).Parse(FuncSignTemp)
+	if err != nil {
+		return
+	}
+	buff := bytes.NewBuffer([]byte{})
+	err = tmp.Execute(buff, options)
 	if err != nil {
 		return
 	}

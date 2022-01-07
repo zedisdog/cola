@@ -12,7 +12,15 @@ func TestImportTemp(t *testing.T) {
 		t.Fatal(err)
 	}
 	buff := bytes.NewBuffer([]byte{})
-	err = tmp.Execute(buff, []string{"test", "test2"})
+	err = tmp.Execute(buff, []ImportOptions{
+		{
+			Alias:  "_",
+			Import: "test",
+		},
+		{
+			Import: "test1",
+		},
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
