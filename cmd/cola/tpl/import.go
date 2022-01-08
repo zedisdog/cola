@@ -5,7 +5,7 @@ import (
 	"text/template"
 )
 
-const ImportTemp = `import{{if lt (len .) 2}} "{{index . 0}}" {{else}} (
+const ImportTemp = `import{{if lt (len .) 2}} "{{- (index . 0).Import -}}" {{else}} (
 {{range .}}	{{if .Alias}}{{.Alias}} {{end}}"{{.Import}}"
 {{end}}){{end}}`
 

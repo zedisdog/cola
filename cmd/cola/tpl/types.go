@@ -8,7 +8,7 @@ import (
 )
 
 const StructTemp = `type {{.Name}} struct { {{- range .Fields}}
-	{{.Name}}	{{.Type}}	` + "{{if .Tags}}`" + `{{range .Tags}}{{.Key}}:"{{.Value}}" {{end}}` + "`{{end}}" + `{{end}}
+	{{.Name}}{{if .Type}}	{{.Type}}{{end}}` + "{{if .Tags}}	`" + `{{range .Tags}}{{.Key}}:"{{.Value}}" {{end}}` + "`{{end}}" + `{{end}}
 }
 {{range .Methods}}
 ` + FuncTemp + `

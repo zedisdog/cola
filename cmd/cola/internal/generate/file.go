@@ -10,9 +10,12 @@ func File(options tpl.FileTempOptions, path string) (err error) {
 	if err != nil {
 		return
 	}
+	return FileBytes(content, path)
+}
+
+func FileBytes(content []byte, path string) (err error) {
 	f, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0766)
 	defer f.Close()
-
 	_, err = f.Write(content)
 	return
 }
