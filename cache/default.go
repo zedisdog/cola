@@ -52,3 +52,12 @@ func Get(key string) (v interface{}, ok bool) {
 	instance, _ := Instance()
 	return instance.Get(key)
 }
+
+func GetString(key string) (v string, ok bool) {
+	instance, _ := Instance()
+	tmp, ok := instance.Get(key)
+	if ok {
+		v = tmp.(string)
+	}
+	return
+}
