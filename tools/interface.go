@@ -6,10 +6,20 @@ func Empty(data interface{}) bool {
 	}
 
 	switch data.(type) {
-	case int, int32, int64, uint, uint64, uint32:
-		return data == 0
+	case int:
+		return data.(int) == 0
+	case int32:
+		return data.(int32) == 0
+	case int64:
+		return data.(int64) == 0
+	case uint:
+		return data.(uint) == 0
+	case uint64:
+		return data.(uint64) == 0
+	case uint32:
+		return data.(uint32) == 0
 	case string:
-		return data == ""
+		return data.(string) == ""
 	case []byte:
 		return len(data.([]byte)) == 0
 	}
