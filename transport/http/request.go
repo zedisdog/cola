@@ -14,7 +14,7 @@ import (
 func ValidateJSON(c *gin.Context, request interface{}) error {
 	if err := c.ShouldBindJSON(request); err != nil {
 		if e, ok := err.(validator.ValidationErrors); ok {
-			c.AbortWithStatusJSON(422, response.NewValidateResponse(ParseValidateErrors(e)))
+			c.AbortWithStatusJSON(422, response.NewValidateResponse(ParseValidateErrors(e, request)))
 		} else if errors.Is(err, io.EOF) {
 			c.AbortWithStatusJSON(400, response.Response{
 				Msg: i18n.Trans(i18n.EMPTY_BODY),
@@ -29,20 +29,36 @@ func ValidateJSON(c *gin.Context, request interface{}) error {
 	return nil
 }
 
+type CanGetError interface {
+	GetError(structField string, tag string) string
+}
+
 func ValidateQuery(c *gin.Context, request interface{}) error {
 	if err := c.ShouldBindQuery(request); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, response.NewValidateResponse(ParseValidateErrors(err.(validator.ValidationErrors))))
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, response.NewValidateResponse(ParseValidateErrors(err.(validator.ValidationErrors), request)))
 		return err
 	}
 
 	return nil
 }
 
-func ParseValidateErrors(errors validator.ValidationErrors) (message string, es map[string]string) {
-	message = i18n.Trans(i18n.VALIDATE_FAILED)
+func ParseValidateErrors(errors validator.ValidationErrors, request interface{}) (message string, es map[string]string) {
 	es = make(map[string]string)
 	for _, e := range errors {
-		es[strcase.ToSnake(e.Field())] = e.(error).Error()
+		key := strcase.ToSnake(e.StructField())
+		if _, ok := es[key]; !ok {
+			var m string
+			if r, ok := request.(CanGetError); ok {
+				m = r.GetError(e.StructField(), e.Tag())
+			}
+			if m == "" {
+				m = e.(error).Error()
+			}
+			es[key] = m
+			if message == "" {
+				message = m
+			}
+		}
 	}
 
 	return
