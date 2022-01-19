@@ -3,7 +3,6 @@ package response
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/zedisdog/cola/e"
 	"github.com/zedisdog/cola/errx"
 	"gorm.io/gorm"
 	"math"
@@ -23,27 +22,59 @@ type Response struct {
 	Meta *Meta       `json:"meta"`
 }
 
-func NewValidateResponse(message string, data interface{}) *Response {
-	return &Response{
-		Data: data,
-		Msg:  message,
+// Error 返回错误响应 p1 错误 p2 status code
+func Error(c *gin.Context, errAndStatus ...interface{}) {
+	if len(errAndStatus) == 0 {
+		panic("need at least err")
 	}
+
+	err := errAndStatus[0].(error)
+	res := &Response{Msg: err.Error()}
+
+	var code int
+	if len(errAndStatus) == 2 {
+		code = errAndStatus[1].(int)
+	} else {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			code = http.StatusNotFound
+		} else if er, ok := err.(*errx.HttpError); ok {
+			code = er.StatusCode
+			res.Data = er.Data
+		} else {
+			code = http.StatusInternalServerError
+		}
+	}
+
+	c.JSON(code, res)
 }
 
-// Deprecated: func is too many
-func NewErrorResponse(err error) *Response {
-	return &Response{
-		Msg: err.Error(),
+// Success params[0]: data
+//         params[1]: status code
+func Success(c *gin.Context, params ...interface{}) {
+	var (
+		code     int
+		response *Response
+	)
+
+	switch len(params) {
+	case 0:
+		code = http.StatusNoContent
+	case 1:
+		response = &Response{
+			Data: params[0],
+		}
+		code = http.StatusOK
+	case 2:
+		response = &Response{
+			Data: params[0],
+		}
+		code = params[1].(int)
 	}
+
+	c.JSON(code, response)
 }
 
-func NewResponse(data interface{}) *Response {
-	return &Response{
-		Data: data,
-	}
-}
-
-func NewPageResponse(data interface{}, total int, page int, perPage int) *Response {
+func Pagination(c *gin.Context, data interface{}, total int, page int, perPage int) {
 	resp := &Response{
 		Meta: &Meta{
 			CurrentPage: uint(page),
@@ -59,104 +90,7 @@ func NewPageResponse(data interface{}, total int, page int, perPage int) *Respon
 	if resp.Meta.LastPage == 0 {
 		resp.Meta.LastPage = 1
 	}
-	return resp
-}
-
-func NewPageResponseWithMeta(data interface{}, meta *Meta) *Response {
-	return &Response{
-		Meta: meta,
-		Data: data,
-	}
-}
-
-// Error 返回错误响应 p1 错误 p2 status code
-func Error(c *gin.Context, params ...interface{}) {
-	if len(params) == 0 {
-		panic("need at least err")
-	}
-	err := params[0].(error)
-	var code int
-	if len(params) == 2 {
-		code = params[1].(int)
-	} else {
-		if errors.Is(err, e.NotFoundError) || errors.Is(err, gorm.ErrRecordNotFound) {
-			code = http.StatusNotFound
-		} else if errors.Is(err, e.ConflictError) {
-			code = http.StatusConflict
-		} else if er, ok := err.(*HttpError); ok {
-			code = er.StatusCode
-		} else if er, ok := err.(*errx.HttpError); ok {
-			code = er.StatusCode
-		} else {
-			code = http.StatusInternalServerError
-		}
-	}
-
-	res := &Response{Msg: err.Error()}
-	if er, ok := err.(*errx.HttpError); ok && code == http.StatusTeapot {
-		res.Data = er.Data
-	}
-
-	c.AbortWithStatusJSON(code, res)
-}
-
-// Success params[0]: data
-//         params[1]: status code
-func Success(c *gin.Context, params ...interface{}) {
-	var (
-		code     int
-		response *Response
-	)
-
-	switch len(params) {
-	case 0:
-		code = http.StatusNoContent
-	case 1:
-		if list, ok := params[0].(*ListByPage); ok {
-			response = NewPageResponse(list.Data, list.Total, list.Page, list.PerPage)
-		} else {
-			response = NewResponse(params[0])
-		}
-		code = http.StatusOK
-	case 2:
-		if list, ok := params[0].(*ListByPage); ok {
-			response = NewPageResponse(list.Data, list.Total, list.Page, list.PerPage)
-		} else {
-			response = NewResponse(params[0])
-		}
-		code = params[1].(int)
-	}
-
-	c.JSON(code, response)
-}
-
-func Pagination(c *gin.Context, data interface{}, total int, page int, perPage int) {
-	response := NewPageResponse(data, total, page, perPage)
-	c.JSON(http.StatusOK, response)
-}
-
-// Deprecated: use Pagination instead
-func ReturnPagination(c *gin.Context, data interface{}, total int, page int, perPage int) {
-	response := NewPageResponse(data, total, page, perPage)
-	c.JSON(http.StatusOK, response)
-}
-
-type ListByPage struct {
-	Data     interface{}
-	Total    int
-	Page     int
-	PerPage  int
-	LastPage int
-}
-
-func NewListByPage(data interface{}, total int, page int, perPage int) *ListByPage {
-	return &ListByPage{
-		Data:     data,
-		Total:    total,
-		Page:     page,
-		PerPage:  perPage,
-		LastPage: int(math.Ceil(float64(total) / float64(perPage))),
-	}
+	c.JSON(http.StatusOK, resp)
 }
 
 func Return(cxt *gin.Context, data interface{}, err error) {
