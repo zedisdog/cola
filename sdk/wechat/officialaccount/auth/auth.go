@@ -97,6 +97,9 @@ func (a *Auth) ExToken(code string) (token AccessToken, err error) {
 		code,
 	)
 	response, err := http.GetJSON(u)
+	if err != nil {
+		return
+	}
 	err = util.ParseResponse(response, err, &token)
 	return
 }
