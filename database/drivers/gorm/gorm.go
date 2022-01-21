@@ -9,10 +9,14 @@ import (
 	"regexp"
 )
 
-var DB *gorm.DB
+var db *gorm.DB
 
-func InitDB(dsn string, setters ...func(*gorm.Config)) (db *gorm.DB, err error) {
-	if DB == nil {
+func Instance() *gorm.DB {
+	return db
+}
+
+func Init(dsn string, setters ...func(*gorm.Config)) (err error) {
+	if db == nil {
 		config := &gorm.Config{}
 		for _, set := range setters {
 			set(config)
@@ -23,10 +27,8 @@ func InitDB(dsn string, setters ...func(*gorm.Config)) (db *gorm.DB, err error) 
 		if err != nil {
 			panic(err)
 		}
-		DB, err = gorm.Open(d, config)
+		db, err = gorm.Open(d, config)
 	}
-
-	db = DB
 
 	return
 }
@@ -50,17 +52,17 @@ func newDialector(dsn string) (gorm.Dialector, error) {
 
 //RefreshDatabase 测试时通过使用本函数来做到不生成实际数据
 func RefreshDatabase(f func()) {
-	tmp := DB
-	DB = DB.Begin()
+	tmp := db
+	db = db.Begin()
 	f()
-	DB.Rollback()
-	DB = tmp
+	db.Rollback()
+	db = tmp
 }
 
 //Fake 测试时候可以使用gorm的mock工具
 func Fake(f func(), GormMockery *gorm.DB) {
-	tmp := DB
-	DB = GormMockery
+	tmp := db
+	db = GormMockery
 	f()
-	DB = tmp
+	db = tmp
 }
