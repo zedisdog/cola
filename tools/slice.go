@@ -4,16 +4,6 @@ import (
 	"reflect"
 )
 
-// Deprecated: use InSlice instead
-func InArray(target interface{}, slice []interface{}) bool {
-	for _, item := range slice {
-		if reflect.DeepEqual(target, item) {
-			return true
-		}
-	}
-	return false
-}
-
 func InSlice(target interface{}, slice interface{}) bool {
 	ts := reflect.TypeOf(slice)
 	if ts.Kind() != reflect.Slice {

@@ -19,7 +19,7 @@ func TestCTime_UnmarshalJSON(t *testing.T) {
 	}
 }
 
-func TestCJson_UnmarshalJSON(t *testing.T) {
+func TestJJson_UnmarshalJSON(t *testing.T) {
 	type a struct {
 		A JJson `json:"a"`
 	}
@@ -35,7 +35,7 @@ func TestCJson_UnmarshalJSON(t *testing.T) {
 	}
 }
 
-func TestCJson_MarshalJSON(t *testing.T) {
+func TestJJson_MarshalJSON(t *testing.T) {
 	type a struct {
 		A JJson `json:"a"`
 	}
@@ -51,5 +51,45 @@ func TestCJson_MarshalJSON(t *testing.T) {
 
 	if string(bytes) != "{\"a\":{\"b\":\"c\"}}" {
 		t.Fatal(errors.New(fmt.Sprintf("actually: %s", string(bytes))))
+	}
+}
+
+func TestJJson_Get(t *testing.T) {
+	type a struct {
+		A JJson `json:"a"`
+	}
+
+	aa := a{
+		A: `{"b": {"c":{"d": "e"}}}`,
+	}
+
+	value, err := aa.A.Get("b.c")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if v, ok := value.(map[string]interface{}); !ok {
+		t.Fatal("error")
+	} else {
+		if v["d"].(string) != "e" {
+			t.Fatal("error")
+		}
+	}
+
+	value, err = aa.A.Get("b.c.d")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if value != interface{}("e") {
+		t.Fatal("error")
+	}
+
+	value, err = aa.A.GetString("b.c.d")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if value != "e" {
+		t.Fatal("error")
 	}
 }
