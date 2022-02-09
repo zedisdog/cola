@@ -1,7 +1,6 @@
 package migrate
 
 import (
-	"embed"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4/source"
 	"io"
@@ -27,7 +26,7 @@ type EDriver struct {
 	files map[string]file
 }
 
-func (e *EDriver) Add(f *embed.FS) {
+func (e *EDriver) Add(f fs.FS) {
 	dirEntries, _ := fs.ReadDir(f, ".")
 	for _, entry := range dirEntries {
 		// 取version
@@ -129,7 +128,7 @@ func (e EDriver) ReadDown(version uint) (r io.ReadCloser, identifier string, err
 }
 
 type file struct {
-	fs   *embed.FS
+	fs   fs.FS
 	name string
 }
 
