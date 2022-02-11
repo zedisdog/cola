@@ -2,17 +2,23 @@ package migrate
 
 import (
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
+	"github.com/zedisdog/cola/database"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/zedisdog/cola/tools"
 )
 
 // AutoMigrate 自动迁移
-func AutoMigrate(dsn string) {
+func AutoMigrate(name ...string) {
+	var n string
+	if len(name) > 0 {
+		n = name[0]
+	} else {
+		n = "default"
+	}
 	m, err := migrate.NewWithSourceInstance(
 		"",
 		EmbedDriver,
-		tools.EncodeQuery(dsn),
+		database.Configs[n].Dsn.Encode(),
 	)
 	if err != nil {
 		panic(err)
