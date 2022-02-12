@@ -17,7 +17,7 @@ func AutoMigrate(name ...string) {
 	}
 	m, err := migrate.NewWithSourceInstance(
 		"",
-		EmbedDriver,
+		embedDriver,
 		database.Configs[n].Dsn.Encode(),
 	)
 	if err != nil {
