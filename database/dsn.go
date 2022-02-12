@@ -21,7 +21,7 @@ func (d DSN) Encode() string {
 
 func (d DSN) split() []string {
 	reg := regexp.MustCompile(`(^\S+)://(\S+$)`)
-	info := reg.FindStringSubmatch(string(d))
+	info := reg.FindStringSubmatch(d.Encode())
 	if len(info) < 3 {
 		panic(errx.New("dsn is invalid, forget schema?"))
 	}
