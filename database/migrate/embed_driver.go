@@ -11,9 +11,9 @@ import (
 	"strings"
 )
 
-var embedDriver = newEmbedDriver()
+var embedDriver = NewEmbedDriver()
 
-func newEmbedDriver() *eDriver {
+func NewEmbedDriver() *eDriver {
 	e := &eDriver{
 		sorts: make([]uint, 0, 20),
 		files: make(map[string]file),
