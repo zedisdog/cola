@@ -27,10 +27,10 @@ type eDriver struct {
 }
 
 func Add(f fs.FS) {
-	embedDriver.add(f)
+	embedDriver.Add(f)
 }
 
-func (e *eDriver) add(f fs.FS) {
+func (e *eDriver) Add(f fs.FS) {
 	dirEntries, _ := fs.ReadDir(f, ".")
 	for _, entry := range dirEntries {
 		// 取version
